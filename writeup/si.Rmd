@@ -1,0 +1,54 @@
+---
+title: "Supplementary information: Evaluating Semi-Mechanistic Nowcasts of COVID-19 Hospital Admissions in Germany"
+output: 
+  html_document:
+    keep_md: false
+    toc: true
+    toc_float: true
+    code_folding: hide
+    theme: united
+bibliography: library.bib
+csl: https://raw.githubusercontent.com/citation-style-language/styles/master/apa-numeric-superscript-brackets.csl
+header-includes:
+   - \usepackage{float}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE, eval = TRUE,
+  fig.width = 9, fig.height = 9,
+  dpi = 320,
+  fig.path = "figures/"
+)
+```
+
+## Authors
+
+S. Abbott (1)
+
+Correspondence to: sam.abbott@lshtm.ac.uk
+
+## Affiliations
+
+1. Center for the Mathematical Modelling of Infectious Diseases, London School of Hygiene & Tropical Medicine, London WC1E 7HT, United Kingdom
+## Overview
+
+This analysis uses the `targets` package for reproducibility. The full analysis structure can be seen below:
+
+```{r, message = FALSE}
+library(targets)
+tar_glimpse()
+```
+
+## Data
+
+## Models
+
+## Model evaluation
+
+
+## Real-world evaluation
+
+## References
+
+<div id = 'refs'></div>

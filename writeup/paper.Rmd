@@ -1,0 +1,121 @@
+---
+title: "Evaluating Semi-Mechanistic Nowcasts of COVID-19 Hospital Admissions in Germany"
+output: 
+  rmarkdown::html_vignette: default
+  pdf_document: default
+  html_document:
+    keep_md: true
+    toc: true
+    theme: united
+  word_document: default
+bibliography: library.bib
+csl: https://raw.githubusercontent.com/citation-style-language/styles/master/apa-numeric-superscript-brackets.csl
+header-includes:
+   - \usepackage{float}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE, eval = TRUE,
+  fig.width = 9, fig.height = 9,
+  dpi = 320,
+  fig.path = "figures/"
+)
+```
+
+```{r, message = FALSE}
+library(forecast.vocs)
+```
+
+## Authors
+
+S. Abbott (1)
+
+Correspondence to: sam.abbott@lshtm.ac.uk
+
+## Affiliations
+
+1. Center for the Mathematical Modelling of Infectious Diseases, London School of Hygiene & Tropical Medicine, London WC1E 7HT, United Kingdom
+## Abstract
+
+**Background:**
+
+**Methods:** 
+
+
+**Results:** 
+
+
+**Conclusions:** 
+
+## Introduction
+
+### Why
+
+### What else has been done
+
+### What did we do
+
+
+## Methods
+
+### Data
+
+### Models
+
+#### Fitting
+
+Each forecast target was fit independently for each model using Markov-chain Monte Carlo (MCMC) in stan [@rstan]. 4 chains were used with a warmup of 1000 samples and a total of 4000 samples post warmup. Convergence was assessed using the R hat diagnostic [@rstan]. All forecasts used an adapt delta of 0.99 and a max treedepth of 15. See the Supplementary Information for further details.
+
+### Evaluation
+
+### Reproducibility
+
+All analysis was carried out using R version 4.0.5 [@R]. The analysis pipeline described here is available as a `targets` workflow [@targets] along with an archive of all interim results. A dockerfile has been made available with the code to enhance reproducibility [@Boettiger:2015dw].
+
+## Results
+
+## Discussion
+
+**Summary**
+
+**Strengths and weaknesses**
+
+- **Strengths:**
+
+- **Weaknesses:**
+
+**Literature comparison**
+
+**Further work**
+
+**Conclusions**
+
+**Data availability**
+
+Zenodo:
+
+This project contains the following underlying data:
+
+
+License: MIT
+
+**Software availability**
+
+Source code is available from: 
+
+Archived source code at time of publication: 
+
+License: MIT
+
+**Grant information**
+
+This work was supported by the Wellcome Trust through a Wellcome Senior Research Fellowship to SF [210758].
+
+**Competing interests**
+
+There are no competing interests. 
+
+## References
+
+<div id = 'refs'></div>
