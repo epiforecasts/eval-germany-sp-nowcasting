@@ -22,6 +22,7 @@ Imports:
     rmarkdown,
     rstan,
     scoringutils,
+    scales,
     tarchetypes,
     targets
 Suggests:
