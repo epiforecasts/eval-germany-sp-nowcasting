@@ -127,7 +127,24 @@ link_obs <- function(index, obs, dirty, last, max_truncation) {
   return(target_obs)
 }
 
-truncation_summarise <- function(fit, target, data, CrIs, max_truncation) {
+truncation_imputed_obs <- function(fit, data, CrIs) {
+  imp <- extract_stan_param(fit, "sim_imputed_obs",
+    CrIs = CrIs,
+    var_names = TRUE
+  )
+  imp[, variable := NULL]
+  dirty <- data$dirty
+  obs <- data.table::copy(dirty[[length(dirty)]])
+  obs <- obs[(.N - data$stan$trunc_max[1] + 1):.N]
+
+  imp <- cbind(
+    copy(obs)[, `:=`(last_confirm = confirm, report_date = max(date))],
+    imp
+  )
+  return(imp)
+}
+
+truncation_retro_obs <- function(fit, target, data, CrIs, max_truncation) {
   datasets <- data$stan$obs_sets
   dirty <- data$dirty
   last <- data.table::copy(dirty[[length(dirty)]])
@@ -147,7 +164,8 @@ truncation_summarise <- function(fit, target, data, CrIs, max_truncation) {
   tidy_out <- purrr::map(
     1:(datasets), link_obs,
     obs = obs,
-    dirty = dirty, last = last, max_truncation = max_truncation
+    dirty = dirty, last = last,
+    max_truncation = max_truncation
   )
   tidy_out <- data.table::rbindlist(tidy_out)
   return(tidy_out)
@@ -289,13 +307,18 @@ estimate_truncation <- function(obs, max_truncation = 10,
   # Summarise fit truncation distribution for downstream usage
   out$dist <- truncation_dist(fit, max_truncation)
 
-  # summarise reconstructed observations
-  out$nowcast <- truncation_summarise(
+  # summarise nowcast for target dataset
+  out$nowcast <- truncation_imputed_obs(
+    fit, data, CrIs
+  )
+
+  # summarise reconstructed observations for all datasets
+  out$retrospective_nowcast <- truncation_retro_obs(
     fit, "recon_obs", data, CrIs, max_truncation
   )
 
-  # summarse simulated truncated observations
-  out$posterior_prediction <- truncation_summarise(
+  # summarse simulated truncated observations for all datasets
+  out$posterior_prediction <- truncation_retro_obs(
     fit, "sim_trunc_obs", data, CrIs, max_truncation
   )
 
@@ -398,9 +421,14 @@ plot_CrIs <- function(plot, CrIs, alpha, size) {
 #' @export
 plot.estimate_truncation <- function(x, type = "nowcast", log = FALSE,
                                      latest_obs, report_dates, ...) {
-  type <- match.arg(type, choices = c("nowcast", "posterior"))
+  type <- match.arg(
+    type,
+    choices = c("nowcast", "retrospective_nowcast", "posterior")
+  )
   if (type %in% "nowcast") {
     obs <- x$nowcast
+  } else if (type %in% "retrospective_nowcast") {
+    obs <- x$retrospective_nowcast
   } else if (type %in% "posterior") {
     obs <- x$posterior_prediction
   }
@@ -427,8 +455,12 @@ plot.estimate_truncation <- function(x, type = "nowcast", log = FALSE,
     ) +
     ggplot2::geom_point(
       ggplot2::aes(x = date, y = confirm)
-    ) +
-    ggplot2::facet_wrap(~report_date, scales = "free")
+    )
+
+  if (length(unique(obs$report_date)) > 1) {
+    plot <- plot +
+      ggplot2::facet_wrap(~report_date, scales = "free")
+  }
 
   plot <- plot_CrIs(plot, extract_CrIs(obs),
     alpha = 0.8, size = 1

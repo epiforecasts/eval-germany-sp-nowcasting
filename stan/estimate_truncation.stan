@@ -2,6 +2,7 @@ functions {
 #include functions/pmfs.stan
 #include functions/observation_model.stan
 }
+
 data {
   int t;
   int obs_sets;
@@ -9,6 +10,7 @@ data {
   int obs_dist[obs_sets];
   int trunc_max[1];
 }
+
 parameters {
   real<lower=0> uobs_logsd;
   real log_uobs_resids[trunc_max[1]];
@@ -16,6 +18,7 @@ parameters {
   real<lower=0> logsd[1];
   real<lower=0> phi;
 }
+
 transformed parameters{
   matrix[trunc_max[1], obs_sets] trunc_obs;
   real sqrt_phi;
@@ -40,6 +43,7 @@ transformed parameters{
   // Transform phi to overdispersion scale
   sqrt_phi = 1 / sqrt(phi);
 }
+
 model {
   // priors for unobserved expected reported cases
   uobs_logsd ~ normal(0, 5) T[0,];
@@ -56,11 +60,14 @@ model {
     }
   }
 }
+
 generated quantities {
   int recon_obs[trunc_max[1], obs_sets];
   int sim_trunc_obs[trunc_max[1], obs_sets];
+  int sim_imputed_obs[trunc_max[1]];
   vector[trunc_max[1]] cmf;
-  // reconstruct all truncated datasets using posterior of the truncation distribution
+  // reconstruct all truncated datasets using generative model
+  // also apply truncation to observations to reconstruct unobserved obs
   for (i in 1:obs_sets) {
     int end_t = t - obs_dist[i];
     int start_t = end_t - trunc_max[1] + 1;
@@ -69,6 +76,9 @@ generated quantities {
     recon_obs[, i] = neg_binomial_2_rng(mean_recon_obs + 1e-3, sqrt_phi);
     sim_trunc_obs[, i] = neg_binomial_2_rng(trunc_obs[, i] + 1e-3, sqrt_phi);
   }
+  // Imputed observations with reporting noise
+  sim_imputed_obs = neg_binomial_2_rng(imputed_obs + 1e-3, sqrt_phi);
+
   // generate a posterior for the cmf of the truncation distribution
   cmf = truncation_cmf(logmean[1], logsd[1], trunc_max[1]);
 }

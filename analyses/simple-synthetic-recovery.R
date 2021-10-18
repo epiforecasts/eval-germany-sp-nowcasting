@@ -15,14 +15,14 @@ reported_cases <- reported_cases[, .(date, confirm = cases_new)]
 # define example truncation distribution (note not integer adjusted)
 trunc_dist <- list(
   mean = 1.8,
-  mean_sd = 0.05,
+  mean_sd = 0.1,
   sd = 0.6,
   sd_sd = 0.01,
   max = 20
 )
 
 # apply truncation to example data
-example_data <- purrr::map(c(30, 25, 20, 15, 10, 0),
+example_data <- purrr::map(c(40, 30, 25, 20, 15, 10, 5, 0),
   simulate_simple_truncation,
   cases = reported_cases,
   dist = trunc_dist
@@ -39,6 +39,6 @@ est$dist
 # summary of the estimated truncation cmf (can be applied to new data)
 print(est$cmf)
 # observations linked to truncation adjusted estimates
-print(est$obs)
+print(est$nowcast)
 # validation plot of observations vs estimates
 plot(est)
