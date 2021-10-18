@@ -59,7 +59,7 @@ truncation_data <- function(obs, max_truncation = 20) {
   ])
   obs <- purrr::reduce(obs, merge, all = TRUE)
   obs_start <- nrow(obs) - max_truncation - sum(is.na(obs$`1`)) + 1
-  obs_dist <- purrr::map_dbl(2:(ncol(obs)), ~ sum(is.na(obs[[.]])))
+  tdist <- purrr::map_dbl(2:(ncol(obs)), ~ sum(is.na(obs[[.]])))
   obs_data <- obs[, -1][, purrr::map(.SD, ~ ifelse(is.na(.), 0, .))]
   obs_data <- obs_data[obs_start:.N]
 
@@ -69,10 +69,10 @@ truncation_data <- function(obs, max_truncation = 20) {
   # convert to stan list
   data <- list(
     obs = obs_data,
-    obs_dist = obs_dist,
+    tdist = tdist,
     t = nrow(obs_data),
-    obs_sets = ncol(obs_data),
-    trunc_max = array(max_truncation)
+    nobs = ncol(obs_data),
+    tmax = max_truncation
   )
 
   out <- list(
@@ -90,7 +90,7 @@ truncation_inits <- function(data) {
       logmean = array(rnorm(1, 0, 1)),
       logsd = array(abs(rnorm(1, 0, 1))),
       uobs_logsd = abs(rnorm(1, 0, 5)),
-      log_uobs_resids = rnorm(data$trunc_max[1], 0, 2)
+      log_uobs_resids = rnorm(data$tmax, 0, 2)
     )
     return(data)
   }
@@ -135,7 +135,7 @@ truncation_imputed_obs <- function(fit, data, CrIs) {
   imp[, variable := NULL]
   dirty <- data$dirty
   obs <- data.table::copy(dirty[[length(dirty)]])
-  obs <- obs[(.N - data$stan$trunc_max[1] + 1):.N]
+  obs <- obs[(.N - data$stan$tmax + 1):.N]
 
   imp <- cbind(
     copy(obs)[, `:=`(last_confirm = confirm, report_date = max(date))],
@@ -145,7 +145,7 @@ truncation_imputed_obs <- function(fit, data, CrIs) {
 }
 
 truncation_retro_obs <- function(fit, target, data, CrIs, max_truncation) {
-  datasets <- data$stan$obs_sets
+  datasets <- data$stan$nobs
   dirty <- data$dirty
   last <- data.table::copy(dirty[[length(dirty)]])
   last[, last_confirm := confirm][, confirm := NULL]
@@ -323,7 +323,7 @@ estimate_truncation <- function(obs, max_truncation = 10,
   )
 
   # summarise estimated cmf of the truncation distribution
-  out$cmf <- truncation_cmf(fit, CrIs)
+  # out$cmf <- truncation_cmf(fit, CrIs)
   out$fit <- fit
 
   class(out) <- c("estimate_truncation", class(out))
