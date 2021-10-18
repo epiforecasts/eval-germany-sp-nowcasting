@@ -10,17 +10,25 @@ data {
   int trunc_max[1];
 }
 parameters {
+  real<lower=0> uobs_logsd;
+  real log_uobs_resids[trunc_max[1]];
   real logmean[1];
   real<lower=0> logsd[1];
   real<lower=0> phi;
 }
 transformed parameters{
   matrix[trunc_max[1], obs_sets] trunc_obs;
-  real sqrt_phi = 1 / sqrt(phi);
+  real sqrt_phi;
+  vector[trunc_max[1]] imputed_obs;
   {
   vector[t] last_obs;
-  // reconstruct latest data without truncation
-  last_obs = truncate(to_vector(obs[, obs_sets]), logmean, logsd, trunc_max, 1);
+  // reconstruct latest data without 
+  last_obs = to_vector(obs[, obs_sets]);
+  for (i in 1:trunc_max[1]) {
+    int j = t - trunc_max[1] + i;
+    last_obs[j] = exp(log(last_obs[j - 1]) + log_uobs_resids[i]);
+    imputed_obs[i] = last_obs[j];
+  }
   // apply truncation to latest dataset to map back to previous data sets
   for (i in 1:obs_sets) {
    int end_t = t - obs_dist[i];
@@ -29,14 +37,19 @@ transformed parameters{
                              trunc_max, 0);
    }
   }
+  // Transform phi to overdispersion scale
+  sqrt_phi = 1 / sqrt(phi);
 }
 model {
+  // priors for unobserved expected reported cases
+  uobs_logsd ~ normal(0, 5) T[0,];
+  log_uobs_resids ~ normal(0, uobs_logsd);
   // priors for the log normal truncation distribution
   logmean ~ normal(0, 1);
   logsd[1] ~ normal(0, 1) T[0,];
   phi ~ normal(0, 1) T[0,];
   // log density of truncated latest data vs that observed
-  for (i in 1:(obs_sets - 1)) {
+  for (i in 1:obs_sets) {
     int start_t = t - obs_dist[i] - trunc_max[1];
     for (j in 1:trunc_max[1]) {
       obs[start_t + j, i] ~ neg_binomial_2(trunc_obs[j, i] + 1e-3, sqrt_phi);

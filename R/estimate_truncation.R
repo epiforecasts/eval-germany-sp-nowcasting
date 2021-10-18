@@ -48,6 +48,128 @@ extract_stan_param <- function(fit, params = NULL,
   return(summary)
 }
 
+truncation_data <- function(obs, max_truncation = 20) {
+  dirty_obs <- purrr::map(obs, data.table::as.data.table)
+  nrow_obs <- order(purrr::map_dbl(dirty_obs, nrow))
+  dirty_obs <- dirty_obs[nrow_obs]
+  obs <- purrr::map(dirty_obs, data.table::copy)
+  obs <- purrr::map(1:length(obs), ~ obs[[.]][, (as.character(.)) := confirm][
+    ,
+    confirm := NULL
+  ])
+  obs <- purrr::reduce(obs, merge, all = TRUE)
+  obs_start <- nrow(obs) - max_truncation - sum(is.na(obs$`1`)) + 1
+  obs_dist <- purrr::map_dbl(2:(ncol(obs)), ~ sum(is.na(obs[[.]])))
+  obs_data <- obs[, -1][, purrr::map(.SD, ~ ifelse(is.na(.), 0, .))]
+  obs_data <- obs_data[obs_start:.N]
+
+  lastest_obs <- data.table::copy(dirty_obs[[length(dirty_obs)]])
+  lastest_obs[, last_confirm := confirm][, confirm := NULL]
+
+  # convert to stan list
+  data <- list(
+    obs = obs_data,
+    obs_dist = obs_dist,
+    t = nrow(obs_data),
+    obs_sets = ncol(obs_data),
+    trunc_max = array(max_truncation)
+  )
+
+  out <- list(
+    dirty = dirty_obs,
+    latest = lastest_obs,
+    clean = obs,
+    stan = data
+  )
+  return(out)
+}
+
+truncation_inits <- function(data) {
+  init_fn <- function() {
+    data <- list(
+      logmean = array(rnorm(1, 0, 1)),
+      logsd = array(abs(rnorm(1, 0, 1))),
+      uobs_logsd = abs(rnorm(1, 0, 5)),
+      log_uobs_resids = rnorm(data$trunc_max[1], 0, 2)
+    )
+    return(data)
+  }
+  return(init_fn)
+}
+
+truncation_fit <- function(data, model, inits, ...) {
+  if (is.null(model)) {
+    model <- stanmodels$estimate_truncation
+  }
+  fit <- rstan::sampling(model,
+    data = data,
+    init = inits,
+    ...
+  )
+  return(fit)
+}
+
+link_obs <- function(index, obs, dirty, last, max_truncation) {
+  target_obs <- copy(dirty[[index]])[, index := .N - 0:(.N - 1)]
+  target_obs <- target_obs[index <= max_truncation]
+  estimates <- obs[dataset == index][, c("id", "dataset") := NULL]
+  estimates <- estimates[, index := .N - 0:(.N - 1)]
+  target_obs <-
+    data.table::merge.data.table(
+      target_obs, last,
+      by = "date"
+    )
+  target_obs[, report_date := max(date)]
+  target_obs <- data.table::merge.data.table(target_obs, estimates,
+    by = "index", all.x = TRUE
+  )
+  target_obs <- target_obs[order(date)][, index := NULL]
+  return(target_obs)
+}
+
+truncation_summarise <- function(fit, target, data, CrIs, max_truncation) {
+  datasets <- data$stan$obs_sets
+  dirty <- data$dirty
+  last <- data.table::copy(dirty[[length(dirty)]])
+  last[, last_confirm := confirm][, confirm := NULL]
+
+  obs <- extract_stan_param(fit, target,
+    CrIs = CrIs,
+    var_names = TRUE
+  )
+
+  # assign labels of interest
+  obs[, id := variable][, variable := NULL]
+  obs[, dataset := 1:.N]
+  obs[, dataset := dataset %% datasets]
+  obs <- obs[dataset == 0, dataset := datasets]
+
+  tidy_out <- purrr::map(
+    1:(datasets), link_obs,
+    obs = obs,
+    dirty = dirty, last = last, max_truncation = max_truncation
+  )
+  tidy_out <- data.table::rbindlist(tidy_out)
+  return(tidy_out)
+}
+
+truncation_dist <- function(fit, truncation_max) {
+  list(
+    mean = round(rstan::summary(fit, pars = "logmean")$summary[1], 3),
+    mean_sd = round(rstan::summary(fit, pars = "logmean")$summary[3], 3),
+    sd = round(rstan::summary(fit, pars = "logsd")$summary[1], 3),
+    sd_sd = round(rstan::summary(fit, pars = "logsd")$summary[3], 3),
+    max = truncation_max
+  )
+}
+
+truncation_cmf <- function(fit, CrIs) {
+  cmf <- extract_stan_param(fit, "cmf", CrIs = CrIs)
+  cmf <- data.table::as.data.table(cmf)[, index := .N:1]
+  data.table::setcolorder(cmf, "index")
+  return(cmf)
+}
+
 #' Estimate Truncation of Observed Data
 #'
 #' @description `r lifecycle::badge("experimental")`
@@ -80,10 +202,14 @@ extract_stan_param <- function(fit, params = NULL,
 #' of dates.
 #' @param max_truncation Integer, defaults to 10. Maximum number of
 #' days to include in the truncation distribution.
+#'
 #' @param model A compiled stan model to override the default model. May be
 #' useful for package developers or those developing extensions.
+#'
 #' @param verbose Logical, should model fitting progress be returned.
+#'
 #' @param ... Additional parameters to pass to `rstan::sampling`.
+#'
 #' @return A list containing: the summary parameters of the truncation distribution
 #'  (`dist`), the estimated CMF of the truncation distribution (`cmf`, can be used to adjusted
 #'  new data), a data frame containing the observed truncated data, latest observed data
@@ -151,118 +277,30 @@ estimate_truncation <- function(obs, max_truncation = 10,
                                 CrIs = c(0.2, 0.5, 0.9),
                                 verbose = TRUE,
                                 ...) {
-  # combine into ordered matrix
-  dirty_obs <- purrr::map(obs, data.table::as.data.table)
-  nrow_obs <- order(purrr::map_dbl(dirty_obs, nrow))
-  dirty_obs <- dirty_obs[nrow_obs]
-  obs <- purrr::map(dirty_obs, data.table::copy)
-  obs <- purrr::map(1:length(obs), ~ obs[[.]][, (as.character(.)) := confirm][
-    ,
-    confirm := NULL
-  ])
-  obs <- purrr::reduce(obs, merge, all = TRUE)
-  obs_start <- nrow(obs) - max_truncation - sum(is.na(obs$`1`)) + 1
-  obs_dist <- purrr::map_dbl(2:(ncol(obs)), ~ sum(is.na(obs[[.]])))
-  obs_data <- obs[, -1][, purrr::map(.SD, ~ ifelse(is.na(.), 0, .))]
-  obs_data <- obs_data[obs_start:.N]
-
-  # convert to stan list
-  data <- list(
-    obs = obs_data,
-    obs_dist = obs_dist,
-    t = nrow(obs_data),
-    obs_sets = ncol(obs_data),
-    trunc_max = array(max_truncation)
-  )
+  data <- truncation_data(obs, max_truncation = max_truncation)
+  out <- data
 
   # initial conditions
-  init_fn <- function() {
-    data <- list(
-      logmean = array(rnorm(1, 0, 1)),
-      logsd = array(abs(rnorm(1, 0, 1)))
-    )
-    return(data)
-  }
+  inits <- truncation_inits(data$stan)
 
   # fit
-  if (is.null(model)) {
-    model <- stanmodels$estimate_truncation
-  }
-  fit <- rstan::sampling(model,
-    data = data,
-    init = init_fn,
-    refresh = ifelse(verbose, 50, 0),
-    ...
-  )
+  fit <- truncation_fit(data = data$stan, model = model, inits = inits, ...)
 
-  out <- list()
   # Summarise fit truncation distribution for downstream usage
-  out$dist <- list(
-    mean = round(rstan::summary(fit, pars = "logmean")$summary[1], 3),
-    mean_sd = round(rstan::summary(fit, pars = "logmean")$summary[3], 3),
-    sd = round(rstan::summary(fit, pars = "logsd")$summary[1], 3),
-    sd_sd = round(rstan::summary(fit, pars = "logsd")$summary[3], 3),
-    max = max_truncation
-  )
+  out$dist <- truncation_dist(fit, max_truncation)
 
   # summarise reconstructed observations
-  recon_obs <- extract_stan_param(fit, "recon_obs",
-    CrIs = CrIs,
-    var_names = TRUE
+  out$nowcast <- truncation_summarise(
+    fit, "recon_obs", data, CrIs, max_truncation
   )
+
   # summarse simulated truncated observations
-  sim_trunc_obs <- extract_stan_param(fit, "sim_trunc_obs",
-    CrIs = CrIs,
-    var_names = TRUE
+  out$posterior_prediction <- truncation_summarise(
+    fit, "sim_trunc_obs", data, CrIs, max_truncation
   )
-  # assign meaningful labels to generated quantities
-  label_obs <- function(obs) {
-    obs[, id := variable][, variable := NULL]
-    obs[, dataset := 1:.N]
-    obs[, dataset := dataset %% data$obs_sets]
-    obs <- obs[dataset == 0, dataset := data$obs_sets]
-  }
-
-  recon_obs <- label_obs(recon_obs)
-  sim_trunc_obs <- label_obs(sim_trunc_obs)
-
-  # link reconstructed observations to observed
-  last_obs <- data.table::copy(dirty_obs[[length(dirty_obs)]])
-  last_obs[, last_confirm := confirm][, confirm := NULL]
-
-  link_obs <- function(index, obs) {
-    target_obs <- dirty_obs[[index]][, index := .N - 0:(.N - 1)]
-    target_obs <- target_obs[index < max_truncation]
-    estimates <- obs[dataset == index][, c("id", "dataset") := NULL]
-    estimates <- estimates[, index := .N - 0:(.N - 1)]
-    target_obs <-
-      data.table::merge.data.table(
-        target_obs, last_obs,
-        by = "date"
-      )
-    target_obs[, report_date := max(date)]
-    target_obs <- data.table::merge.data.table(target_obs, estimates,
-      by = "index", all.x = TRUE
-    )
-    target_obs <- target_obs[order(date)][, index := NULL]
-    return(target_obs)
-  }
-  out$nowcast <- purrr::map(1:(data$obs_sets), link_obs, obs = recon_obs)
-  out$nowcast <- data.table::rbindlist(out$nowcast)
-
-  out$posterior_prediction <- purrr::map(
-    1:(data$obs_sets), link_obs,
-    obs = sim_trunc_obs
-  )
-  out$posterior_prediction <- data.table::rbindlist(out$posterior_prediction)
-
-  out$lastest_obs <- last_obs
 
   # summarise estimated cmf of the truncation distribution
-  out$cmf <- extract_stan_param(fit, "cmf", CrIs = CrIs)
-  out$cmf <- data.table::as.data.table(out$cmf)[, index := .N:1]
-  data.table::setcolorder(out$cmf, "index")
-  out$data <- data
+  out$cmf <- truncation_cmf(fit, CrIs)
   out$fit <- fit
 
   class(out) <- c("estimate_truncation", class(out))
@@ -344,6 +382,13 @@ plot_CrIs <- function(plot, CrIs, alpha, size) {
 #' @param log Logical, defaults to `FALSE`. Should cases be plotted on a
 #' log scale.
 #'
+#' @param latest_obs Optional data.frame of latest observations to plot.
+#' Must have date and confirm variables. If not supplied then the lastest
+#' available observations from the data used to fit the truncation are used.
+#'
+#' @param report_dates A vector of dates to plot. If not supplied all available
+#' dates are plot.
+#'
 #' @param ... Pass additional arguments to plot function. Not currently in use.
 #'
 #' @seealso plot estimate_truncation
@@ -351,12 +396,27 @@ plot_CrIs <- function(plot, CrIs, alpha, size) {
 #' @return `ggplot2` object
 #' @importFrom ggplot2 ggplot aes geom_col geom_point labs scale_x_date scale_y_continuous theme
 #' @export
-plot.estimate_truncation <- function(x, type = "nowcast", log = FALSE, ...) {
+plot.estimate_truncation <- function(x, type = "nowcast", log = FALSE,
+                                     latest_obs, report_dates, ...) {
   type <- match.arg(type, choices = c("nowcast", "posterior"))
   if (type %in% "nowcast") {
     obs <- x$nowcast
   } else if (type %in% "posterior") {
     obs <- x$posterior_prediction
+  }
+
+  if (!missing(latest_obs)) {
+    obs <- data.table::copy(obs)
+    latest_obs <- data.table::copy(latest_obs)
+    obs <- merge(
+      obs[, last_confirm := NULL],
+      latest_obs[, last_confirm := confirm][, confirm := NULL],
+      by = "date", all.x = TRUE
+    )
+  }
+
+  if (!missing(report_dates)) {
+    obs <- obs[report_date %in% as.Date(report_dates)]
   }
 
   plot <- ggplot2::ggplot(obs) +
