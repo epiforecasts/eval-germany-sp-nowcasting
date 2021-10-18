@@ -16,8 +16,8 @@ model <- rstan::stan_model(here("stan", "estimate_truncation.stan"))
 # define example truncation distribution (note not integer adjusted)
 trunc_dist <- list(
   mean = 2.1,
-  mean_sd = 0.1,
-  sd = 0.4,
+  mean_sd = 0.01,
+  sd = 0.6,
   sd_sd = 0.01,
   max = 20
 )

@@ -210,26 +210,31 @@ estimate_truncation <- function(obs, max_truncation = 10,
     CrIs = CrIs,
     var_names = TRUE
   )
-  recon_obs <- recon_obs[, id := variable][, variable := NULL]
-  recon_obs <- recon_obs[, dataset := 1:.N][
-    ,
-    dataset := dataset %% data$obs_sets
-  ][
-    dataset == 0, dataset := data$obs_sets
-  ]
+  # summarse simulated truncated observations
+  sim_trunc_obs <- extract_stan_param(fit, "sim_trunc_obs",
+    CrIs = CrIs,
+    var_names = TRUE
+  )
+  # assign meaningful labels to generated quantities
+  label_obs <- function(obs) {
+    obs[, id := variable][, variable := NULL]
+    obs[, dataset := 1:.N]
+    obs[, dataset := dataset %% data$obs_sets]
+    obs <- obs[dataset == 0, dataset := data$obs_sets]
+  }
+
+  recon_obs <- label_obs(recon_obs)
+  sim_trunc_obs <- label_obs(sim_trunc_obs)
+
   # link reconstructed observations to observed
-  last_obs <-
-    data.table::copy(dirty_obs[[length(dirty_obs)]])[, last_confirm := confirm][
-      ,
-      confirm := NULL
-    ]
-  link_obs <- function(index) {
+  last_obs <- data.table::copy(dirty_obs[[length(dirty_obs)]])
+  last_obs[, last_confirm := confirm][, confirm := NULL]
+
+  link_obs <- function(index, obs) {
     target_obs <- dirty_obs[[index]][, index := .N - 0:(.N - 1)]
     target_obs <- target_obs[index < max_truncation]
-    estimates <- recon_obs[dataset == index][, c("id", "dataset") := NULL]
-    estimates <- estimates[, lapply(.SD, as.integer)]
+    estimates <- obs[dataset == index][, c("id", "dataset") := NULL]
     estimates <- estimates[, index := .N - 0:(.N - 1)]
-    estimates[, c("n_eff", "Rhat") := NULL]
     target_obs <-
       data.table::merge.data.table(
         target_obs, last_obs,
@@ -242,9 +247,17 @@ estimate_truncation <- function(obs, max_truncation = 10,
     target_obs <- target_obs[order(date)][, index := NULL]
     return(target_obs)
   }
-  out$obs <- purrr::map(1:(data$obs_sets), link_obs)
-  out$obs <- data.table::rbindlist(out$obs)
-  out$last_obs <- last_obs
+  out$nowcast <- purrr::map(1:(data$obs_sets), link_obs, obs = recon_obs)
+  out$nowcast <- data.table::rbindlist(out$nowcast)
+
+  out$posterior_prediction <- purrr::map(
+    1:(data$obs_sets), link_obs,
+    obs = sim_trunc_obs
+  )
+  out$posterior_prediction <- data.table::rbindlist(out$posterior_prediction)
+
+  out$lastest_obs <- last_obs
+
   # summarise estimated cmf of the truncation distribution
   out$cmf <- extract_stan_param(fit, "cmf", CrIs = CrIs)
   out$cmf <- data.table::as.data.table(out$cmf)[, index := .N:1]
@@ -319,26 +332,45 @@ plot_CrIs <- function(plot, CrIs, alpha, size) {
 #' a plot faceted over each dataset used in fitting with the latest
 #' observations as columns, the data observed at the time (and so truncated)
 #' as dots and the truncation adjusted estimates as a ribbon.
+#'
 #' @param x A list of output as produced by `estimate_truncation`
+#'
+#' @param type A character string indicating the type of plot required.
+#' Currently supported options are "nowcast" which plots the nowcast
+#' for each dataset along with the latest available observed data, and
+#' "posterior" which plots observations reported at the time against
+#' simulated observations from  the model.
+#'
+#' @param log Logical, defaults to `FALSE`. Should cases be plotted on a
+#' log scale.
+#'
 #' @param ... Pass additional arguments to plot function. Not currently in use.
+#'
 #' @seealso plot estimate_truncation
 #' @method plot estimate_truncation
 #' @return `ggplot2` object
 #' @importFrom ggplot2 ggplot aes geom_col geom_point labs scale_x_date scale_y_continuous theme
 #' @export
-plot.estimate_truncation <- function(x, ...) {
-  plot <- ggplot2::ggplot(x$obs, ggplot2::aes(x = date, y = last_confirm)) +
+plot.estimate_truncation <- function(x, type = "nowcast", log = FALSE, ...) {
+  type <- match.arg(type, choices = c("nowcast", "posterior"))
+  if (type %in% "nowcast") {
+    obs <- x$nowcast
+  } else if (type %in% "posterior") {
+    obs <- x$posterior_prediction
+  }
+
+  plot <- ggplot2::ggplot(obs) +
+    ggplot2::aes(x = date, y = last_confirm) +
     ggplot2::geom_col(
       fill = "grey", col = "white",
       show.legend = FALSE, na.rm = TRUE
     ) +
     ggplot2::geom_point(
-      data = x$obs,
       ggplot2::aes(x = date, y = confirm)
     ) +
     ggplot2::facet_wrap(~report_date, scales = "free")
 
-  plot <- plot_CrIs(plot, extract_CrIs(x$obs),
+  plot <- plot_CrIs(plot, extract_CrIs(obs),
     alpha = 0.8, size = 1
   )
 
@@ -346,7 +378,12 @@ plot.estimate_truncation <- function(x, ...) {
     ggplot2::theme_bw() +
     ggplot2::labs(y = "Confirmed Cases", x = "Date", col = "Type", fill = "Type") +
     ggplot2::scale_x_date(date_breaks = "day", date_labels = "%b %d") +
-    ggplot2::scale_y_continuous(labels = scales::comma) +
     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90))
+
+  if (log) {
+    plot <- plot + ggplot2::scale_y_log10(labels = scales::comma)
+  } else {
+    plot <- plot + ggplot2::scale_y_continuous(labels = scales::comma)
+  }
   return(plot)
 }

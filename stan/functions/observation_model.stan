@@ -56,19 +56,10 @@ void report_lp(int[] cases, vector reports,
     // if poisson specified
   }
   if (sqrt_phi > 1e4) {
-    if (weight == 1) {
-      cases ~ poisson(reports);
-    }else{
-      target += poisson_lpmf(cases | reports) * weight;
-    }
+    cases ~ poisson(reports);
   } else {
-    if (weight == 1) {
-      cases ~ neg_binomial_2(reports, sqrt_phi);
-    }else{
-      target += neg_binomial_2_lpmf(cases | reports, sqrt_phi);
-    }
+    cases ~ neg_binomial_2(reports, sqrt_phi);
   }
-  
 }
 // update log likelihood (as above but not vectorised and returning log likelihood)
 vector report_log_lik(int[] cases, vector reports,
