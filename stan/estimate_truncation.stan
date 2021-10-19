@@ -1,4 +1,5 @@
 functions {
+#include functions/regression.stan
 #include functions/pmfs.stan
 #include functions/observation_model.stan
 }
@@ -11,8 +12,8 @@ data {
   int tmax;
   int neffs;
   int nnest;
-  int emat[nobs, neffs];
-  int nmat[neffs, nnest];
+  matrix emat[nobs, neffs];
+  matrix nmat[neffs, nnest + 1];
 }
 
 parameters {
@@ -22,8 +23,8 @@ parameters {
   real<lower=0> logsd_init;
   vector[neffs] logmean_eff;
   vector[neffs] logsd_eff;
-  vector[nnested] logmean_sd;
-  vector[nested] logsd_sd;
+  vector<lower=0>[nnest] logmean_sd;
+  vector<lower=0>[nnest] logsd_sd;
   real<lower=0> phi;
 }
 
@@ -34,19 +35,12 @@ transformed parameters{
   matrix[tmax, nobs] trunc_obs;
   real sqrt_phi;
   vector[tmax] imputed_obs;
-  // Calculate log mean and sd parameters for each dataset
-  for (i in 1:nobs) {
-    logmean[i] = logmean_init;
-    logsd[i] = logsd_init;
-    if (neffs) {
-      logmean[i] += emat[i, ] * logmean_eff * nmat * logmean_sd;
-      logsd[i] *= exp(emat[i, ] * logsd_eff * nmat * logmean_sd);
-    }
-  }
-
+  // calculate log mean and sd parameters for each dataset from design matrices
+  logmean = combine_effects(logmean_init, logmean_eff, emat, logmean_sd, nmat);
+  logsd = combine_effects(log(logsd_init), logsd_eff, emat, logsd_sd, nmat);
+  logsd = exp(logsd);
   // calculate cmfs for each dataset
   for (i in 1:nobs) {
-    logsd[]
     cmfs[, i] = truncation_cmf(logmean[i], logsd[i], tmax);
   }
   {
@@ -55,7 +49,7 @@ transformed parameters{
   last_obs = to_vector(obs[, nobs]);
   for (i in 1:tmax) {
     int j = t - tmax + i;
-    last_obs[j] = exp(log(last_obs[j - 1]) + log_uobs_resids[i]);
+    last_obs[j] = exp(log(last_obs[j - 1]) + log_uobs_resids[i] * uobs_logsd);
     imputed_obs[i] = last_obs[j];
   }
   // apply truncation to expected reported to map back to previous data sets
@@ -73,7 +67,7 @@ transformed parameters{
 model {
   // priors for unobserved expected reported cases
   uobs_logsd ~ normal(0, 5) T[0,];
-  log_uobs_resids ~ normal(0, uobs_logsd);
+  log_uobs_resids ~ std_normal();
   // priors for the intercept of the log normal truncation distribution
   logmean_init ~ normal(0, 1);
   logsd_init ~ normal(0, 1) T[0,];
@@ -82,8 +76,8 @@ model {
     logmean_sd[i] ~ normal(0, 0.1) T[0,];
     logsd_sd[i] ~ normal(0, 0.1) T[0,];
   }
-  logmean_eff ~ std_normal() T[0,];
-  logsd_eff ~ std_normal() T[0,];
+  logmean_eff ~ std_normal();
+  logsd_eff ~ std_normal();
   // Reporting overdispersion (1/sqrt)
   phi ~ normal(0, 1) T[0,];
   // log density of truncated latest data vs that observed
@@ -110,6 +104,11 @@ generated quantities {
     recon_obs[, i] = neg_binomial_2_rng(mean_recon_obs + 1e-3, sqrt_phi);
     sim_trunc_obs[, i] = neg_binomial_2_rng(trunc_obs[, i] + 1e-3, sqrt_phi);
   }
-  // Imputed observations with reporting noise for the latest dataset
-  sim_imputed_obs = neg_binomial_2_rng(imputed_obs + 1e-3, sqrt_phi);
+  // Combine observed and imputed observations with
+  // reporting noise for the latest dataset
+  {
+    vector[tmax] last_obs = to_vector(obs[(t - tmax + 1):t, nobs]);
+    vector[tmax] imp_diff = max(1e-3, imputed_obs - last_obs);
+    sim_imputed_obs = last_obs + neg_binomial_2_rng(imp_diff, sqrt_phi);
+  }
 }
