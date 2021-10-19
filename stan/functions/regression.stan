@@ -30,7 +30,7 @@
 // # make example data
 // intercept <- 1
 // beta <- c(0.1, 0.2, 0.4)
-// design <- t(matrix(c(0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1), 3, 3))
+// design <- t(matrix(c(0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1), 3, 4))
 // beta_sd <- c(0.1)
 // sd_design <- t(matrix(c(1, 0, 0, 1, 0, 1), 2 ,3))
 // 
