@@ -12,8 +12,8 @@ data {
   int tmax;
   int neffs;
   int nnest;
-  matrix emat[nobs, neffs];
-  matrix nmat[neffs, nnest + 1];
+  matrix[nobs, neffs] emat;
+  matrix[neffs, nnest + 1] nmat;
 }
 
 parameters {
@@ -107,8 +107,11 @@ generated quantities {
   // Combine observed and imputed observations with
   // reporting noise for the latest dataset
   {
-    vector[tmax] last_obs = to_vector(obs[(t - tmax + 1):t, nobs]);
-    vector[tmax] imp_diff = max(1e-3, imputed_obs - last_obs);
-    sim_imputed_obs = last_obs + neg_binomial_2_rng(imp_diff, sqrt_phi);
+    int last_obs[tmax] = obs[(t - tmax + 1):t, nobs];
+    vector[tmax] imp_uobs = imputed_obs .* (1 - cmfs[,  nobs]);
+    int sim_imp_uobs[tmax] = neg_binomial_2_rng(imp_uobs + 1e-3, sqrt_phi);
+    for (i in 1:tmax) {
+      sim_imputed_obs[i] = last_obs[i] + sim_imp_uobs[i];
+    }
   }
 }

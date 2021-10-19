@@ -5,33 +5,47 @@
 // the first row indicates no scaling (i.e  independent effects).
 // 
 // @param intercept The regression intercept
-//
+// 
 // @param beta A Vector of effects. In general these should be specified
 // on the unit scale as they may be rescaled (and hence pooled) using the
 // beta_sd vector.
-//
+// 
 // @param design The design matrix for the observations (rows) and effects
 // columns.
-//
+// 
 // @param beta_sd A vector of standard deviations to use for scaling (pooling)
 // effect sizes.
-//
+// 
 // @param sd_design The design matrix relating effect sizes (rows) with standard
 // deviations (columns). The first column is used to indicate no scaling. In
 // general each effect should only be scaled with a single standard deviation.
 // 
 // @return A vector of linear predictions without error.
+// 
+//  @examples
+// # compile function for use in R
+// source(here::here("R", "utils.R"))
+// expose_stan_fns("regression.stan", "stan/functions")
+// 
+// # make example data
+// intercept <- 1
+// beta <- c(0.1, 0.2, 0.4)
+// design <- t(matrix(c(0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1), 3, 3))
+// beta_sd <- c(0.1)
+// sd_design <- t(matrix(c(1, 0, 0, 1, 0, 1), 2 ,3))
+// 
+// # test function
+// combine_effects(intercept, beta, design, beta_sd, sd_design)
 vector combine_effects(real intercept, vector beta, matrix design,
                        vector beta_sd, matrix sd_design) {
   int nobs = cols(beta);
-  int effs = rows(beta);
+  int neffs = rows(beta);
   int sds = num_elements(beta_sd);
-  vector[nobs] y;
   vector[neffs] scaled_beta;
-  vector[sds + 1] ext_beta_sd = col_append(1, beta_sd);
+  vector[sds + 1] ext_beta_sd;
+  ext_beta_sd[1] =  1.0;
+  ext_beta_sd[2:(sds+1)] = beta_sd;
 
   scaled_beta = beta .* (sd_design * ext_beta_sd);
-  print(scaled_beta);
-  y = intercept + design * scaled_beta;
-  return(y);
+  return(intercept + design * scaled_beta);
 }
