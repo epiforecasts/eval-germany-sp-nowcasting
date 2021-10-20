@@ -49,7 +49,8 @@ extract_stan_param <- function(fit, params = NULL,
 }
 
 nowcast_data <- function(obs, design = NULL, design_sd = NULL,
-                         max_truncation = 20) {
+                         max_truncation = 20, likelihood = TRUE,
+                         debug = TRUE) {
   dirty_obs <- data.table::copy(obs)
   dirty_obs <- dirty_obs[order(report_date)]
   obs <- data.table::copy(dirty_obs)
@@ -97,7 +98,9 @@ nowcast_data <- function(obs, design = NULL, design_sd = NULL,
     neffs = neffs,
     neff_sds = neff_sds,
     design = design,
-    design_sd = design_sd
+    design_sd = design_sd,
+    debug = as.numeric(debug),
+    likelihood = as.numeric(likelihood)
   )
 
   out <- list(
@@ -114,11 +117,13 @@ nowcast_inits <- function(data) {
     init <- list(
       logmean_init = rnorm(1, 0, 1),
       logsd_init = abs(rnorm(1, 0, 1)),
-      uobs_logsd = abs(rnorm(1, 0, 5)),
-      log_uobs_resids = rnorm(data$tmax, 0, 2)
+      uobs_logsd = abs(rnorm(1, 0, 0.1)),
+      log_uobs_resids = rnorm(data$tmax, 0, 1),
+      phi = abs(rnorm(1, 0, 0.1))
     )
     init$logmean <- rep(init$logmean_init, data$nobs)
     init$logsd <- rep(init$logsd_init, data$nobs)
+    init$sqrt_phi <- 1 / sqrt(init$phi)
     return(init)
   }
   return(init_fn)
@@ -230,8 +235,6 @@ truncation_cmf <- function(fit, CrIs) {
 #' @param model A compiled stan model to override the default model. May be
 #' useful for package developers or those developing extensions.
 #'
-#' @param verbose Logical, should model fitting progress be returned.
-#'
 #' @param ... Additional parameters to pass to `rstan::sampling`.
 #'
 #' @return A list containing: the summary parameters of the truncation distribution
@@ -297,11 +300,13 @@ truncation_cmf <- function(fit, CrIs) {
 #' # validation plot of observations vs estimates
 #' plot(est)
 nowcast <- function(obs, max_truncation = 10,
-                    model = NULL,
-                    CrIs = c(0.2, 0.5, 0.9),
-                    verbose = TRUE,
+                    model = NULL, CrIs = c(0.2, 0.5, 0.9),
+                    likelihood = TRUE, debug = TRUE,
                     ...) {
-  data <- nowcast_data(obs, max_truncation = max_truncation)
+  data <- nowcast_data(obs,
+    max_truncation = max_truncation,
+    likelihood = likelihood, debug = debug
+  )
   out <- data
 
   # initial conditions

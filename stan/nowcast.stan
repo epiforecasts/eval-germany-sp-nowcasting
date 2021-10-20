@@ -14,25 +14,31 @@ data {
   int neff_sds;
   matrix[nobs, neffs ? neffs : 1] design;
   matrix[neffs, neff_sds + 1] design_sd;
+  int debug;
+  int likelihood;
+}
+
+transformed data{
+  real logtmax = log(tmax);
 }
 
 parameters {
   real<lower=0> uobs_logsd;
   real log_uobs_resids[tmax];
-  real logmean_init;
-  real<lower=0> logsd_init;
+  real<lower=-10, upper=logtmax> logmean_init;
+  real<lower=1e-3, upper = tmax> logsd_init;
   vector[neffs] logmean_eff;
   vector[neffs] logsd_eff;
   vector<lower=0>[neff_sds] logmean_sd;
   vector<lower=0>[neff_sds] logsd_sd;
-  real<lower=0> phi;
+  real<lower=0, upper=1e4> phi;
 }
 
 transformed parameters{
-  vector[nobs] logmean;
-  vector<lower=0>[nobs] logsd;
+  vector<lower=-10, upper=logtmax>[nobs] logmean;
+  vector<lower=1e-3, upper=tmax>[nobs] logsd;
   matrix[tmax, nobs] cmfs;
-  matrix[tmax, nobs] trunc_obs;
+  matrix<lower=0>[tmax, nobs] trunc_obs;
   real sqrt_phi;
   vector[tmax] imputed_obs;
   // calculate log mean and sd parameters for each dataset from design matrices
@@ -64,7 +70,35 @@ transformed parameters{
   }
   // Transform phi to overdispersion scale
   sqrt_phi = 1 / sqrt(phi);
+
+  // Debug issues in truncated data if/when they appear
+  if (debug) {
+    for (i in 1:nobs) {
+      int j = 0;
+      for (k in 1:tmax) {
+        j += is_nan(trunc_obs[k, i]) ? 1 : 0;
+        j += sqrt_phi <= 1e-3 ? 1 : 0;
+      }
+      if (j) {
+        print("Issue with Dataset");
+        print(i);
+        print("Posterior prediction (no observation error)");
+        print(trunc_obs[, i]);
+        print("Truncation  distribution estimate");
+        print(cmfs[, i]);
+        print("Logmean and Logsd intercept");
+        print(logmean_init);
+        print(logsd_init);
+        print("Logmean and Logsd for each dataset");
+        print(logmean[i]);
+        print(logsd[i]);
+        print("Overdispersion");
+        print(sqrt_phi);
+      }
+    }
+  }
 }
+  
 
 model {
   // priors for unobserved expected reported cases
@@ -72,7 +106,7 @@ model {
   log_uobs_resids ~ std_normal();
   // priors for the intercept of the log normal truncation distribution
   logmean_init ~ normal(0, 1);
-  logsd_init ~ normal(0, 1) T[0,];
+  logsd_init ~ normal(0, 1);
   // Priors for effects on truncation distribution
   for (i in 1:neff_sds) {
     logmean_sd[i] ~ normal(0, 0.1) T[0,];
@@ -85,10 +119,12 @@ model {
   // Reporting overdispersion (1/sqrt)
   phi ~ normal(0, 1) T[0,];
   // log density of truncated latest data vs that observed
-  for (i in 1:nobs) {
-    int start_t = t - tdist[i] - tmax;
-    for (j in 1:tmax) {
-      obs[start_t + j, i] ~ neg_binomial_2(trunc_obs[j, i] + 1e-3, sqrt_phi);
+  if (likelihood) {
+    for (i in 1:nobs) {
+      int start_t = t - tdist[i] - tmax;
+      for (j in 1:tmax) {
+        obs[start_t + j, i] ~ neg_binomial_2(trunc_obs[j, i] + 1e-3, sqrt_phi);
+      }
     }
   }
 }
