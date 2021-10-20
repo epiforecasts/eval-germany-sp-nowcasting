@@ -103,7 +103,7 @@ truncation_inits <- function(data) {
 
 truncation_fit <- function(data, model, inits, ...) {
   if (is.null(model)) {
-    model <- stanmodels$estimate_truncation
+    model <- rstan::stan_model(here("stan", "estimate_truncation.stan"))
   }
   fit <- rstan::sampling(model,
     data = data,
