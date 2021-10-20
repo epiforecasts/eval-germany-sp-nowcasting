@@ -40,7 +40,6 @@
 //
 // Check function works with no effects
 // combine_effects(intercept, as.double(c()), design, beta_sd, sd_design)
-// # 1 1 1 1
 vector combine_effects(real intercept, vector beta, matrix design,
                        vector beta_sd, matrix sd_design) {
   int nobs = rows(design);

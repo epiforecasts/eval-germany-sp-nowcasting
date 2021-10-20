@@ -11,9 +11,9 @@ data {
   int tdist[nobs];
   int tmax;
   int neffs;
-  int nnest;
-  matrix[nobs, neffs] emat;
-  matrix[neffs, nnest + 1] nmat;
+  int neff_sds;
+  matrix[nobs, neffs ? neffs : 1] design;
+  matrix[neffs, neff_sds + 1] design_sd;
 }
 
 parameters {
@@ -23,8 +23,8 @@ parameters {
   real<lower=0> logsd_init;
   vector[neffs] logmean_eff;
   vector[neffs] logsd_eff;
-  vector<lower=0>[nnest] logmean_sd;
-  vector<lower=0>[nnest] logsd_sd;
+  vector<lower=0>[neff_sds] logmean_sd;
+  vector<lower=0>[neff_sds] logsd_sd;
   real<lower=0> phi;
 }
 
@@ -36,8 +36,10 @@ transformed parameters{
   real sqrt_phi;
   vector[tmax] imputed_obs;
   // calculate log mean and sd parameters for each dataset from design matrices
-  logmean = combine_effects(logmean_init, logmean_eff, emat, logmean_sd, nmat);
-  logsd = combine_effects(log(logsd_init), logsd_eff, emat, logsd_sd, nmat);
+  logmean = combine_effects(logmean_init, logmean_eff, design, logmean_sd,
+                            design_sd);
+  logsd = combine_effects(log(logsd_init), logsd_eff, design, logsd_sd,
+                          design_sd);
   logsd = exp(logsd);
   // calculate cmfs for each dataset
   for (i in 1:nobs) {
@@ -72,12 +74,14 @@ model {
   logmean_init ~ normal(0, 1);
   logsd_init ~ normal(0, 1) T[0,];
   // Priors for effects on truncation distribution
-  for (i in 1:nnest) {
+  for (i in 1:neff_sds) {
     logmean_sd[i] ~ normal(0, 0.1) T[0,];
     logsd_sd[i] ~ normal(0, 0.1) T[0,];
   }
-  logmean_eff ~ std_normal();
-  logsd_eff ~ std_normal();
+  if (neffs) {
+    logmean_eff ~ std_normal();
+    logsd_eff ~ std_normal();
+  }
   // Reporting overdispersion (1/sqrt)
   phi ~ normal(0, 1) T[0,];
   // log density of truncated latest data vs that observed
@@ -94,7 +98,8 @@ generated quantities {
   int sim_trunc_obs[tmax, nobs];
   int sim_imputed_obs[tmax];
   // reconstruct all truncated datasets using generative model
-  // also apply truncation to observations to reconstruct unobserved obs
+  // also apply truncation to observations to approximate
+  // reconstructing unobserved obs
   for (i in 1:nobs) {
     int end_t = t - tdist[i];
     int start_t = end_t - tmax + 1;

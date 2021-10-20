@@ -48,7 +48,8 @@ extract_stan_param <- function(fit, params = NULL,
   return(summary)
 }
 
-truncation_data <- function(obs, max_truncation = 20) {
+truncation_data <- function(obs, design = NULL, design_sd = NULL,
+                            max_truncation = 20) {
   dirty_obs <- data.table::copy(obs)
   dirty_obs <- dirty_obs[order(report_date)]
   obs <- data.table::copy(dirty_obs)
@@ -70,19 +71,39 @@ truncation_data <- function(obs, max_truncation = 20) {
   latest_obs <- dirty_obs[report_date == max(report_date)]
   data.table::setnames(latest_obs, "confirm", "last_confirm")
 
+  # specify design matrix if missing
+  if (is.null(design)) {
+    design <- matrix(1, nrow = ncol(obs_data), ncol = 1)
+    neffs <- 0
+  } else {
+    neffs <- ncol(design)
+  }
+  if (is.null(design_sd)) {
+    design_sd <- matrix(1, nrow = neffs, ncol = 1)
+    neff_sds <- 0
+  } else {
+    neff_sds <- ncol(design_sd) - 1
+  }
+  stopifnot(
+    "Number of design matrix columns must equal design_sd rows" = neffs == nrow(design_sd) # nolint
+  )
   # convert to stan list
   data <- list(
     obs = obs_data,
     tdist = tdist,
     t = nrow(obs_data),
     nobs = ncol(obs_data),
-    tmax = max_truncation
+    tmax = max_truncation,
+    neffs = neffs,
+    neff_sds = neff_sds,
+    design = design,
+    design_sd = design_sd
   )
 
   out <- list(
     dirty = dirty_obs,
     latest = latest_obs,
-    clean = obs,
+    report_matrix = obs,
     stan = data
   )
   return(out)
@@ -91,8 +112,8 @@ truncation_data <- function(obs, max_truncation = 20) {
 truncation_inits <- function(data) {
   init_fn <- function() {
     data <- list(
-      logmean = array(rnorm(1, 0, 1)),
-      logsd = array(abs(rnorm(1, 0, 1))),
+      logmean_init = rnorm(1, 0, 1),
+      logsd_init = abs(rnorm(1, 0, 1)),
       uobs_logsd = abs(rnorm(1, 0, 5)),
       log_uobs_resids = rnorm(data$tmax, 0, 2)
     )
@@ -136,7 +157,8 @@ truncation_imputed_obs <- function(fit, data, CrIs) {
     var_names = TRUE
   )
   imp[, variable := NULL]
-  obs <- data.table::copy(data$latest)
+  obs <- data.table::copy(data$dirty)
+  obs <- obs[, last_confirm := confirm]
   obs <- obs[(.N - data$stan$tmax + 1):.N]
 
   imp <- cbind(obs, imp)
@@ -304,7 +326,7 @@ estimate_truncation <- function(obs, max_truncation = 10,
   fit <- truncation_fit(data = data$stan, model = model, inits = inits, ...)
 
   # Summarise fit truncation distribution for downstream usage
-  out$dist <- truncation_dist(fit, max_truncation)
+  # out$dist <- truncation_dist(fit, max_truncation)
 
   # summarise nowcast for target dataset
   out$nowcast <- truncation_imputed_obs(

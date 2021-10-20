@@ -43,5 +43,12 @@ est$dist
 print(est$cmf)
 # observations linked to truncation adjusted estimates
 print(est$nowcast)
-# validation plot of observations vs estimates
-plot(est)
+
+# Plot nowcast vs actually observed
+plot(est, latest_obs = reported_cases)
+
+# Plot retrospective nowcast for previous observations
+plot(est, latest_obs = reported_cases, type = "re")
+
+# Plot posterior prediction for observed cases at date of report
+plot(est, latest_obs = reported_cases, type = "pos", log = TRUE)
