@@ -49,22 +49,26 @@ extract_stan_param <- function(fit, params = NULL,
 }
 
 truncation_data <- function(obs, max_truncation = 20) {
-  dirty_obs <- purrr::map(obs, data.table::as.data.table)
-  nrow_obs <- order(purrr::map_dbl(dirty_obs, nrow))
-  dirty_obs <- dirty_obs[nrow_obs]
-  obs <- purrr::map(dirty_obs, data.table::copy)
-  obs <- purrr::map(1:length(obs), ~ obs[[.]][, (as.character(.)) := confirm][
-    ,
-    confirm := NULL
-  ])
+  dirty_obs <- data.table::copy(obs)
+  dirty_obs <- dirty_obs[order(report_date)]
+  obs <- data.table::copy(dirty_obs)
+  obs <- split(obs, by = "report_date")
+  obs <- purrr::map(1:length(obs), ~ obs[[.]][, .(date, confirm)])
+  obs <- purrr::map(
+    1:length(obs),
+    ~ data.table::setnames(
+      obs[[.]],
+      "confirm", as.character(.)
+    )
+  )
   obs <- purrr::reduce(obs, merge, all = TRUE)
   obs_start <- nrow(obs) - max_truncation - sum(is.na(obs$`1`)) + 1
   tdist <- purrr::map_dbl(2:(ncol(obs)), ~ sum(is.na(obs[[.]])))
   obs_data <- obs[, -1][, purrr::map(.SD, ~ ifelse(is.na(.), 0, .))]
   obs_data <- obs_data[obs_start:.N]
 
-  lastest_obs <- data.table::copy(dirty_obs[[length(dirty_obs)]])
-  lastest_obs[, last_confirm := confirm][, confirm := NULL]
+  latest_obs <- dirty_obs[report_date == max(report_date)]
+  data.table::setnames(latest_obs, "confirm", "last_confirm")
 
   # convert to stan list
   data <- list(
@@ -77,7 +81,7 @@ truncation_data <- function(obs, max_truncation = 20) {
 
   out <- list(
     dirty = dirty_obs,
-    latest = lastest_obs,
+    latest = latest_obs,
     clean = obs,
     stan = data
   )
@@ -110,16 +114,15 @@ truncation_fit <- function(data, model, inits, ...) {
 }
 
 link_obs <- function(index, obs, dirty, last, max_truncation) {
-  target_obs <- copy(dirty[[index]])[, index := .N - 0:(.N - 1)]
+  target_obs <- data.table::copy(dirty[[index]])[, index := .N - 0:(.N - 1)]
   target_obs <- target_obs[index <= max_truncation]
   estimates <- obs[dataset == index][, c("id", "dataset") := NULL]
   estimates <- estimates[, index := .N - 0:(.N - 1)]
   target_obs <-
     data.table::merge.data.table(
-      target_obs, last,
+      target_obs, data.table::copy(last)[, report_date := NULL],
       by = "date"
     )
-  target_obs[, report_date := max(date)]
   target_obs <- data.table::merge.data.table(target_obs, estimates,
     by = "index", all.x = TRUE
   )
@@ -133,22 +136,17 @@ truncation_imputed_obs <- function(fit, data, CrIs) {
     var_names = TRUE
   )
   imp[, variable := NULL]
-  dirty <- data$dirty
-  obs <- data.table::copy(dirty[[length(dirty)]])
+  obs <- data.table::copy(data$latest)
   obs <- obs[(.N - data$stan$tmax + 1):.N]
 
-  imp <- cbind(
-    copy(obs)[, `:=`(last_confirm = confirm, report_date = max(date))],
-    imp
-  )
+  imp <- cbind(obs, imp)
   return(imp)
 }
 
 truncation_retro_obs <- function(fit, target, data, CrIs, max_truncation) {
   datasets <- data$stan$nobs
-  dirty <- data$dirty
-  last <- data.table::copy(dirty[[length(dirty)]])
-  last[, last_confirm := confirm][, confirm := NULL]
+  dirty <- split(data$dirty, by = "report_date")
+  last <- data$latest
 
   obs <- extract_stan_param(fit, target,
     CrIs = CrIs,
@@ -214,10 +212,11 @@ truncation_cmf <- function(fit, CrIs) {
 #'  - Current truncation is related to past truncation.
 #'  - Truncation is a multiplicative scaling of underlying reported cases.
 #'  - Truncation is log normally distributed.
-#' @param obs A list of data frames each containing a date variable
-#' and a confirm (integer) variable. Each data set should be a snapshot
-#' of the reported data over time. All data sets must contain a complete vector
-#' of dates.
+#' @param obs A data.frames containing a date variable, a confirm (integer)
+#' variable and a report_date (date of report) variable. Stratifying by report
+#' date should yield notifications as reported on that day with no missing
+#' dates.
+#'
 #' @param max_truncation Integer, defaults to 10. Maximum number of
 #' days to include in the truncation distribution.
 #'

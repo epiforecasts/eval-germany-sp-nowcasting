@@ -2,6 +2,7 @@ library(covidregionaldata)
 library(data.table)
 library(rstan)
 library(here)
+library(purrr)
 source(here("R", "estimate_truncation.R"))
 source(here("R", "simulate.R"))
 # set number of cores to use
@@ -22,14 +23,16 @@ trunc_dist <- list(
 )
 
 # apply truncation to example data
-example_data <- purrr::map(c(40, 30, 25, 20, 15, 10, 5, 0),
+example_data <- map(c(40, 30, 25, 20, 15, 10, 5, 0),
   simulate_simple_truncation,
   cases = reported_cases,
   dist = trunc_dist
 )
+example_data <- map(example_data, ~ .[, report_date := max(date)])
+example_data <- rbindlist(example_data)
 
 # load model
-model <- rstan::stan_model(here("stan", "estimate_truncation.stan"))
+model <- stan_model(here("stan", "estimate_truncation.stan"))
 
 # fit model to example data
 est <- estimate_truncation(example_data, model = model, max_truncation = 20)
