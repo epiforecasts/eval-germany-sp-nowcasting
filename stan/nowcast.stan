@@ -114,7 +114,11 @@ generated quantities {
   {
     int last_obs[tmax] = obs[(t - tmax + 1):t, nobs];
     vector[tmax] imp_uobs = imputed_obs .* (1 - cmfs[,  nobs]);
-    int sim_imp_uobs[tmax] = neg_binomial_2_rng(imp_uobs + 1e-3, sqrt_phi);
+    int sim_imp_uobs[tmax];
+    for (i in 1:tmax) {
+      imp_uobs[i] = max({1e-3, imp_uobs[i]});
+    }
+    sim_imp_uobs = neg_binomial_2_rng(imp_uobs + 1e-3, sqrt_phi);
     for (i in 1:tmax) {
       sim_imputed_obs[i] = last_obs[i] + sim_imp_uobs[i];
     }

@@ -48,8 +48,8 @@ extract_stan_param <- function(fit, params = NULL,
   return(summary)
 }
 
-truncation_data <- function(obs, design = NULL, design_sd = NULL,
-                            max_truncation = 20) {
+nowcast_data <- function(obs, design = NULL, design_sd = NULL,
+                         max_truncation = 20) {
   dirty_obs <- data.table::copy(obs)
   dirty_obs <- dirty_obs[order(report_date)]
   obs <- data.table::copy(dirty_obs)
@@ -109,22 +109,24 @@ truncation_data <- function(obs, design = NULL, design_sd = NULL,
   return(out)
 }
 
-truncation_inits <- function(data) {
+nowcast_inits <- function(data) {
   init_fn <- function() {
-    data <- list(
+    init <- list(
       logmean_init = rnorm(1, 0, 1),
       logsd_init = abs(rnorm(1, 0, 1)),
       uobs_logsd = abs(rnorm(1, 0, 5)),
       log_uobs_resids = rnorm(data$tmax, 0, 2)
     )
-    return(data)
+    init$logmean <- rep(init$logmean_init, data$nobs)
+    init$logsd <- rep(init$logsd_init, data$nobs)
+    return(init)
   }
   return(init_fn)
 }
 
-truncation_fit <- function(data, model, inits, ...) {
+nowcast_fit <- function(data, model, inits, ...) {
   if (is.null(model)) {
-    model <- rstan::stan_model(here("stan", "estimate_truncation.stan"))
+    model <- rstan::stan_model(here("stan", "nowcast.stan"))
   }
   fit <- rstan::sampling(model,
     data = data,
@@ -151,7 +153,7 @@ link_obs <- function(index, obs, dirty, last, max_truncation) {
   return(target_obs)
 }
 
-truncation_imputed_obs <- function(fit, data, CrIs) {
+nowcast_imputed_obs <- function(fit, data, CrIs) {
   imp <- extract_stan_param(fit, "sim_imputed_obs",
     CrIs = CrIs,
     var_names = TRUE
@@ -165,7 +167,7 @@ truncation_imputed_obs <- function(fit, data, CrIs) {
   return(imp)
 }
 
-truncation_retro_obs <- function(fit, target, data, CrIs, max_truncation) {
+nowcast_retro_obs <- function(fit, target, data, CrIs, max_truncation) {
   datasets <- data$stan$nobs
   dirty <- split(data$dirty, by = "report_date")
   last <- data$latest
@@ -208,32 +210,15 @@ truncation_cmf <- function(fit, CrIs) {
   return(cmf)
 }
 
-#' Estimate Truncation of Observed Data
+#' Nowcast of Observed Data
 #'
 #' @description `r lifecycle::badge("experimental")`
 #' Estimates a truncation distribution from multiple snapshots of the same
 #' data source over time. This distribution can then be used in `regional_epinow`,
-#' `epinow`, and `estimate_infections` to adjust for truncated data. See [here](https://gist.github.com/seabbs/176b0c7f83eab1a7192a25b28bbd116a)
+#' `epinow`, and `estimate_infections` to adjust for truncated data (i.e to
+#' nowcast). See [here](https://gist.github.com/seabbs/176b0c7f83eab1a7192a25b28bbd116a)
 #' for an example of using this approach on Covid-19 data in England.
 #'
-#' The model of truncation is as follows:
-#'
-#' 1. The truncation distribution is assumed to be log normal with a mean and
-#' standard deviation that is informed by the data.
-#' 2. The data set with the latest observations is adjusted for truncation using
-#' the truncation distribution.
-#' 3. Earlier data sets are recreated by applying the truncation distribution to
-#' the adjusted latest observations in the time period of the earlier data set. These
-#' data sets are then compared to the earlier observations assuming a negative binomial
-#' observation model.
-#'
-#' This model is then fit using `stan` with standard normal, or half normal,
-#' prior for the mean, standard deviation and 1 over the square root of the over dispersion.
-#'
-#' This approach assumes that:
-#'  - Current truncation is related to past truncation.
-#'  - Truncation is a multiplicative scaling of underlying reported cases.
-#'  - Truncation is log normally distributed.
 #' @param obs A data.frames containing a date variable, a confirm (integer)
 #' variable and a report_date (date of report) variable. Stratifying by report
 #' date should yield notifications as reported on that day with no missing
@@ -298,7 +283,7 @@ truncation_cmf <- function(fit, CrIs) {
 #' )
 #'
 #' # fit model to example data
-#' est <- estimate_truncation(example_data,
+#' est <- nowcast(example_data,
 #'   verbose = interactive(),
 #'   chains = 2, iter = 2000
 #' )
@@ -311,35 +296,35 @@ truncation_cmf <- function(fit, CrIs) {
 #' print(est$obs)
 #' # validation plot of observations vs estimates
 #' plot(est)
-estimate_truncation <- function(obs, max_truncation = 10,
-                                model = NULL,
-                                CrIs = c(0.2, 0.5, 0.9),
-                                verbose = TRUE,
-                                ...) {
-  data <- truncation_data(obs, max_truncation = max_truncation)
+nowcast <- function(obs, max_truncation = 10,
+                    model = NULL,
+                    CrIs = c(0.2, 0.5, 0.9),
+                    verbose = TRUE,
+                    ...) {
+  data <- nowcast_data(obs, max_truncation = max_truncation)
   out <- data
 
   # initial conditions
-  inits <- truncation_inits(data$stan)
+  inits <- nowcast_inits(data$stan)
 
   # fit
-  fit <- truncation_fit(data = data$stan, model = model, inits = inits, ...)
+  fit <- nowcast_fit(data = data$stan, model = model, inits = inits, ...)
 
   # Summarise fit truncation distribution for downstream usage
   # out$dist <- truncation_dist(fit, max_truncation)
 
   # summarise nowcast for target dataset
-  out$nowcast <- truncation_imputed_obs(
+  out$nowcast <- nowcast_imputed_obs(
     fit, data, CrIs
   )
 
   # summarise reconstructed observations for all datasets
-  out$retrospective_nowcast <- truncation_retro_obs(
+  out$retrospective_nowcast <- nowcast_retro_obs(
     fit, "recon_obs", data, CrIs, max_truncation
   )
 
   # summarse simulated truncated observations for all datasets
-  out$posterior_prediction <- truncation_retro_obs(
+  out$posterior_prediction <- nowcast_retro_obs(
     fit, "sim_trunc_obs", data, CrIs, max_truncation
   )
 
@@ -347,7 +332,7 @@ estimate_truncation <- function(obs, max_truncation = 10,
   # out$cmf <- truncation_cmf(fit, CrIs)
   out$fit <- fit
 
-  class(out) <- c("estimate_truncation", class(out))
+  class(out) <- c("nowcast", class(out))
   return(out)
 }
 
@@ -407,15 +392,15 @@ plot_CrIs <- function(plot, CrIs, alpha, size) {
   return(plot)
 }
 
-#' Plot method for estimate_truncation
+#' Plot method for nowcast
 #'
-#' @description `r lifecycle::badge("experimental")`
-#' `plot` method for class "estimate_truncation". Returns
+#' @description
+#' `plot` method for class "nowcast". Returns
 #' a plot faceted over each dataset used in fitting with the latest
 #' observations as columns, the data observed at the time (and so truncated)
 #' as dots and the truncation adjusted estimates as a ribbon.
 #'
-#' @param x A list of output as produced by `estimate_truncation`
+#' @param x A list of output as produced by `nowcast`
 #'
 #' @param type A character string indicating the type of plot required.
 #' Currently supported options are "nowcast" which plots the nowcast
@@ -435,13 +420,13 @@ plot_CrIs <- function(plot, CrIs, alpha, size) {
 #'
 #' @param ... Pass additional arguments to plot function. Not currently in use.
 #'
-#' @seealso plot estimate_truncation
-#' @method plot estimate_truncation
+#' @seealso plot nowcast
+#' @method plot nowcast
 #' @return `ggplot2` object
 #' @importFrom ggplot2 ggplot aes geom_col geom_point labs scale_x_date scale_y_continuous theme
 #' @export
-plot.estimate_truncation <- function(x, type = "nowcast", log = FALSE,
-                                     latest_obs, report_dates, ...) {
+plot.nowcast <- function(x, type = "nowcast", log = FALSE,
+                         latest_obs, report_dates, ...) {
   type <- match.arg(
     type,
     choices = c("nowcast", "retrospective_nowcast", "posterior")

@@ -3,7 +3,7 @@ library(data.table)
 library(rstan)
 library(here)
 library(purrr)
-source(here("R", "estimate_truncation.R"))
+source(here("R", "nowcast.R"))
 source(here("R", "simulate.R"))
 # set number of cores to use
 options(mc.cores = 4)
@@ -32,10 +32,10 @@ example_data <- map(example_data, ~ .[, report_date := max(date)])
 example_data <- rbindlist(example_data)
 
 # load model
-model <- stan_model(here("stan", "estimate_truncation.stan"))
+model <- stan_model(here("stan", "nowcast.stan"))
 
-# fit model to example data
-est <- estimate_truncation(example_data, model = model, max_truncation = 20)
+# fit model to example data and produce nowcast
+est <- nowcast(example_data, model = model, max_truncation = 20)
 
 # summary of the distribution
 est$dist
