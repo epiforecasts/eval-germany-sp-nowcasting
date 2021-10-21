@@ -1,9 +1,9 @@
 library(covidregionaldata)
-library(data.table)
-library(rstan)
+library(data.table, quietly = TRUE)
+library(rstan, quietly = TRUE)
 library(here)
 library(purrr)
-source(here("R", "nowcast.R"))
+source(here("R", "epinowcast.R"))
 source(here("R", "simulate.R"))
 # set number of cores to use
 options(mc.cores = 4)
@@ -31,20 +31,13 @@ example_data <- map(c(40, 30, 25, 20, 15, 10, 5, 0),
 example_data <- map(example_data, ~ .[, report_date := max(date)])
 example_data <- rbindlist(example_data)
 
-# load model
-model <- stan_model(here("stan", "nowcast.stan"))
-
 # fit model to example data and produce nowcast
-est <- epinowcast(example_data, model = model, max_truncation = 20)
+est <- epinowcast(example_data, max_truncation = 20)
 
-# summary of the distribution
-est$dist
-# summary of the estimated truncation cmf (can be applied to new data)
-print(est$cmf)
 # observations linked to truncation adjusted estimates
 print(est$nowcast)
 
-# Plot nowcast vs actually observed
+# Plot nowcast vs latest observations
 plot(est, latest_obs = reported_cases)
 
 # Plot posterior prediction for observed cases at date of report

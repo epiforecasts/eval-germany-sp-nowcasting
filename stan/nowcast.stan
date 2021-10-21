@@ -108,7 +108,6 @@ model {
 }
 
 generated quantities {
-  int recon_obs[tmax, nobs];
   int sim_trunc_obs[tmax, nobs];
   int sim_imputed_obs[tmax];
   // reconstruct all truncated datasets

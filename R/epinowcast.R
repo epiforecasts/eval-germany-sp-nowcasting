@@ -48,10 +48,49 @@ extract_stan_param <- function(fit, params = NULL,
   return(summary)
 }
 
+
+
+enw_metadata <- function(obs) {
+  metaobs <- data.table::as.data.table(obs)
+  metaobs[, c("date", "confirm") := NULL]
+  metaobs <- unique(metaobs)
+
+  if (dates_to_factors) {
+    cols <- sapply(metaobs, is.Date)
+  }
+  return(metaobs)
+}
+
+enw_dates_to_factors <- function(data) {
+  data <- data.table::as.data.table(data)
+  cols <- colnames(data)[sapply(data, is.Date)]
+  data <- data[, lapply(.SD, factor), .SDcols = cols]
+  return(data)
+}
+
+enw_no_contrast_factor <- function(factor, data) {
+  list(factor = contrasts(data[[factor]], contrasts = FALSE))
+}
+enw_design <- function(formula, data, ...) {
+  design <- model.matrix(formula, data, ...)
+  design <- design[, !(colnames(design) %in% "(Intercept)")]
+  return(design)
+}
+
+is.Date <- function(x) {
+  inherits(x, "Date")
+}
+
+enw_effects_metadata <- function(design) {
+  dt <- data.table::data.table(effects = colnames(tmp), fixed = 1)
+  dt <- dt[!effects %in% "(Intercept)"]
+  return(dt)
+}
+
 enw_data <- function(obs, design = NULL, design_sd = NULL,
                      max_truncation = 20, likelihood = TRUE,
                      debug = TRUE) {
-  dirty_obs <- data.table::copy(obs)
+  dirty_obs <- data.table::as.data.tabls(obs)
   dirty_obs <- dirty_obs[order(report_date)]
   obs <- data.table::copy(dirty_obs)
   obs <- split(obs, by = "report_date")
@@ -304,7 +343,7 @@ epinowcast <- function(obs, max_truncation = 10,
                        model = NULL, CrIs = c(0.2, 0.5, 0.9),
                        likelihood = TRUE, debug = TRUE,
                        ...) {
-  data <- nowcast_data(obs,
+  data <- enw_data(obs,
     max_truncation = max_truncation,
     likelihood = likelihood, debug = debug
   )
@@ -412,7 +451,7 @@ plot_CrIs <- function(plot, CrIs, alpha, size) {
 #' @param log Logical, defaults to `FALSE`. Should cases be plotted on a
 #' log scale.
 #'
-#' @param latest_obs Optional data.frame of latest observations to plot.
+#' @param obs Optional data.frame of observations to plot.
 #' Must have date and confirm variables. If not supplied then the lastest
 #' available observations from the data used to fit the truncation are used.
 #'
@@ -427,32 +466,32 @@ plot_CrIs <- function(plot, CrIs, alpha, size) {
 #' @importFrom ggplot2 ggplot aes geom_col geom_point labs scale_x_date scale_y_continuous theme
 #' @export
 plot.epinowcast <- function(x, type = "nowcast", log = FALSE,
-                            latest_obs, report_dates, ...) {
+                            obs, report_dates, ...) {
   type <- match.arg(
     type,
     choices = c("nowcast", "posterior")
   )
   if (type %in% "nowcast") {
-    obs <- x$nowcast
+    est <- x$nowcast
   } else if (type %in% "posterior") {
-    obs <- x$posterior_prediction
+    est <- x$posterior_prediction
   }
 
-  if (!missing(latest_obs)) {
+  if (!missing(obs)) {
+    est <- data.table::copy(est)
     obs <- data.table::copy(obs)
-    latest_obs <- data.table::copy(latest_obs)
-    obs <- merge(
-      obs[, last_confirm := NULL],
-      latest_obs[, last_confirm := confirm][, confirm := NULL],
+    est <- merge(
+      est[, last_confirm := NULL],
+      obs[, last_confirm := confirm][, confirm := NULL],
       by = "date", all.x = TRUE
     )
   }
 
   if (!missing(report_dates)) {
-    obs <- obs[report_date %in% as.Date(report_dates)]
+    est <- est[report_date %in% as.Date(report_dates)]
   }
 
-  plot <- ggplot2::ggplot(obs) +
+  plot <- ggplot2::ggplot(est) +
     ggplot2::aes(x = date, y = last_confirm) +
     ggplot2::geom_col(
       fill = "grey", col = "white",
@@ -462,12 +501,12 @@ plot.epinowcast <- function(x, type = "nowcast", log = FALSE,
       ggplot2::aes(x = date, y = confirm)
     )
 
-  if (length(unique(obs$report_date)) > 1) {
+  if (length(unique(est$report_date)) > 1) {
     plot <- plot +
       ggplot2::facet_wrap(~report_date, scales = "free")
   }
 
-  plot <- plot_CrIs(plot, extract_CrIs(obs),
+  plot <- plot_CrIs(plot, extract_CrIs(est),
     alpha = 0.8, size = 1
   )
 
