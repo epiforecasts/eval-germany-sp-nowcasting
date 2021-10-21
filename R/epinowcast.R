@@ -71,6 +71,7 @@ enw_dates_to_factors <- function(data) {
 enw_no_contrast_factor <- function(factor, data) {
   list(factor = contrasts(data[[factor]], contrasts = FALSE))
 }
+
 enw_design <- function(formula, data, ...) {
   design <- model.matrix(formula, data, ...)
   design <- design[, !(colnames(design) %in% "(Intercept)")]
