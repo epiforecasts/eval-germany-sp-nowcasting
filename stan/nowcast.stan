@@ -65,7 +65,7 @@ transformed parameters{
    int end_t = t - tdist[i];
    int start_t = end_t - tmax + 1;
    trunc_obs[, i] = truncate(last_obs[start_t:end_t], to_vector(cmfs[, i]), 0,
-                             0);
+                             0) + 1e-3;
    }
   }
   // Transform phi to overdispersion scale
@@ -73,29 +73,7 @@ transformed parameters{
 
   // Debug issues in truncated data if/when they appear
   if (debug) {
-    for (i in 1:nobs) {
-      int j = 0;
-      for (k in 1:tmax) {
-        j += is_nan(trunc_obs[k, i]) ? 1 : 0;
-        j += sqrt_phi <= 1e-3 ? 1 : 0;
-      }
-      if (j) {
-        print("Issue with Dataset");
-        print(i);
-        print("Posterior prediction (no observation error)");
-        print(trunc_obs[, i]);
-        print("Truncation  distribution estimate");
-        print(cmfs[, i]);
-        print("Logmean and Logsd intercept");
-        print(logmean_init);
-        print(logsd_init);
-        print("Logmean and Logsd for each dataset");
-        print(logmean[i]);
-        print(logsd[i]);
-        print("Overdispersion");
-        print(sqrt_phi);
-      }
-    }
+#include /chunks/debug.stan
   }
 }
   
@@ -123,7 +101,7 @@ model {
     for (i in 1:nobs) {
       int start_t = t - tdist[i] - tmax;
       for (j in 1:tmax) {
-        obs[start_t + j, i] ~ neg_binomial_2(trunc_obs[j, i] + 1e-3, sqrt_phi);
+        obs[start_t + j, i] ~ neg_binomial_2(trunc_obs[j, i], sqrt_phi);
       }
     }
   }
@@ -133,17 +111,9 @@ generated quantities {
   int recon_obs[tmax, nobs];
   int sim_trunc_obs[tmax, nobs];
   int sim_imputed_obs[tmax];
-  // reconstruct all truncated datasets using generative model
-  // also apply truncation to observations to approximate
-  // reconstructing unobserved obs
+  // reconstruct all truncated datasets
   for (i in 1:nobs) {
-    int end_t = t - tdist[i];
-    int start_t = end_t - tmax + 1;
-    vector[tmax] mean_recon_obs;
-    mean_recon_obs = truncate(to_vector(obs[start_t:end_t, i]), 
-                              to_vector(cmfs[, i]), 1,  1);
-    recon_obs[, i] = neg_binomial_2_rng(mean_recon_obs + 1e-3, sqrt_phi);
-    sim_trunc_obs[, i] = neg_binomial_2_rng(trunc_obs[, i] + 1e-3, sqrt_phi);
+    sim_trunc_obs[, i] = neg_binomial_2_rng(trunc_obs[, i], sqrt_phi);
   }
   // Combine observed and imputed observations with
   // reporting noise for the latest dataset
@@ -154,7 +124,7 @@ generated quantities {
     for (i in 1:tmax) {
       imp_uobs[i] = max({1e-3, imp_uobs[i]});
     }
-    sim_imp_uobs = neg_binomial_2_rng(imp_uobs + 1e-3, sqrt_phi);
+    sim_imp_uobs = neg_binomial_2_rng(imp_uobs, sqrt_phi);
     for (i in 1:tmax) {
       sim_imputed_obs[i] = last_obs[i] + sim_imp_uobs[i];
     }

@@ -48,9 +48,9 @@ extract_stan_param <- function(fit, params = NULL,
   return(summary)
 }
 
-nowcast_data <- function(obs, design = NULL, design_sd = NULL,
-                         max_truncation = 20, likelihood = TRUE,
-                         debug = TRUE) {
+enw_data <- function(obs, design = NULL, design_sd = NULL,
+                     max_truncation = 20, likelihood = TRUE,
+                     debug = TRUE) {
   dirty_obs <- data.table::copy(obs)
   dirty_obs <- dirty_obs[order(report_date)]
   obs <- data.table::copy(dirty_obs)
@@ -112,7 +112,7 @@ nowcast_data <- function(obs, design = NULL, design_sd = NULL,
   return(out)
 }
 
-nowcast_inits <- function(data) {
+enw_inits <- function(data) {
   init_fn <- function() {
     init <- list(
       logmean_init = rnorm(1, 0, 1),
@@ -129,7 +129,7 @@ nowcast_inits <- function(data) {
   return(init_fn)
 }
 
-nowcast_fit <- function(data, model, inits, ...) {
+enw_fit <- function(data, model, inits, ...) {
   if (is.null(model)) {
     model <- rstan::stan_model(here("stan", "nowcast.stan"))
   }
@@ -158,7 +158,7 @@ link_obs <- function(index, obs, dirty, last, max_truncation) {
   return(target_obs)
 }
 
-nowcast_imputed_obs <- function(fit, data, CrIs) {
+enw_imputed_obs <- function(fit, data, CrIs) {
   imp <- extract_stan_param(fit, "sim_imputed_obs",
     CrIs = CrIs,
     var_names = TRUE
@@ -172,7 +172,8 @@ nowcast_imputed_obs <- function(fit, data, CrIs) {
   return(imp)
 }
 
-nowcast_retro_obs <- function(fit, target, data, CrIs, max_truncation) {
+enw_posterior_predictions <- function(fit, target, data, CrIs,
+                                      max_truncation) {
   datasets <- data$stan$nobs
   dirty <- split(data$dirty, by = "report_date")
   last <- data$latest
@@ -299,10 +300,10 @@ truncation_cmf <- function(fit, CrIs) {
 #' print(est$obs)
 #' # validation plot of observations vs estimates
 #' plot(est)
-nowcast <- function(obs, max_truncation = 10,
-                    model = NULL, CrIs = c(0.2, 0.5, 0.9),
-                    likelihood = TRUE, debug = TRUE,
-                    ...) {
+epinowcast <- function(obs, max_truncation = 10,
+                       model = NULL, CrIs = c(0.2, 0.5, 0.9),
+                       likelihood = TRUE, debug = TRUE,
+                       ...) {
   data <- nowcast_data(obs,
     max_truncation = max_truncation,
     likelihood = likelihood, debug = debug
@@ -310,26 +311,21 @@ nowcast <- function(obs, max_truncation = 10,
   out <- data
 
   # initial conditions
-  inits <- nowcast_inits(data$stan)
+  inits <- enw_inits(data$stan)
 
   # fit
-  fit <- nowcast_fit(data = data$stan, model = model, inits = inits, ...)
+  fit <- enw_fit(data = data$stan, model = model, inits = inits, ...)
 
   # Summarise fit truncation distribution for downstream usage
   # out$dist <- truncation_dist(fit, max_truncation)
 
   # summarise nowcast for target dataset
-  out$nowcast <- nowcast_imputed_obs(
+  out$nowcast <- enw_imputed_obs(
     fit, data, CrIs
   )
 
-  # summarise reconstructed observations for all datasets
-  out$retrospective_nowcast <- nowcast_retro_obs(
-    fit, "recon_obs", data, CrIs, max_truncation
-  )
-
   # summarse simulated truncated observations for all datasets
-  out$posterior_prediction <- nowcast_retro_obs(
+  out$posterior_prediction <- enw_posterior_predictions(
     fit, "sim_trunc_obs", data, CrIs, max_truncation
   )
 
@@ -337,7 +333,7 @@ nowcast <- function(obs, max_truncation = 10,
   # out$cmf <- truncation_cmf(fit, CrIs)
   out$fit <- fit
 
-  class(out) <- c("nowcast", class(out))
+  class(out) <- c("epinowcast", class(out))
   return(out)
 }
 
@@ -425,21 +421,19 @@ plot_CrIs <- function(plot, CrIs, alpha, size) {
 #'
 #' @param ... Pass additional arguments to plot function. Not currently in use.
 #'
-#' @seealso plot nowcast
-#' @method plot nowcast
+#' @seealso plot epinowcast
+#' @method plot epinowcast
 #' @return `ggplot2` object
 #' @importFrom ggplot2 ggplot aes geom_col geom_point labs scale_x_date scale_y_continuous theme
 #' @export
-plot.nowcast <- function(x, type = "nowcast", log = FALSE,
-                         latest_obs, report_dates, ...) {
+plot.epinowcast <- function(x, type = "nowcast", log = FALSE,
+                            latest_obs, report_dates, ...) {
   type <- match.arg(
     type,
-    choices = c("nowcast", "retrospective_nowcast", "posterior")
+    choices = c("nowcast", "posterior")
   )
   if (type %in% "nowcast") {
     obs <- x$nowcast
-  } else if (type %in% "retrospective_nowcast") {
-    obs <- x$retrospective_nowcast
   } else if (type %in% "posterior") {
     obs <- x$posterior_prediction
   }
