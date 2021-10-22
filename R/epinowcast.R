@@ -61,6 +61,11 @@ enw_metadata <- function(obs) {
   return(metaobs)
 }
 
+is.Date <- function(x) {
+  inherits(x, "Date")
+}
+
+
 enw_dates_to_factors <- function(data) {
   data <- data.table::as.data.table(data)
   cols <- colnames(data)[sapply(data, is.Date)]
@@ -68,18 +73,50 @@ enw_dates_to_factors <- function(data) {
   return(data)
 }
 
-enw_no_contrast_factor <- function(factor, data) {
-  list(factor = contrasts(data[[factor]], contrasts = FALSE))
-}
+enw_design <- function(formula, data, no_contrasts = FALSE, ...) {
+  # make data.table and copy
+  data <- data.table::as.data.table(data)
 
-enw_design <- function(formula, data, ...) {
-  design <- model.matrix(formula, data, ...)
-  design <- design[, !(colnames(design) %in% "(Intercept)")]
-  return(design)
-}
+  # make no  intercept model.matrix
+  mod_matrix <- function(formula, data, ...) {
+    design <- model.matrix(formula, data, ...)
+    design <- design[, !(colnames(design) %in% "(Intercept)")]
+  }
 
-is.Date <- function(x) {
-  inherits(x, "Date")
+  # design matrix using default contrasts
+  if (length(no_contrasts) == 1 && !no_contrasts) {
+    design <- mod_matrix(formula, data, ...)
+    return(design)
+  } else {
+    if (length(no_contrasts) == 1 && no_contrasts) {
+      no_contrasts <- colnames(data)[
+        sapply(data, function(x) is.factor(x) | is.character(x))
+      ]
+    }
+    # what is in the formula
+    in_form <- rownames(attr(stats::terms(formula, data = data), "factors"))
+
+    # drop contrasts not in the formula
+    no_contrasts <- no_contrasts[no_contrasts %in% in_form]
+
+    if (length(no_contrasts) == 0) {
+      design <- mod_matrix(formula, data, ...)
+      return(design)
+    } else {
+      # check everything is  a factor that should be
+      data[, lapply(.SD, as.factor), .SDcols = no_contrasts]
+
+      # make list of contrast args
+      contrast_args <- purrr::map(
+        no_contrasts, ~ stats::contrasts(data[[.]], contrast = FALSE)
+      )
+      names(contrast_args) <- no_contrasts
+
+      # model matrix with contrast options
+      design <- mod_matrix(formula, data, contrasts.arg = contrast_args, ...)
+      return(design)
+    }
+  }
 }
 
 enw_effects_metadata <- function(design) {
@@ -342,10 +379,12 @@ truncation_cmf <- function(fit, CrIs) {
 #' plot(est)
 epinowcast <- function(obs, max_truncation = 10,
                        model = NULL, CrIs = c(0.2, 0.5, 0.9),
+                       design = NULL, design_sd = NULL,
                        likelihood = TRUE, debug = TRUE,
                        ...) {
   data <- enw_data(obs,
     max_truncation = max_truncation,
+    design = design, design_sd = design_sd,
     likelihood = likelihood, debug = debug
   )
   out <- data
@@ -356,22 +395,23 @@ epinowcast <- function(obs, max_truncation = 10,
   # fit
   fit <- enw_fit(data = data$stan, model = model, inits = inits, ...)
 
-  # Summarise fit truncation distribution for downstream usage
-  # out$dist <- truncation_dist(fit, max_truncation)
-
   # summarise nowcast for target dataset
-  out$nowcast <- enw_imputed_obs(
+  nowcast <- enw_imputed_obs(
     fit, data, CrIs
   )
 
   # summarse simulated truncated observations for all datasets
-  out$posterior_prediction <- enw_posterior_predictions(
+  posterior_prediction <- enw_posterior_predictions(
     fit, "sim_trunc_obs", data, CrIs, max_truncation
   )
 
-  # summarise estimated cmf of the truncation distribution
-  # out$cmf <- truncation_cmf(fit, CrIs)
-  out$fit <- fit
+  out <- data.table::data.table(
+    data = list(data),
+    inits = list(inits),
+    fit = list(fit),
+    nowcast = list(nowcast),
+    posterior_prediction = list(posterior_prediction)
+  )
 
   class(out) <- c("epinowcast", class(out))
   return(out)
@@ -473,9 +513,9 @@ plot.epinowcast <- function(x, type = "nowcast", log = FALSE,
     choices = c("nowcast", "posterior")
   )
   if (type %in% "nowcast") {
-    est <- x$nowcast
+    est <- data.table:rbindlist(x$nowcast)
   } else if (type %in% "posterior") {
-    est <- x$posterior_prediction
+    est <- data.table:rbindlist(x$posterior_prediction)
   }
 
   if (!missing(obs)) {
