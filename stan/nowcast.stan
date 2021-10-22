@@ -53,7 +53,7 @@ transformed parameters{
   }
   {
   vector[t] last_obs;
-  // reconstruct expected reported data as a latent parameter
+  // reconstruct expected unobserved reported data using a random walk
   last_obs = to_vector(obs[, nobs]);
   for (i in 1:tmax) {
     int j = t - tmax + i;
@@ -77,7 +77,6 @@ transformed parameters{
   }
 }
   
-
 model {
   // priors for unobserved expected reported cases
   uobs_logsd ~ normal(0, 5) T[0,];
@@ -100,10 +99,9 @@ model {
   // log density of truncated latest data vs that observed
   if (likelihood) {
     for (i in 1:nobs) {
-      int start_t = t - tdist[i] - tmax;
-      for (j in 1:tmax) {
-        obs[start_t + j, i] ~ neg_binomial_2(trunc_obs[j, i], phi);
-      }
+      int end_t = t - tdist[i];
+      int start_t = end_t - tmax + 1;
+      obs[start_t:end_t, i] ~ neg_binomial_2(trunc_obs[, i], phi);
     }
   }
 }

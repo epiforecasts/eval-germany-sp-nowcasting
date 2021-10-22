@@ -191,7 +191,7 @@ enw_data <- function(obs, design = NULL, design_sd = NULL,
 enw_inits <- function(data) {
   init_fn <- function() {
     init <- list(
-      logmean_init = rnorm(1, 1, 0.2),
+      logmean_init = rnorm(1, 1, 0.1),
       logsd_init = abs(rnorm(1, 0.5, 0.1)),
       uobs_logsd = abs(rnorm(1, 0, 0.1)),
       log_uobs_resids = rnorm(data$tmax, 0, 1),
@@ -200,6 +200,11 @@ enw_inits <- function(data) {
     init$logmean <- rep(init$logmean_init, data$nobs)
     init$logsd <- rep(init$logsd_init, data$nobs)
     init$phi <- 1 / sqrt(init$sqrt_phi)
+
+    if (data$neffs > 0) {
+      data$logmean_eff <- rnorm(data$neffs, 0, 0.01)
+      data$logsd_eff <- rnorm(data$neffs, 0, 0.01)
+    }
     return(init)
   }
   return(init_fn)
