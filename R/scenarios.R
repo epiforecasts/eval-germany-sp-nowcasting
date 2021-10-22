@@ -1,8 +1,5 @@
 enw_random_intercept_scenario <- function(obs,
-                                          snapshots = c(
-                                            40, 35, 30, 25, 20, 15,
-                                            10:0
-                                          ),
+                                          snapshots = c(30:0),
                                           logmean = 1.6, logmean_sd = 0.1,
                                           logsd = 1, logsd_sd = 0.1) {
   # get a range of dates to generate synthetic data for
