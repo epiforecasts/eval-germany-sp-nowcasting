@@ -3,8 +3,8 @@
       int j = 0;
       for (k in 1:tmax) {
         j += is_nan(trunc_obs[k, i]) ? 1 : 0;
-        j += sqrt_phi <= 1e-3 ? 1 : 0;
       }
+      j += phi <= 1e-3 ? 1 : 0;
       if (j) {
         print("Issue with Dataset");
         print(i);

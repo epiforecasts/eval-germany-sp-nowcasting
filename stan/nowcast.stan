@@ -31,7 +31,7 @@ parameters {
   vector[neffs] logsd_eff;
   vector<lower=0>[neff_sds] logmean_sd;
   vector<lower=0>[neff_sds] logsd_sd;
-  real<lower=0, upper=1e4> phi;
+  real<lower=0, upper=1e4> sqrt_phi;
 }
 
 transformed parameters{
@@ -39,7 +39,7 @@ transformed parameters{
   vector<lower=1e-3, upper=tmax>[nobs] logsd;
   matrix[tmax, nobs] cmfs;
   matrix<lower=0>[tmax, nobs] trunc_obs;
-  real sqrt_phi;
+  real phi;
   vector[tmax] imputed_obs;
   // calculate log mean and sd parameters for each dataset from design matrices
   logmean = combine_effects(logmean_init, logmean_eff, design, logmean_sd,
@@ -69,7 +69,7 @@ transformed parameters{
    }
   }
   // Transform phi to overdispersion scale
-  sqrt_phi = 1 / sqrt(phi);
+  phi = 1 / sqrt(sqrt_phi);
 
   // Debug issues in truncated data if/when they appear
   if (debug) {
@@ -95,13 +95,14 @@ model {
     logsd_eff ~ std_normal();
   }
   // Reporting overdispersion (1/sqrt)
-  phi ~ normal(0, 1) T[0,];
+  sqrt_phi ~ normal(0, 1) T[0,];
+  
   // log density of truncated latest data vs that observed
   if (likelihood) {
     for (i in 1:nobs) {
       int start_t = t - tdist[i] - tmax;
       for (j in 1:tmax) {
-        obs[start_t + j, i] ~ neg_binomial_2(trunc_obs[j, i], sqrt_phi);
+        obs[start_t + j, i] ~ neg_binomial_2(trunc_obs[j, i], phi);
       }
     }
   }
@@ -112,7 +113,7 @@ generated quantities {
   int sim_imputed_obs[tmax];
   // reconstruct all truncated datasets
   for (i in 1:nobs) {
-    sim_trunc_obs[, i] = neg_binomial_2_rng(trunc_obs[, i], sqrt_phi);
+    sim_trunc_obs[, i] = neg_binomial_2_rng(trunc_obs[, i], phi);
   }
   // Combine observed and imputed observations with
   // reporting noise for the latest dataset
@@ -123,7 +124,7 @@ generated quantities {
     for (i in 1:tmax) {
       imp_uobs[i] = max({1e-3, imp_uobs[i]});
     }
-    sim_imp_uobs = neg_binomial_2_rng(imp_uobs, sqrt_phi);
+    sim_imp_uobs = neg_binomial_2_rng(imp_uobs, phi);
     for (i in 1:tmax) {
       sim_imputed_obs[i] = last_obs[i] + sim_imp_uobs[i];
     }

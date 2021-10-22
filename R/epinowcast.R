@@ -48,29 +48,22 @@ extract_stan_param <- function(fit, params = NULL,
   return(summary)
 }
 
-
-
 enw_metadata <- function(obs) {
   metaobs <- data.table::as.data.table(obs)
   metaobs[, c("date", "confirm") := NULL]
   metaobs <- unique(metaobs)
-
-  if (dates_to_factors) {
-    cols <- sapply(metaobs, is.Date)
-  }
-  return(metaobs)
+  return(metaobs[])
 }
 
 is.Date <- function(x) {
   inherits(x, "Date")
 }
 
-
 enw_dates_to_factors <- function(data) {
   data <- data.table::as.data.table(data)
   cols <- colnames(data)[sapply(data, is.Date)]
   data <- data[, lapply(.SD, factor), .SDcols = cols]
-  return(data)
+  return(data[])
 }
 
 enw_design <- function(formula, data, no_contrasts = FALSE, ...) {
@@ -120,15 +113,21 @@ enw_design <- function(formula, data, no_contrasts = FALSE, ...) {
 }
 
 enw_effects_metadata <- function(design) {
-  dt <- data.table::data.table(effects = colnames(tmp), fixed = 1)
+  dt <- data.table::data.table(effects = colnames(design), fixed = 1)
   dt <- dt[!effects %in% "(Intercept)"]
-  return(dt)
+  return(dt[])
+}
+
+enw_add_pooling_effect <- function(effects, string) {
+  effects[, sd := ifelse(grepl(string, effects), 1, 0)]
+  effects[grepl("report_date", effects), fixed := 0]
+  return(effects[])
 }
 
 enw_data <- function(obs, design = NULL, design_sd = NULL,
                      max_truncation = 20, likelihood = TRUE,
-                     debug = TRUE) {
-  dirty_obs <- data.table::as.data.tabls(obs)
+                     debug = FALSE) {
+  dirty_obs <- data.table::as.data.table(obs)
   dirty_obs <- dirty_obs[order(report_date)]
   obs <- data.table::copy(dirty_obs)
   obs <- split(obs, by = "report_date")
@@ -192,15 +191,15 @@ enw_data <- function(obs, design = NULL, design_sd = NULL,
 enw_inits <- function(data) {
   init_fn <- function() {
     init <- list(
-      logmean_init = rnorm(1, 0, 1),
-      logsd_init = abs(rnorm(1, 0, 1)),
+      logmean_init = rnorm(1, 1, 0.2),
+      logsd_init = abs(rnorm(1, 0.5, 0.1)),
       uobs_logsd = abs(rnorm(1, 0, 0.1)),
       log_uobs_resids = rnorm(data$tmax, 0, 1),
-      phi = abs(rnorm(1, 0, 0.1))
+      sqrt_phi = abs(rnorm(1, 0, 0.1))
     )
     init$logmean <- rep(init$logmean_init, data$nobs)
     init$logsd <- rep(init$logsd_init, data$nobs)
-    init$sqrt_phi <- 1 / sqrt(init$phi)
+    init$phi <- 1 / sqrt(init$sqrt_phi)
     return(init)
   }
   return(init_fn)
@@ -326,68 +325,16 @@ truncation_cmf <- function(fit, CrIs) {
 #' @importFrom purrr map reduce map_dbl
 #' @importFrom rstan sampling
 #' @importFrom data.table copy .N as.data.table merge.data.table setDT setcolorder
-#' @examples
-#' # set number of cores to use
-#' options(mc.cores = ifelse(interactive(), 4, 1))
-#' # get example case counts
-#' reported_cases <- example_confirmed[1:60]
-#'
-#' # define example truncation distribution (note not integer adjusted)
-#' trunc_dist <- list(
-#'   mean = convert_to_logmean(3, 2),
-#'   mean_sd = 0.1,
-#'   sd = convert_to_logsd(3, 2),
-#'   sd_sd = 0.1,
-#'   max = 10
-#' )
-#'
-#' # apply truncation to example data
-#' construct_truncation <- function(index, cases, dist) {
-#'   set.seed(index)
-#'   cmf <- cumsum(
-#'     dlnorm(
-#'       1:(dist$max + 1),
-#'       rnorm(1, dist$mean, dist$mean_sd),
-#'       rnorm(1, dist$sd, dist$sd_sd)
-#'     )
-#'   )
-#'   cmf <- cmf / cmf[dist$max + 1]
-#'   cmf <- rev(cmf)[-1]
-#'   trunc_cases <- data.table::copy(cases)[1:(.N - index)]
-#'   trunc_cases[(.N - length(cmf) + 1):.N, confirm := as.integer(confirm * cmf)]
-#'   return(trunc_cases)
-#' }
-#' example_data <- purrr::map(c(20, 15, 10, 0),
-#'   construct_truncation,
-#'   cases = reported_cases,
-#'   dist = trunc_dist
-#' )
-#'
-#' # fit model to example data
-#' est <- nowcast(example_data,
-#'   verbose = interactive(),
-#'   chains = 2, iter = 2000
-#' )
-#'
-#' # summary of the distribution
-#' est$dist
-#' # summary of the estimated truncation cmf (can be applied to new data)
-#' print(est$cmf)
-#' # observations linked to truncation adjusted estimates
-#' print(est$obs)
-#' # validation plot of observations vs estimates
-#' plot(est)
 epinowcast <- function(obs, max_truncation = 10,
                        model = NULL, CrIs = c(0.2, 0.5, 0.9),
                        design = NULL, design_sd = NULL,
-                       likelihood = TRUE, debug = TRUE,
+                       likelihood = TRUE, debug = FALSE,
                        ...) {
   data <- enw_data(obs,
     max_truncation = max_truncation,
     design = design, design_sd = design_sd,
     likelihood = likelihood, debug = debug
   )
-  out <- data
 
   # initial conditions
   inits <- enw_inits(data$stan)
@@ -414,7 +361,7 @@ epinowcast <- function(obs, max_truncation = 10,
   )
 
   class(out) <- c("epinowcast", class(out))
-  return(out)
+  return(out[])
 }
 
 #' Extract Credible Intervals Present
@@ -473,6 +420,49 @@ plot_CrIs <- function(plot, CrIs, alpha, size) {
   return(plot)
 }
 
+plot_epinowcast <- function(posterior, obs, log = FALSE) {
+  if (missing(obs)) {
+    obs <- NULL
+  }
+
+  if (!is.null(obs)) {
+    posterior <- data.table::copy(posterior)
+    obs <- data.table::copy(obs)
+    posterior <- merge(
+      posterior[, last_confirm := NULL],
+      obs[, last_confirm := confirm][, confirm := NULL],
+      by = "date", all.x = TRUE
+    )
+  }
+
+  plot <- ggplot2::ggplot(posterior) +
+    ggplot2::aes(x = date, y = last_confirm) +
+    ggplot2::geom_point(
+      show.legend = FALSE, na.rm = TRUE, alpha = 0.7, shape = 2
+    ) +
+    ggplot2::geom_point(
+      ggplot2::aes(x = date, y = confirm),
+      shape = 1, alpha = 0.7
+    )
+
+  plot <- plot_CrIs(plot, extract_CrIs(posterior),
+    alpha = 0.8, size = 1
+  )
+
+  plot <- plot +
+    ggplot2::theme_bw() +
+    ggplot2::labs(y = "Confirmed Cases", x = "Date", col = "Type", fill = "Type") +
+    ggplot2::scale_x_date(date_breaks = "day", date_labels = "%b %d") +
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90))
+
+  if (log) {
+    plot <- plot + ggplot2::scale_y_log10(labels = scales::comma)
+  } else {
+    plot <- plot + ggplot2::scale_y_continuous(labels = scales::comma)
+  }
+  return(plot)
+}
+
 #' Plot method for nowcast
 #'
 #' @description
@@ -513,54 +503,24 @@ plot.epinowcast <- function(x, type = "nowcast", log = FALSE,
     choices = c("nowcast", "posterior")
   )
   if (type %in% "nowcast") {
-    est <- data.table:rbindlist(x$nowcast)
+    est <- data.table::rbindlist(x$nowcast)
   } else if (type %in% "posterior") {
-    est <- data.table:rbindlist(x$posterior_prediction)
+    est <- data.table::rbindlist(x$posterior_prediction)
   }
 
-  if (!missing(obs)) {
-    est <- data.table::copy(est)
-    obs <- data.table::copy(obs)
-    est <- merge(
-      est[, last_confirm := NULL],
-      obs[, last_confirm := confirm][, confirm := NULL],
-      by = "date", all.x = TRUE
-    )
+  if (missing(obs)) {
+    obs <- NULL
   }
 
   if (!missing(report_dates)) {
     est <- est[report_date %in% as.Date(report_dates)]
   }
 
-  plot <- ggplot2::ggplot(est) +
-    ggplot2::aes(x = date, y = last_confirm) +
-    ggplot2::geom_col(
-      fill = "grey", col = "white",
-      show.legend = FALSE, na.rm = TRUE
-    ) +
-    ggplot2::geom_point(
-      ggplot2::aes(x = date, y = confirm)
-    )
+  plot <- plot_epinowcast(est, obs = obs, log = log)
 
   if (length(unique(est$report_date)) > 1) {
     plot <- plot +
       ggplot2::facet_wrap(~report_date, scales = "free")
-  }
-
-  plot <- plot_CrIs(plot, extract_CrIs(est),
-    alpha = 0.8, size = 1
-  )
-
-  plot <- plot +
-    ggplot2::theme_bw() +
-    ggplot2::labs(y = "Confirmed Cases", x = "Date", col = "Type", fill = "Type") +
-    ggplot2::scale_x_date(date_breaks = "day", date_labels = "%b %d") +
-    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90))
-
-  if (log) {
-    plot <- plot + ggplot2::scale_y_log10(labels = scales::comma)
-  } else {
-    plot <- plot + ggplot2::scale_y_continuous(labels = scales::comma)
   }
   return(plot)
 }

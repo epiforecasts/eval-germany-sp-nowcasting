@@ -1,6 +1,6 @@
 library(covidregionaldata)
 library(data.table, quietly = TRUE)
-library(rstan, quietly = TRUE)
+suppressMessages(library(rstan, quietly = TRUE))
 library(here)
 library(purrr)
 source(here("R", "epinowcast.R"))
@@ -16,9 +16,9 @@ reported_cases <- reported_cases[, .(date, confirm = cases_new)]
 # define example truncation distribution (note not integer adjusted)
 trunc_dist <- list(
   mean = 1.8,
-  mean_sd = 0.1,
+  mean_sd = 0.01,
   sd = 0.6,
-  sd_sd = 0.1,
+  sd_sd = 0.01,
   max = 20
 )
 
@@ -31,14 +31,41 @@ example_data <- map(c(40, 30, 25, 20, 15, 10, 5, 0),
 example_data <- map(example_data, ~ .[, report_date := max(date)])
 example_data <- rbindlist(example_data)
 
+
+# extract metadata about reported snapshots
+metaobs <- enw_metadata(example_data)
+
+# turn dates into factors
+metaobs <- enw_dates_to_factors(metaobs)
+
+# build effects design matrix (with  no contrasts)
+design <- enw_design(~report_date, metaobs, no_contrasts = TRUE)
+
+# extract effects metadata
+effects <- enw_effects_metadata(design)
+
+# construct random effect for report_date
+effects <- enw_add_pooling_effect(effects, "report_date")
+
+# build design matrix for pooled parameters
+design_sd <- enw_design(~ fixed + sd, effects)
+
+# compile model
+model <- rstan::stan_model(here("stan", "nowcast.stan"))
+
 # fit model to example data and produce nowcast
-est <- epinowcast(example_data, max_truncation = 20)
+est <- epinowcast(example_data,
+  model = model,
+  design = design, design_sd = design_sd,
+  control = list(max_treedepth = 15),
+  max_truncation = 20
+)
 
 # observations linked to truncation adjusted estimates
-print(est$nowcast)
+est$nowcast[[1]]
 
 # Plot nowcast vs latest observations
-plot(est, latest_obs = reported_cases)
+plot(est, obs = reported_cases)
 
 # Plot posterior prediction for observed cases at date of report
-plot(est, latest_obs = reported_cases, type = "pos", log = TRUE)
+plot(est, obs = reported_cases, type = "pos", log = TRUE)
