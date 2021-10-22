@@ -18,7 +18,7 @@ latest_cases <- latest_cases[, .(date, confirm = cases_new)]
 # get a range of dates to generate synthetic data for
 scenarios <- enw_random_intercept_scenario(
   obs = latest_cases,
-  snapshots = c(40, 35, 30, 25, 20, 15, 10:0),
+  snapshots = c(30:0),
   logmean = 1.9, logmean_sd = 0.1,
   logsd = 1, logsd_sd = 0.1
 )
