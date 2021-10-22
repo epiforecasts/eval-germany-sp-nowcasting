@@ -1,21 +1,21 @@
 library(covidregionaldata)
-library(data.table)
-library(rstan)
+library(data.table, quietly = TRUE)
+suppressMessages(library(rstan, quietly = TRUE))
 library(here)
-source(here("R", "estimate_truncation.R"))
+library(purrr)
+source(here("R", "epinowcast.R"))
+source(here("R", "simulate.R"))
 # set number of cores to use
 options(mc.cores = 4)
 # get example case counts
-reported_cases <- get_national_data("UK")
+start_using_memoise()
+reported_cases <- get_national_data("UK", verbose = FALSE)
 reported_cases <- setDT(reported_cases)[date >= as.Date("2021-07-01")]
 reported_cases <- reported_cases[, .(date, confirm = cases_new)]
 
-# load model
-model <- rstan::stan_model(here("stan", "estimate_truncation.stan"))
-
 # define example truncation distribution (note not integer adjusted)
 trunc_dist <- list(
-  mean = 2.1,
+  mean = 1.8,
   mean_sd = 0.01,
   sd = 0.6,
   sd_sd = 0.01,
@@ -23,38 +23,49 @@ trunc_dist <- list(
 )
 
 # apply truncation to example data
-construct_truncation <- function(index, cases, dist) {
-  set.seed(index)
-  cmf <- cumsum(
-    dlnorm(
-      1:(dist$max + 1),
-      rnorm(1, dist$mean, dist$mean_sd),
-      rnorm(1, dist$sd, dist$sd_sd)
-    )
-  )
-  cmf <- cmf / cmf[dist$max + 1]
-  cmf <- rev(cmf)[-1]
-  trunc_cases <- data.table::copy(cases)[1:(.N - index)]
-  trunc_cases[
-    (.N - length(cmf) + 1):.N,
-    confirm := purrr::map(confirm * cmf, ~ rpois(1, .))
-  ]
-  return(trunc_cases)
-}
-example_data <- purrr::map(c(30, 25, 20, 15, 10, 0),
-  construct_truncation,
+example_data <- map(c(40, 30, 25, 20, 15, 10, 5, 0),
+  simulate_simple_truncation,
   cases = reported_cases,
   dist = trunc_dist
 )
+example_data <- map(example_data, ~ .[, report_date := max(date)])
+example_data <- rbindlist(example_data)
 
-# fit model to example data
-est <- estimate_truncation(example_data, model = model, max_truncation = 20)
 
-# summary of the distribution
-est$dist
-# summary of the estimated truncation cmf (can be applied to new data)
-print(est$cmf)
+# extract metadata about reported snapshots
+metaobs <- enw_metadata(example_data)
+
+# turn dates into factors
+metaobs <- enw_dates_to_factors(metaobs)
+
+# build effects design matrix (with  no contrasts)
+design <- enw_design(~report_date, metaobs, no_contrasts = TRUE)
+
+# extract effects metadata
+effects <- enw_effects_metadata(design)
+
+# construct random effect for report_date
+effects <- enw_add_pooling_effect(effects, "report_date")
+
+# build design matrix for pooled parameters
+design_sd <- enw_design(~ fixed + sd, effects)
+
+# compile model
+model <- rstan::stan_model(here("stan", "nowcast.stan"))
+
+# fit model to example data and produce nowcast
+est <- epinowcast(example_data,
+  model = model,
+  design = design, design_sd = design_sd,
+  control = list(max_treedepth = 15),
+  max_truncation = 20
+)
+
 # observations linked to truncation adjusted estimates
-print(est$obs)
-# validation plot of observations vs estimates
-plot(est)
+est$nowcast[[1]]
+
+# Plot nowcast vs latest observations
+plot(est, obs = reported_cases)
+
+# Plot posterior prediction for observed cases at date of report
+plot(est, obs = reported_cases, type = "pos", log = TRUE)
