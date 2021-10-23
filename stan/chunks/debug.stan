@@ -11,7 +11,7 @@
         print("Posterior prediction (no observation error)");
         print(trunc_obs[, i]);
         print("Truncation  distribution estimate");
-        print(cmfs[, i]);
+        print(cdfs[, i]);
         print("Logmean and Logsd intercept");
         print(logmean_init);
         print(logsd_init);

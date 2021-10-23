@@ -10,7 +10,7 @@ enw_apply_truncation_to_cases <- function(report_date, cmf, cases) {
 }
 
 enw_lognormal_cmf <- function(logmean, logsd, max = 20) {
-  cmf <- cumsum(dlnorm(1:max, logmean, logsd))
+  cmf <- plnorm(1:max, logmean, logsd)
   cmf <- cmf / max(cmf)
   return(cmf)
 }

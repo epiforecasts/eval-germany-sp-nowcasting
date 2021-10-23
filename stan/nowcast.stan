@@ -1,7 +1,6 @@
 functions {
 #include functions/regression.stan
-#include functions/pmfs.stan
-#include functions/observation_model.stan
+#include functions/truncation.stan
 }
 
 data {
@@ -37,8 +36,8 @@ parameters {
 transformed parameters{
   vector<lower=-10, upper=logtmax>[nobs] logmean;
   vector<lower=1e-3, upper=tmax>[nobs] logsd;
-  matrix[tmax, nobs] cmfs;
   matrix<lower=0>[tmax, nobs] trunc_obs;
+  matrix[tmax, nobs] cdfs;
   real phi;
   vector[tmax] imputed_obs;
   // calculate log mean and sd parameters for each dataset from design matrices
@@ -47,9 +46,9 @@ transformed parameters{
   logsd = combine_effects(log(logsd_init), logsd_eff, design, logsd_sd,
                           design_sd);
   logsd = exp(logsd);
-  // calculate cmfs for each dataset
+  // calculate cdfs for each dataset
   for (i in 1:nobs) {
-    cmfs[, i] = truncation_cmf(logmean[i], logsd[i], tmax);
+    cdfs[, i] = truncation_via_dist(logmean[i], logsd[i], tmax);
   }
   {
   vector[t] last_obs;
@@ -64,7 +63,7 @@ transformed parameters{
   for (i in 1:nobs) {
    int end_t = t - tdist[i];
    int start_t = end_t - tmax + 1;
-   trunc_obs[, i] = truncate(last_obs[start_t:end_t], to_vector(cmfs[, i]), 0,
+   trunc_obs[, i] = truncate(last_obs[start_t:end_t], to_vector(cdfs[, i]), 0,
                              0) + 1e-3;
    }
   }
@@ -117,7 +116,7 @@ generated quantities {
   // reporting noise for the latest dataset
   {
     int last_obs[tmax] = obs[(t - tmax + 1):t, nobs];
-    vector[tmax] imp_uobs = imputed_obs .* (1 - cmfs[,  nobs]);
+    vector[tmax] imp_uobs = imputed_obs .* (1 - cdfs[,  nobs]);
     int sim_imp_uobs[tmax];
     for (i in 1:tmax) {
       imp_uobs[i] = max({1e-3, imp_uobs[i]});
