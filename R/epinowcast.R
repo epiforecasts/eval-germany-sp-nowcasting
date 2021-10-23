@@ -290,11 +290,11 @@ truncation_dist <- function(fit, truncation_max) {
   )
 }
 
-truncation_cmf <- function(fit, CrIs) {
-  cmf <- extract_stan_param(fit, "cmf", CrIs = CrIs)
-  cmf <- data.table::as.data.table(cmf)[, index := .N:1]
-  data.table::setcolorder(cmf, "index")
-  return(cmf)
+truncation_cdfs <- function(fit, CrIs) {
+  cdfs <- extract_stan_param(fit, "cdfs", CrIs = CrIs)
+  cdfs <- data.table::as.data.table(cdfs)[, index := .N:1]
+  data.table::setcolorder(cdfs, "index")
+  return(cdfs)
 }
 
 #' Nowcast of Observed Data
