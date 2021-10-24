@@ -125,6 +125,7 @@ enw_add_pooling_effect <- function(effects, string) {
 }
 
 enw_data <- function(obs, design = NULL, design_sd = NULL,
+                     dist = "lognormal",
                      max_truncation = 20, likelihood = TRUE,
                      debug = FALSE) {
   dirty_obs <- data.table::as.data.table(obs)
@@ -144,7 +145,7 @@ enw_data <- function(obs, design = NULL, design_sd = NULL,
   tdist <- purrr::map_dbl(2:(ncol(obs)), ~ sum(is.na(obs[[.]])))
   obs_data <- obs[, -1][, purrr::map(.SD, ~ ifelse(is.na(.), 0, .))]
   obs_data <- obs_data[obs_start:.N]
-
+  diff_obs <- obs_data[, 2:ncol(obs_data)] - obs_data[, 1:(ncol(obs_data) - 1)]
   latest_obs <- dirty_obs[report_date == max(report_date)]
   data.table::setnames(latest_obs, "confirm", "last_confirm")
 
@@ -164,9 +165,16 @@ enw_data <- function(obs, design = NULL, design_sd = NULL,
   stopifnot(
     "Number of design matrix columns must equal design_sd rows" = neffs == nrow(design_sd) # nolint
   )
+
+  dist <- match.arg(dist, c("lognormal", "gamma"))
+  dist <- data.table::fcase(
+    dist %in% "lognormal", 0,
+    dist %in% "gamma", 1
+  )
   # convert to stan list
   data <- list(
     obs = obs_data,
+    diff_obs = diff_obs,
     tdist = tdist,
     t = nrow(obs_data),
     nobs = ncol(obs_data),
@@ -175,6 +183,7 @@ enw_data <- function(obs, design = NULL, design_sd = NULL,
     neff_sds = neff_sds,
     design = design,
     design_sd = design_sd,
+    dist = dist,
     debug = as.numeric(debug),
     likelihood = as.numeric(likelihood)
   )
@@ -332,11 +341,13 @@ truncation_cdfs <- function(fit, CrIs) {
 #' @importFrom data.table copy .N as.data.table merge.data.table setDT setcolorder
 epinowcast <- function(obs, max_truncation = 10,
                        model = NULL, CrIs = c(0.2, 0.5, 0.9),
+                       dist = "lognormal",
                        design = NULL, design_sd = NULL,
                        likelihood = TRUE, debug = FALSE,
                        ...) {
   data <- enw_data(obs,
     max_truncation = max_truncation,
+    dist = dist,
     design = design, design_sd = design_sd,
     likelihood = likelihood, debug = debug
   )

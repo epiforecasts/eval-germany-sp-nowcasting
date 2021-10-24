@@ -13,6 +13,7 @@ data {
   int neff_sds;
   matrix[nobs, neffs ? neffs : 1] design;
   matrix[neffs, neff_sds + 1] design_sd;
+  int dist;
   int debug;
   int likelihood;
 }
@@ -48,7 +49,7 @@ transformed parameters{
   logsd = exp(logsd);
   // calculate cdfs for each dataset
   for (i in 1:nobs) {
-    cdfs[, i] = truncation_via_dist(logmean[i], logsd[i], tmax);
+    cdfs[, i] = truncation_via_dist(logmean[i], logsd[i], tmax, dist);
   }
   {
   vector[t] last_obs;

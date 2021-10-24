@@ -9,7 +9,7 @@ enw_apply_truncation_to_cases <- function(report_date, cmf, cases) {
   return(reported_cases)
 }
 
-enw_lognormal_cmf <- function(logmean, logsd, max = 20) {
+enw_dist_cmf <- function(logmean, logsd, max = 20) {
   cmf <- plnorm(1:max, logmean, logsd)
   cmf <- cmf / max(cmf)
   return(cmf)
@@ -27,7 +27,7 @@ enw_simulate_lnorm_trunc_obs <- function(scenarios, cases,
   obs <- data.table::copy(scenarios)
   obs[
     ,
-    cmf := purrr::map2(logmean, logsd, enw_lognormal_cmf, max = truncation_max)
+    cmf := purrr::map2(logmean, logsd, enw_dist_cmf, max = truncation_max)
   ]
   obs[
     ,
