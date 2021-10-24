@@ -1,5 +1,3 @@
-
-
 enw_fit <- function(data, model, inits, ...) {
   if (is.null(model)) {
     model <- rstan::stan_model(here("stan", "nowcast.stan"))
@@ -12,149 +10,27 @@ enw_fit <- function(data, model, inits, ...) {
   return(fit)
 }
 
-link_obs <- function(index, obs, dirty, last, max_truncation) {
-  target_obs <- data.table::copy(dirty[[index]])[, index := .N - 0:(.N - 1)]
-  target_obs <- target_obs[index <= max_truncation]
-  estimates <- obs[dataset == index][, c("id", "dataset") := NULL]
-  estimates <- estimates[, index := .N - 0:(.N - 1)]
-  target_obs <-
-    data.table::merge.data.table(
-      target_obs, data.table::copy(last)[, report_date := NULL],
-      by = "date"
-    )
-  target_obs <- data.table::merge.data.table(target_obs, estimates,
-    by = "index", all.x = TRUE
-  )
-  target_obs <- target_obs[order(date)][, index := NULL]
-  return(target_obs)
-}
-
-enw_imputed_obs <- function(fit, data, CrIs) {
-  imp <- extract_stan_param(fit, "sim_imputed_obs",
-    CrIs = CrIs,
-    var_names = TRUE
-  )
-  imp[, variable := NULL]
-  obs <- data.table::copy(data$dirty)
-  obs <- obs[, last_confirm := confirm]
-  obs <- obs[(.N - data$stan$tmax + 1):.N]
-
-  imp <- cbind(obs, imp)
-  return(imp)
-}
-
-enw_posterior_predictions <- function(fit, target, data, CrIs,
-                                      max_truncation) {
-  datasets <- data$stan$nobs
-  dirty <- split(data$dirty, by = "report_date")
-  last <- data$latest
-
-  obs <- extract_stan_param(fit, target,
-    CrIs = CrIs,
-    var_names = TRUE
-  )
-
-  # assign labels of interest
-  obs[, id := variable][, variable := NULL]
-  obs[, dataset := 1:.N]
-  obs[, dataset := dataset %% datasets]
-  obs <- obs[dataset == 0, dataset := datasets]
-
-  tidy_out <- purrr::map(
-    1:(datasets), link_obs,
-    obs = obs,
-    dirty = dirty, last = last,
-    max_truncation = max_truncation
-  )
-  tidy_out <- data.table::rbindlist(tidy_out)
-  return(tidy_out)
-}
-
-truncation_dist <- function(fit, truncation_max) {
-  list(
-    mean = round(rstan::summary(fit, pars = "logmean")$summary[1], 3),
-    mean_sd = round(rstan::summary(fit, pars = "logmean")$summary[3], 3),
-    sd = round(rstan::summary(fit, pars = "logsd")$summary[1], 3),
-    sd_sd = round(rstan::summary(fit, pars = "logsd")$summary[3], 3),
-    max = truncation_max
-  )
-}
-
-truncation_cdfs <- function(fit, CrIs) {
-  cdfs <- extract_stan_param(fit, "cdfs", CrIs = CrIs)
-  cdfs <- data.table::as.data.table(cdfs)[, index := .N:1]
-  data.table::setcolorder(cdfs, "index")
-  return(cdfs)
-}
-
-#' Nowcast of Observed Data
-#'
-#' @description `r lifecycle::badge("experimental")`
-#' Estimates a truncation distribution from multiple snapshots of the same
-#' data source over time. This distribution can then be used in `regional_epinow`,
-#' `epinow`, and `estimate_infections` to adjust for truncated data (i.e to
-#' nowcast). See [here](https://gist.github.com/seabbs/176b0c7f83eab1a7192a25b28bbd116a)
-#' for an example of using this approach on Covid-19 data in England.
-#'
-#' @param obs A data.frames containing a date variable, a confirm (integer)
-#' variable and a report_date (date of report) variable. Stratifying by report
-#' date should yield notifications as reported on that day with no missing
-#' dates.
-#'
-#' @param max_truncation Integer, defaults to 10. Maximum number of
-#' days to include in the truncation distribution.
-#'
-#' @param model A compiled stan model to override the default model. May be
-#' useful for package developers or those developing extensions.
-#'
-#' @param ... Additional parameters to pass to `rstan::sampling`.
-#'
-#' @return A list containing: the summary parameters of the truncation distribution
-#'  (`dist`), the estimated CMF of the truncation distribution (`cmf`, can be used to adjusted
-#'  new data), a data frame containing the observed truncated data, latest observed data
-#'  and the adjusted for truncation observations (`obs`), a data frame containing the last
-#'  observed data (`last_obs`, useful for plotting and validation), the data used for fitting
-#'  (`data`) and the fit object (`fit`).
-#' @export
-#' @inheritParams calc_CrIs
-#' @importFrom purrr map reduce map_dbl
-#' @importFrom rstan sampling
-#' @importFrom data.table copy .N as.data.table merge.data.table setDT setcolorder
-epinowcast <- function(obs, max_truncation = 10,
+epinowcast <- function(preprocessed_obs,
                        model = NULL, CrIs = c(0.2, 0.5, 0.9),
                        dist = "lognormal",
                        design = NULL, design_sd = NULL,
                        likelihood = TRUE, debug = FALSE,
                        ...) {
-  data <- enw_data(obs,
+  stan_data <- enw_stan_data(preprocessed_obs,
     max_truncation = max_truncation,
     dist = dist,
-    design = design, design_sd = design_sd,
+    date_design = date_design,
     likelihood = likelihood, debug = debug
   )
 
-  # initial conditions
-  inits <- enw_inits(data$stan)
+  inits <- enw_inits(stan_data)
 
-  # fit
-  fit <- enw_fit(data = data$stan, model = model, inits = inits, ...)
-
-  # summarise nowcast for target dataset
-  nowcast <- enw_imputed_obs(
-    fit, data, CrIs
-  )
-
-  # summarse simulated truncated observations for all datasets
-  posterior_prediction <- enw_posterior_predictions(
-    fit, "sim_trunc_obs", data, CrIs, max_truncation
-  )
+  fit <- enw_fit(data = stan_data, model = model, inits = inits, ...)
 
   out <- data.table::data.table(
-    data = list(data),
+    stan_data = list(stan_data),
     inits = list(inits),
-    fit = list(fit),
-    nowcast = list(nowcast),
-    posterior_prediction = list(posterior_prediction)
+    fit = list(fit)
   )
 
   class(out) <- c("epinowcast", class(out))
