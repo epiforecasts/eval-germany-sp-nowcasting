@@ -29,7 +29,7 @@ scenarios <- enw_simulate_lnorm_trunc_obs(scenarios, latest_cases)
 sim_reported_cases <- rbindlist(scenarios$reported_cases)
 
 # Construct design matrices for the desired effects
-effects <- enw_intercept_model(sim_reported_cases)
+effects <- enw_random_intercept_model(sim_reported_cases)
 
 # compile model
 model <- rstan::stan_model(here("stan", "nowcast.stan"))

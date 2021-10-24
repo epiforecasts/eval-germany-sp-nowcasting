@@ -10,7 +10,7 @@ enw_random_intercept_model <- function(obs) {
   metaobs <- enw_dates_to_factors(metaobs)
 
   # build effects design matrix (with  no contrasts)
-  design <- enw_design(~report_date, metaobs, no_contrasts = TRUE)
+  design <- enw_design(~test, metaobs, no_contrasts = TRUE)
 
   # extract effects metadata
   effects <- enw_effects_metadata(design)
