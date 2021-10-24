@@ -1,10 +1,10 @@
-enw_intercept_model <- function(obs) {
+enw_intercept_model <- function(processed_obs) {
   return(list(design = NULL, design_sd = NULL))
 }
 
-enw_random_intercept_model <- function(obs) {
+enw_random_intercept_model <- function(processed_obs) {
   # extract metadata about reported snapshots
-  metaobs <- enw_metadata(obs)
+  metaobs <- processed_obs$metadate[[1]]
 
   # turn dates into factors
   metaobs <- enw_dates_to_factors(metaobs)
@@ -15,8 +15,8 @@ enw_random_intercept_model <- function(obs) {
   # extract effects metadata
   effects <- enw_effects_metadata(design)
 
-  # construct random effect for report_date
-  effects <- enw_add_pooling_effect(effects, "report_date")
+  # construct random effect for date
+  effects <- enw_add_pooling_effect(effects, "date")
 
   # build design matrix for pooled parameters
   design_sd <- enw_design(~ fixed + sd, effects)
