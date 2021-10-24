@@ -1,136 +1,15 @@
-#' Extract a Parameter Summary from a Stan Object
-#'
-#' @description `r lifecycle::badge("stable")`
-#' Extracts summarised parameter posteriors from a `stanfit` object using
-#' `rstan::summary` in a format consistent with other summary functions in
-#' `EpiNow2`.
-#' @param fit A `stanfit` object
-#' @param params A character vector of parameters to extract. Defaults to all parameters.
-#' @param var_names Logical defaults to `FALSE`. Should variables be named. Automatically set
-#' to TRUE if multiple parameters are to be extracted.
-#' @return A `data.table` summarising parameter posteriors. Contains a following variables:
-#' `variable`, `mean`, `mean_se`, `sd`, `median`, and `lower_`, `upper_` followed by
-#' credible interval labels indicating the credible intervals present.
-#' @inheritParams calc_summary_measures
-#' @export
-#' @importFrom data.table as.data.table :=
-#' @importFrom rstan summary
-extract_stan_param <- function(fit, params = NULL,
-                               CrIs = c(0.2, 0.5, 0.9), var_names = FALSE) {
-  # generate symmetric CrIs
-  CrIs <- CrIs[order(CrIs)]
-  sym_CrIs <- c(0.5, 0.5 - CrIs / 2, 0.5 + CrIs / 2)
-  sym_CrIs <- sym_CrIs[order(sym_CrIs)]
-  CrIs <- round(100 * CrIs, 0)
-  CrIs <- c(paste0("lower_", rev(CrIs)), "median", paste0("upper_", CrIs))
-  args <- list(object = fit, probs = sym_CrIs)
-  if (!is.null(params)) {
-    if (length(params) > 1) {
-      var_names <- TRUE
-    }
-    args <- c(args, pars = params)
-  } else {
-    var_names <- TRUE
-  }
-  summary <- do.call(rstan::summary, args)
-  summary <- data.table::as.data.table(summary$summary,
-    keep.rownames = ifelse(var_names,
-      "variable",
-      FALSE
-    )
-  )
-  cols <- c("mean", "se_mean", "sd", CrIs, "n_eff", "Rhat")
-  if (var_names) {
-    cols <- c("variable", cols)
-  }
-  colnames(summary) <- cols
-  summary <- summary[, c("n_eff", "Rhat") := NULL]
-  return(summary)
-}
-
-enw_metadata <- function(obs) {
-  metaobs <- data.table::as.data.table(obs)
-  metaobs[, c("date", "confirm") := NULL]
-  metaobs <- unique(metaobs)
-  return(metaobs[])
-}
-
-is.Date <- function(x) {
-  inherits(x, "Date")
-}
-
-enw_dates_to_factors <- function(data) {
-  data <- data.table::as.data.table(data)
-  cols <- colnames(data)[sapply(data, is.Date)]
-  data <- data[, lapply(.SD, factor), .SDcols = cols]
-  return(data[])
-}
-
-enw_design <- function(formula, data, no_contrasts = FALSE, ...) {
-  # make data.table and copy
-  data <- data.table::as.data.table(data)
-
-  # make no  intercept model.matrix
-  mod_matrix <- function(formula, data, ...) {
-    design <- model.matrix(formula, data, ...)
-    design <- design[, !(colnames(design) %in% "(Intercept)")]
-  }
-
-  # design matrix using default contrasts
-  if (length(no_contrasts) == 1 && !no_contrasts) {
-    design <- mod_matrix(formula, data, ...)
-    return(design)
-  } else {
-    if (length(no_contrasts) == 1 && no_contrasts) {
-      no_contrasts <- colnames(data)[
-        sapply(data, function(x) is.factor(x) | is.character(x))
-      ]
-    }
-    # what is in the formula
-    in_form <- rownames(attr(stats::terms(formula, data = data), "factors"))
-
-    # drop contrasts not in the formula
-    no_contrasts <- no_contrasts[no_contrasts %in% in_form]
-
-    if (length(no_contrasts) == 0) {
-      design <- mod_matrix(formula, data, ...)
-      return(design)
-    } else {
-      # check everything is  a factor that should be
-      data[, lapply(.SD, as.factor), .SDcols = no_contrasts]
-
-      # make list of contrast args
-      contrast_args <- purrr::map(
-        no_contrasts, ~ stats::contrasts(data[[.]], contrast = FALSE)
-      )
-      names(contrast_args) <- no_contrasts
-
-      # model matrix with contrast options
-      design <- mod_matrix(formula, data, contrasts.arg = contrast_args, ...)
-      return(design)
-    }
-  }
-}
-
-enw_effects_metadata <- function(design) {
-  dt <- data.table::data.table(effects = colnames(design), fixed = 1)
-  dt <- dt[!effects %in% "(Intercept)"]
-  return(dt[])
-}
-
-enw_add_pooling_effect <- function(effects, string) {
-  effects[, sd := ifelse(grepl(string, effects), 1, 0)]
-  effects[grepl("report_date", effects), fixed := 0]
-  return(effects[])
-}
-
-enw_data <- function(obs, design = NULL, design_sd = NULL,
-                     dist = "lognormal",
-                     max_truncation = 20, likelihood = TRUE,
-                     debug = FALSE) {
+enw_data <- function(obs, groups = c(),
+                     design = list(NULL, NULL), dist = "lognormal",
+                     max_delay = 20, likelihood = TRUE, debug = FALSE) {
   dirty_obs <- data.table::as.data.table(obs)
-  dirty_obs <- dirty_obs[order(report_date)]
+  dirty_obs <- dirty_obs[order(date)]
+
+  metadate <- enw_metadata(dirty_obs)
+  metareportdate <- enw_metadata(obs, date_to_drop = "date")
+
   obs <- data.table::copy(dirty_obs)
+
+  cols <- colnames()
   obs <- split(obs, by = "report_date")
   obs <- purrr::map(1:length(obs), ~ obs[[.]][, .(date, confirm)])
   obs <- purrr::map(
@@ -150,21 +29,7 @@ enw_data <- function(obs, design = NULL, design_sd = NULL,
   data.table::setnames(latest_obs, "confirm", "last_confirm")
 
   # specify design matrix if missing
-  if (is.null(design)) {
-    design <- matrix(1, nrow = ncol(obs_data), ncol = 1)
-    neffs <- 0
-  } else {
-    neffs <- ncol(design)
-  }
-  if (is.null(design_sd)) {
-    design_sd <- matrix(1, nrow = neffs, ncol = 1)
-    neff_sds <- 0
-  } else {
-    neff_sds <- ncol(design_sd) - 1
-  }
-  stopifnot(
-    "Number of design matrix columns must equal design_sd rows" = neffs == nrow(design_sd) # nolint
-  )
+  design <- enw_default_design(design)
 
   dist <- match.arg(dist, c("lognormal", "gamma"))
   dist <- data.table::fcase(
@@ -178,11 +43,11 @@ enw_data <- function(obs, design = NULL, design_sd = NULL,
     tdist = tdist,
     t = nrow(obs_data),
     nobs = ncol(obs_data),
-    tmax = max_truncation,
+    tmax = max_delay,
     neffs = neffs,
     neff_sds = neff_sds,
-    design = design,
-    design_sd = design_sd,
+    design = design[[1]],
+    design_sd = design_sd[[2]],
     dist = dist,
     debug = as.numeric(debug),
     likelihood = as.numeric(likelihood)
@@ -196,6 +61,25 @@ enw_data <- function(obs, design = NULL, design_sd = NULL,
   )
   return(out)
 }
+
+enw_default_design <- function(design, rows) {
+  if (is.null(design[[1]])) {
+    design[[1]] <- matrix(1, nrow = rows, ncol = 1)
+    neffs <- 0
+  } else {
+    neffs <- ncol(design)
+  }
+  if (is.null(design_sd)) {
+    design_sd <- matrix(1, nrow = neffs, ncol = 1)
+    neff_sds <- 0
+  } else {
+    neff_sds <- ncol(design_sd) - 1
+  }
+  stopifnot(
+    "Number of design matrix columns must equal design_sd rows" = neffs == nrow(design_sd) # nolint
+  )
+}
+
 
 enw_inits <- function(data) {
   init_fn <- function() {
