@@ -93,6 +93,7 @@ enw_latest_data <- function(obs) {
     .SD[report_date == max(report_date)],
     by = c("date", "group")
   ]
+  latest_data[, report_date := NULL]
   return(latest_data[])
 }
 
@@ -169,7 +170,7 @@ enw_preprocess_data <- function(obs, by = c(), max_delay = 20,
   obs[, old_group := NULL]
 
   # calculate reporting matrix
-  reporting_matrix <- enw_reporting_triangle(diff_obs)
+  reporting_triangle <- enw_reporting_triangle(diff_obs)
 
   # extract latest data
   latest <- enw_latest_data(obs)
@@ -178,11 +179,12 @@ enw_preprocess_data <- function(obs, by = c(), max_delay = 20,
     obs = list(obs),
     new_confirm = list(diff_obs),
     latest = list(latest),
-    reporting_matrix = list(reporting_matrix),
+    reporting_triangle = list(reporting_triangle),
     metadate = list(enw_metadata(obs)),
     metareport = list(enw_metadata(obs, date_to_drop = "date")),
     time = nrow(latest),
     snapshots = nrow(unique(obs[, .(group, report_date)])),
+    groups = length(unique(obs$group)),
     max_delay = max_delay
   )
   return(out[])

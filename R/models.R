@@ -1,10 +1,10 @@
-enw_intercept_model <- function(processed_obs) {
+enw_intercept_model <- function(pobs) {
   return(list(design = NULL, design_sd = NULL))
 }
 
-enw_random_intercept_model <- function(processed_obs) {
+enw_random_intercept_model <- function(pobs) {
   # extract metadata about reported snapshots
-  metaobs <- processed_obs$metadate[[1]]
+  metaobs <- pobs$metadate[[1]]
 
   # turn dates into factors
   metaobs <- enw_dates_to_factors(metaobs)

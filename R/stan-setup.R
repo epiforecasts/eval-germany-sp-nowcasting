@@ -16,31 +16,67 @@ enw_default_design <- function(design, rows) {
   )
 }
 
-enw_stan_data <- function(preprocessed_obs, date_design = list(NULL, NULL),
+enw_stan_data <- function(pobs, date_design = list(NULL, NULL),
                           dist = "lognormal",
                           likelihood = TRUE, debug = FALSE) {
 
-  # specify design matrix if missing
-  date_design <- enw_default_design(date_design)
+  # generate unique design matrix and lookup
+  date_design <- enw_unique_design(date_design)
 
-  # check dist type is supported
+  # check dist type is supported and change to numeric
   dist <- match.arg(dist, c("lognormal", "gamma"))
   dist <- data.table::fcase(
     dist %in% "lognormal", 0,
     dist %in% "gamma", 1
   )
+
+  # format latest matrix
+  latest_matrix <- pobs$latest[[1]]
+  latest_matrix <- data.table::dcast(
+    latest_matrix, date ~ group,
+    value.var = "confirm"
+  )
+  latest_matrix <- as.matrix(latest_matrix[, -1])
+
+  # format vector of snapshot lengths
+  snap_length <- pobs$new_confirm[[1]]
+  snap_length <- snap_length[, .SD[delay == max(delay)],
+    by = c("date", "group")
+  ]
+  snap_length <- snap_length$delay + 1
+
+  # snap lookup
+  snap_lookup <- unique(pobs$new_confirm[[1]][, .(date, group)])
+  snap_lookup[, s := 1:.N]
+  snap_lookup <- data.table::dcast(
+    snap_lookup, date ~ group,
+    value.var = "s"
+  )
+  snap_lookup <- as.matrix(snap_lookup[, -1])
+
+  # snap time
+  snap_time <- unique(pobs$new_confirm[[1]][, .(date, group)])
+  snap_time[, t := 1:.N, by = "group"]
+  snap_time <- snap_time$t
+
   # convert to stan list
   data <- list(
-    obs = obs_data,
-    diff_obs = diff_obs,
-    tdist = tdist,
-    t = nrow(obs_data),
-    nobs = ncol(obs_data),
-    tmax = max_delay,
-    neffs = neffs,
-    neff_sds = neff_sds,
-    design = date_design[[1]],
-    design_sd = date_design[[2]],
+    t = pobs$time[[1]],
+    s = pobs$snapshots[[1]],
+    g = pobbs$groups[[1]],
+    st = snap_time,
+    ts = snap_lookup,
+    sl = snap_length,
+    sg = unique(pobs$new_confirm[[1]][, .(date, group)])$group,
+    dmax = pobs$max_delay[[1]],
+    obs = as.matrix(pobs$reporting_triangle[[1]][, -c(1:2)]),
+    latest_obs = latest_obs,
+    ncmfs = nrow(design$fixed),
+    scmfs = design$lookup,
+    neffs = design$neffs,
+    design = design$fixed,
+    neff_sds = design$neffs_sd,
+    design_sd = design$pool,
     dist = dist,
     debug = as.numeric(debug),
     likelihood = as.numeric(likelihood)
@@ -49,18 +85,16 @@ enw_stan_data <- function(preprocessed_obs, date_design = list(NULL, NULL),
   return(out)
 }
 
-
 enw_inits <- function(data) {
   init_fn <- function() {
     init <- list(
-      logmean_init = rnorm(1, 1, 0.1),
-      logsd_init = abs(rnorm(1, 0.5, 0.1)),
+      logmean_int = rnorm(1, 1, 0.1),
+      logsd_int = abs(rnorm(1, 0.5, 0.1)),
       uobs_logsd = abs(rnorm(1, 0, 0.1)),
-      log_uobs_resids = rnorm(data$tmax, 0, 1),
       sqrt_phi = abs(rnorm(1, 0, 0.1))
     )
-    init$logmean <- rep(init$logmean_init, data$nobs)
-    init$logsd <- rep(init$logsd_init, data$nobs)
+    init$logmean <- rep(init$logmean_init, data$ncmfs)
+    init$logsd <- rep(init$logsd_init, data$ncmfs)
     init$phi <- 1 / sqrt(init$sqrt_phi)
 
     if (data$neffs > 0) {
