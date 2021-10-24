@@ -7,10 +7,13 @@ vector reverse_vect(vector vect, int max_v) {
   return rev_vect;
 }
 // Calculate a truncation using a parametric distribution
-vector truncation_via_dist(real logmean, real logsd, int cdf_max) {
-    vector[cdf_max] cdf;
-    for (i in 1:cdf_max) {
-      cdf[i] = lognormal_cdf(i, logmean, logsd);
+vector truncation_via_dist(real logmean, real logsd, int cdf_max, int dist) {
+    vector[cmf_max] cmf;
+    if (dist == 0) {
+      for (i in 1:cmf_max) {
+        cmf[i] = lognormal_cdf(i, logmean, logsd) - 
+                  lognormal_cdf(i - 1, logmean, logsd);
+      }
     }
     cdf = cdf ./ max(cdf);
     cdf = reverse_vect(cdf, cdf_max);
