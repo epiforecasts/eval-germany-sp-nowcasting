@@ -18,7 +18,7 @@ enw_default_design <- function(design, rows) {
 
 enw_stan_data <- function(pobs, date_design = list(NULL, NULL),
                           dist = "lognormal",
-                          likelihood = TRUE, debug = FALSE) {
+                          likelihood = TRUE, debug = FALSE, pp = TRUE) {
 
   # generate unique design matrix and lookup
   date_design <- enw_unique_design(date_design)
@@ -79,7 +79,8 @@ enw_stan_data <- function(pobs, date_design = list(NULL, NULL),
     design_sd = design$pool,
     dist = dist,
     debug = as.numeric(debug),
-    likelihood = as.numeric(likelihood)
+    likelihood = as.numeric(likelihood),
+    pp = as.numeric(pp),
   )
 
   return(out)
