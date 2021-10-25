@@ -28,6 +28,7 @@ data {
   int debug; // should debug information be shown
   int likelihood; // should the likelihood be included
   int pp; // should posterior predictions be produced
+  int cast; // should a nowcast be produced
 }
 
 transformed data{
@@ -107,51 +108,51 @@ model {
   }
   // reporting overdispersion (1/sqrt)
   sqrt_phi ~ normal(0, 1) T[0,];
-  
   // log density: observed vs model
   if (likelihood) {
-    for (k in 1:g) {
-      for (i in 1:s) {
-        real target_obs;
-        vector[sl[i]] exp_obs;
-        if (st[i] < (t - dmax)) {
-          target_obs = latest_obs[st[i], k];
-        }else{
-          target_obs = imp_obs[k][st[i] - (t - dmax)];
-        }
-        exp_obs = target_obs * pmfs[1:sl[i], spmfs[i]] + 1e-3;
-        obs[1:sl[i], i] ~ neg_binomial_2(exp_obs, phi);
+    real target_obs;
+    for (i in 1:s) {
+      vector[sl[i]] exp_obs;
+      if (st[i] <= (t - dmax)) {
+        target_obs = latest_obs[st[i], sg[i]];
+      }else{
+        target_obs = imp_obs[sg[i]][st[i] - (t - dmax)];
       }
+      exp_obs = target_obs * pmfs[1:sl[i], spmfs[i]] + 1e-3;
+      obs[i, 1:sl[i]] ~ neg_binomial_2(exp_obs, phi);
     }
   }
 }
 
 generated quantities {
-  int pp_obs[s, dmax];
+  int pp_obs[pp ? s : 0, pp ? dmax : 0];
   int pp_inf_obs[dmax, g];
-  if (pp) {
+  if (cast) {
+    int pp_obs_tmp[s, dmax];
     vector[dmax] exp_obs;
+    real target_obs;
     // Posterior predictions for observations
-    for (k in 1:g) {
-      for (i in 1:s) {
-        real target_obs;
-        if (st[i] < (t - dmax)) {
-          target_obs = latest_obs[st[i], k];
-        }else{
-          target_obs = imp_obs[k][st[i] - (t - dmax)];
-        }
-        exp_obs = target_obs * pmfs[, spmfs[i]] + 1e-3;
-        pp_obs[, i] = neg_binomial_2_rng(exp_obs, phi);
+    for (i in 1:s) {
+      if (st[i] <= (t - dmax)) {
+        target_obs = latest_obs[st[i], sg[i]];
+      }else{
+        target_obs = imp_obs[sg[i]][st[i] - (t - dmax)];
       }
+      exp_obs = target_obs * pmfs[1:dmax, spmfs[i]] + 1e-3;
+      pp_obs_tmp[i, 1:dmax] = neg_binomial_2_rng(exp_obs, phi);
     }
+
     // Posterior prediction for final reported data (i.e at t = inf)
     for (k in 1:g) {
       int start_t = t - dmax;
       for (i in 1:dmax) {
         int snap = ts[start_t + i, k];
-        pp_inf_obs[i, k] = sum(obs[1:sl[snap], snap]);
-        pp_inf_obs[i, k] += sum(pp_obs[(sl[snap]+1):dmax, snap]);
+        pp_inf_obs[i, k] = sum(obs[snap, 1:sl[snap]]);
+        pp_inf_obs[i, k] += sum(pp_obs_tmp[snap, (sl[snap]+1):dmax]);
       }
+    }
+    if (pp) {
+    pp_obs = pp_obs_tmp;
     }
   }
 }

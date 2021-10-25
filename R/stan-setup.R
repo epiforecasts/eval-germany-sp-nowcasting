@@ -21,14 +21,18 @@ enw_stan_data <- function(pobs,
                             pobs$metadate[[1]]
                           ),
                           dist = "lognormal",
-                          likelihood = TRUE, debug = FALSE, pp = TRUE) {
+                          likelihood = TRUE, debug = FALSE,
+                          nowcast = TRUE, pp = FALSE) {
+  if (pp) {
+    nowcast <- TRUE
+  }
+
   # check dist type is supported and change to numeric
   dist <- match.arg(dist, c("lognormal", "gamma"))
   dist <- data.table::fcase(
     dist %in% "lognormal", 0,
     dist %in% "gamma", 1
   )
-
   # format latest matrix
   latest_matrix <- pobs$latest[[1]]
   latest_matrix <- data.table::dcast(
@@ -79,7 +83,8 @@ enw_stan_data <- function(pobs,
     dist = dist,
     debug = as.numeric(debug),
     likelihood = as.numeric(likelihood),
-    pp = as.numeric(pp)
+    pp = as.numeric(pp),
+    cast = as.numeric(nowcast)
   )
 
   return(data)
@@ -90,7 +95,7 @@ enw_inits <- function(data) {
     init <- list(
       logmean_int = rnorm(1, 1, 0.1),
       logsd_int = abs(rnorm(1, 0.5, 0.1)),
-      uobs_logsd = abs(rnorm(1, 0, 0.1)),
+      uobs_logsd = array(abs(rnorm(data$g, 0, 0.1))),
       sqrt_phi = abs(rnorm(1, 0, 0.1))
     )
     init$logmean <- rep(init$logmean_int, data$npmfs)
