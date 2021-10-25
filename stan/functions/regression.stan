@@ -30,7 +30,7 @@
 // # make example data
 // intercept <- 1
 // beta <- c(0.1, 0.2, 0.4)
-// design <- t(matrix(c(0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1), 3, 4))
+// design <- t(matrix(c(1, 0, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1), 4, 4))
 // beta_sd <- c(0.1)
 // sd_design <- t(matrix(c(1, 0, 0, 1, 0, 1), 2 ,3))
 // 
@@ -40,18 +40,20 @@
 //
 // Check function works with no effects
 // combine_effects(intercept, as.double(c()), design, beta_sd, sd_design)
+// # 1 1 1 1
 vector combine_effects(real intercept, vector beta, matrix design,
                        vector beta_sd, matrix sd_design) {
   int nobs = rows(design);
   int neffs = num_elements(beta);
   int sds = num_elements(beta_sd);
-  vector[neffs] scaled_beta;
+  vector[neffs + 1] scaled_beta;
   vector[sds + 1] ext_beta_sd;
   ext_beta_sd[1] =  1.0;
   if (neffs) {
     ext_beta_sd[2:(sds+1)] = beta_sd;
-    scaled_beta = beta .* (sd_design * ext_beta_sd);
-    return(intercept + design * scaled_beta);
+    scaled_beta[1] = intercept;
+    scaled_beta[2:(neffs+1)] = beta .* (sd_design * ext_beta_sd);
+    return(design * scaled_beta);
   }else{
     return(rep_vector(intercept, nobs));
   }

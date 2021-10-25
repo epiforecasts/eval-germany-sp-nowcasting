@@ -32,7 +32,7 @@ enw_random_intercept_model <- function(metaobs) {
   # build design matrix for pooled parameters
   design_sd <- enw_design(~ 1 + sd, effects)
 
-  return(list(design = design, design_sd = design_sd))
+  return(list(fixed = fixed, random = random))
 }
 
 enw_day_of_week_model <- function(obs) {
