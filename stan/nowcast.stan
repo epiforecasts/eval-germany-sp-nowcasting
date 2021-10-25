@@ -16,13 +16,13 @@ data {
   int dmax; // maximum possible report date
   int obs[s, dmax]; // obs for each primary date (row) and report date (column)
   int latest_obs[t, g]; // latest obs for each snapshot group
-  int ncmfs; // how many unique cmfs there are
-  int scmfs[s]; // how each snapshot links to a cmf
+  int npmfs; // how many unique pmfs there are
+  int spmfs[s]; // how each snapshot links to a pmf
   int neffs; // number of effects to apply
-  matrix[ncmfs, neffs + 1] design; // design matrix for CMFs
+  matrix[npmfs, neffs + 1] design; // design matrix for pmfs
   int neff_sds; // number of standard deviations to use for pooling
-  matrix[neffs, neff_sds + 1] design_sd; // Pooling CMF design matrix
-  int dist; // distribution used for CMFs (0 = lognormal, 1 = gamma)
+  matrix[neffs, neff_sds + 1] design_sd; // Pooling pmf design matrix
+  int dist; // distribution used for pmfs (0 = lognormal, 1 = gamma)
   // design matrix for dates of report
   //lLinkage between dates of report and report_design matrix
   int debug; // should debug information be shown
@@ -47,9 +47,9 @@ parameters {
 }
 
 transformed parameters{
-  vector<lower=-10, upper=logdmax>[ncmfs] logmean;
-  vector<lower=1e-3, upper=dmax>[ncmfs] logsd;
-  matrix[dmax, ncmfs] cmfs;
+  vector<lower=-10, upper=logdmax>[npmfs] logmean;
+  vector<lower=1e-3, upper=dmax>[npmfs] logsd;
+  matrix[dmax, npmfs] pmfs;
   real phi;
   vector[dmax] imp_obs[g];
   // calculate log mean and sd parameters for each dataset from design matrices
@@ -58,9 +58,9 @@ transformed parameters{
   logsd = combine_effects(log(logsd_int), logsd_eff, design, logsd_sd,
                           design_sd);
   logsd = exp(logsd);
-  // calculate cmfs
-  for (i in 1:ncmfs) {
-    cmfs[, i] = calculate_cmf(logmean[i], logsd[i], dmax, dist);
+  // calculate pmfs
+  for (i in 1:npmfs) {
+    pmfs[, i] = calculate_pmf(logmean[i], logsd[i], dmax, dist);
   }
   // estimate unobserved final reported cases for each group
   for (k in 1:g) {
@@ -93,14 +93,17 @@ model {
   // priors for the intercept of the log normal truncation distribution
   logmean_int ~ normal(0, 1);
   logsd_int ~ normal(0, 1);
-  // priors for effects on truncation distribution
-  for (i in 1:neff_sds) {
-    logmean_sd[i] ~ normal(0, 0.1) T[0,];
-    logsd_sd[i] ~ normal(0, 0.1) T[0,];
-  }
+
+  // priors and scaling for date of reference effects
   if (neffs) {
     logmean_eff ~ std_normal();
     logsd_eff ~ std_normal();
+    if (neff_sds) {
+      for (i in 1:neff_sds) {
+        logmean_sd[i] ~ normal(0, 0.1) T[0,];
+        logsd_sd[i] ~ normal(0, 0.1) T[0,];
+      }
+    }
   }
   // reporting overdispersion (1/sqrt)
   sqrt_phi ~ normal(0, 1) T[0,];
@@ -116,7 +119,7 @@ model {
         }else{
           target_obs = imp_obs[k][st[i] - (t - dmax)];
         }
-        exp_obs = target_obs * cmfs[1:sl[i], scmfs[i]] + 1e-3;
+        exp_obs = target_obs * pmfs[1:sl[i], spmfs[i]] + 1e-3;
         obs[1:sl[i], i] ~ neg_binomial_2(exp_obs, phi);
       }
     }
@@ -137,7 +140,7 @@ generated quantities {
         }else{
           target_obs = imp_obs[k][st[i] - (t - dmax)];
         }
-        exp_obs = target_obs * cmfs[, scmfs[i]] + 1e-3;
+        exp_obs = target_obs * pmfs[, spmfs[i]] + 1e-3;
         pp_obs[, i] = neg_binomial_2_rng(exp_obs, phi);
       }
     }

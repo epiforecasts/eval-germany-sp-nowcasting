@@ -1,12 +1,12 @@
 library(covidregionaldata)
 suppressMessages(library(data.table, quietly = TRUE))
 suppressMessages(library(rstan, quietly = TRUE))
+library(purrr)
 library(here)
-suppressMessages(library(purrr))
-source(here("R", "epinowcast.R"))
-source(here("R", "models.R"))
-source(here("R", "simulate.R"))
-source(here("R", "scenarios.R"))
+
+# load dev code
+functions <- list.files(here("R"), full.names = TRUE)
+walk(functions, source)
 
 # set number of cores to use
 options(mc.cores = 4)
@@ -29,17 +29,17 @@ scenarios <- enw_simulate_lnorm_trunc_obs(scenarios, latest_cases)
 sim_reported_cases <- rbindlist(scenarios$reported_cases)
 
 # Preprocess data
-processed_obs <- enw_preprocess_data(sim_reported_cases)
+pobs <- enw_preprocess_data(sim_reported_cases)
 
 # Construct design matrices for the desired effects
-date_design <- enw_random_intercept_model(processed_obs)
+date_effects <- enw_intercept_model(processed_obs)
 
 # compile model
 model <- rstan::stan_model(here("stan", "nowcast.stan"))
 
 # fit model to example data and produce nowcast
-est <- epinowcast(processed_obs,
-  model = model, date_design = date_design,
+est <- epinowcast(pobs,
+  model = model, date_effects = date_effects,
   control = list(max_treedepth = 12, adapt_delta = 0.8)
 )
 

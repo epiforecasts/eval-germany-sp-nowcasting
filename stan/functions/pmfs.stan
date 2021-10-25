@@ -43,16 +43,16 @@ vector discretised_gamma_pmf(int[] y, real mu, real sigma, int max_val) {
   return(pmf);
 }
 // Calculate a truncation using a parametric distribution
-vector calculate_cmf(real logmean, real logsd, int cmf_max, int dist) {
-  vector[cmf_max] cmf;
-  int indices[cmf_max];
-  for (i in 1:cmf_max) {
+vector calculate_pmf(real logmean, real logsd, int pmf_max, int dist) {
+  vector[pmf_max] pmf;
+  int indices[pmf_max];
+  for (i in 1:pmf_max) {
     indices[i] = i - 1; 
   }
   if (dist == 0) {
-    cmf = discretised_lognormal_pmf(indices, logmean, logsd, cmf_max);
+    pmf = discretised_lognormal_pmf(indices, logmean, logsd, pmf_max);
   }else if (dist == 1) {
-    cmf = discretised_gamma_pmf(indices, exp(logmean), logsd, cmf_max);
+    pmf = discretised_gamma_pmf(indices, exp(logmean), logsd, pmf_max);
   }
-  return(cmf);
+  return(pmf);
 }
