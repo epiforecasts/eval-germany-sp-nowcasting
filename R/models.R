@@ -10,10 +10,10 @@ enw_random_intercept_model <- function(pobs) {
   metaobs <- enw_dates_to_factors(metaobs)
 
   # build effects design matrix (with  no contrasts)
-  design <- enw_design(~test, metaobs, no_contrasts = TRUE)
+  design <- enw_design(~"date", metaobs, no_contrasts = TRUE)
 
   # extract effects metadata
-  effects <- enw_effects_metadata(design)
+  effects <- enw_effects_metadata(design$design)
 
   # construct random effect for date
   effects <- enw_add_pooling_effect(effects, "date")
