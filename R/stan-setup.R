@@ -70,8 +70,8 @@ enw_stan_data <- function(pobs,
     dmax = pobs$max_delay[[1]],
     obs = as.matrix(pobs$reporting_triangle[[1]][, -c(1:2)]),
     latest_obs = latest_matrix,
-    ncmfs = nrow(date_effects$fixed$design),
-    scmfs = date_effects$fixed$index,
+    npmfs = nrow(date_effects$fixed$design),
+    spmfs = date_effects$fixed$index,
     neffs = ncol(date_effects$fixed$design) - 1,
     design = date_effects$fixed$design,
     neff_sds = ncol(date_effects$random$design) - 1,
@@ -93,8 +93,8 @@ enw_inits <- function(data) {
       uobs_logsd = abs(rnorm(1, 0, 0.1)),
       sqrt_phi = abs(rnorm(1, 0, 0.1))
     )
-    init$logmean <- rep(init$logmean_int, data$ncmfs)
-    init$logsd <- rep(init$logsd_int, data$ncmfs)
+    init$logmean <- rep(init$logmean_int, data$npmfs)
+    init$logsd <- rep(init$logsd_int, data$npmfs)
     init$phi <- 1 / sqrt(init$sqrt_phi)
 
     if (data$neffs > 0) {

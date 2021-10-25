@@ -10,21 +10,21 @@ enw_fit <- function(data, model, inits, ...) {
   return(fit)
 }
 
-epinowcast <- function(preprocessed_obs,
+epinowcast <- function(pobs,
                        model = NULL, probs = c(0.2, 0.5, 0.9),
-                       dist = "lognormal", date_design = NULL,
+                       dist = "lognormal", date_effects = NULL,
                        likelihood = TRUE, debug = FALSE, pp = TRUE,
                        ...) {
-  stan_data <- enw_stan_data(preprocessed_obs,
-    dist = dist, date_design = date_design,
+  stan_data <- enw_stan_data(pobs,
+    dist = dist, date_effects = date_effects,
     likelihood = likelihood, debug = debug, pp = pp
   )
 
   inits <- enw_inits(stan_data)
 
-  fit <- enw_fit(data = stan_data, model = model, inits = inits, ...)
+  fit <- enw_fit(data = stan_data, model = model, inits = inits)
 
-  out <- preprocessed_obs[, `:=`(
+  out <- pobs[, `:=`(
     stan_data = list(stan_data),
     inits = list(inits),
     fit = list(fit)
