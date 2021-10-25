@@ -19,7 +19,7 @@ latest_cases <- latest_cases[, .(date, confirm = cases_new)]
 # get a range of dates to generate synthetic data for
 scenarios <- enw_random_intercept_scenario(
   obs = latest_cases,
-  snapshots = seq(20, 0, by = -1),
+  snapshots = seq(30, 0, by = -1),
   logmean = 1.9, logmean_sd = 0.1,
   logsd = 1, logsd_sd = 0.1
 )
@@ -32,7 +32,7 @@ sim_reported_cases <- rbindlist(scenarios$reported_cases)
 pobs <- enw_preprocess_data(sim_reported_cases)
 
 # Construct design matrices for the desired effects
-date_effects <- enw_intercept_model(processed_obs)
+date_effects <- enw_intercept_model(pobs$metadate[[1]])
 
 # compile model
 model <- rstan::stan_model(here("stan", "nowcast.stan"))
@@ -40,7 +40,8 @@ model <- rstan::stan_model(here("stan", "nowcast.stan"))
 # fit model to example data and produce nowcast
 est <- epinowcast(pobs,
   model = model, date_effects = date_effects,
-  control = list(max_treedepth = 12, adapt_delta = 0.8)
+  control = list(max_treedepth = 12, adapt_delta = 0.8),
+  debug = TRUE, pp = FALSE
 )
 
 # observations linked to truncation adjusted estimates
