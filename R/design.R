@@ -72,8 +72,8 @@ enw_effects_metadata <- function(design) {
   return(dt[])
 }
 
-enw_add_pooling_effect <- function(effects, string) {
-  effects[, sd := ifelse(grepl(string, effects), 1, 0)]
+enw_add_pooling_effect <- function(effects, string, var_name = "sd") {
+  effects[, (var_name) := ifelse(grepl(string, effects), 1, 0)]
   effects[grepl("report_date", effects), `(Intercept)` := 0] # nolint
   return(effects[])
 }
