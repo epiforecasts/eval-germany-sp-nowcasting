@@ -28,8 +28,13 @@ scenarios <- enw_random_intercept_scenario(
 scenarios <- enw_simulate_lnorm_trunc_obs(scenarios, latest_cases)
 sim_reported_cases <- rbindlist(scenarios$reported_cases)
 
+sim_reported_cases <- rbind(
+  copy(sim_reported_cases)[, age := 1],
+  copy(sim_reported_cases)[, age := 2]
+)
+
 # Preprocess data
-pobs <- enw_preprocess_data(sim_reported_cases)
+pobs <- enw_preprocess_data(sim_reported_cases, by = "age")
 
 # Construct design matrices for the desired effects
 date_effects <- enw_intercept_model(pobs$metadate[[1]])

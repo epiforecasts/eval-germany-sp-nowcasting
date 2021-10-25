@@ -12,6 +12,7 @@ Depends:
     R (>= 2.10)
 Imports:
     callr,
+    covidregionaldata,
     data.table,
     future,
     future.callr,

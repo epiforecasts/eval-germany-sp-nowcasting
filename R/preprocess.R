@@ -89,7 +89,8 @@ enw_preprocess_data <- function(obs, by = c(), max_delay = 20,
   )
 
   # update grouping in case any are now missing
-  obs <- enw_assign_group(obs[, old_group := group], by)
+  setnames(obs, "group", "old_group")
+  obs <- enw_assign_group(obs, by)
 
   # update diff data groups using updated groups
   diff_obs <- merge(
@@ -113,7 +114,7 @@ enw_preprocess_data <- function(obs, by = c(), max_delay = 20,
     reporting_triangle = list(reporting_triangle),
     metadate = list(enw_metadata(obs)),
     metareport = list(enw_metadata(obs, date_to_drop = "date")),
-    time = nrow(latest),
+    time = nrow(latest[group == 1]),
     snapshots = nrow(unique(obs[, .(group, report_date)])),
     groups = length(unique(obs$group)),
     max_delay = max_delay
