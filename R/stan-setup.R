@@ -16,13 +16,12 @@ enw_default_design <- function(design, rows) {
   )
 }
 
-enw_stan_data <- function(pobs, date_design = list(NULL, NULL),
+enw_stan_data <- function(pobs,
+                          date_effects = enw_intercept_model(
+                            pobs$metadate[[1]]
+                          ),
                           dist = "lognormal",
                           likelihood = TRUE, debug = FALSE, pp = TRUE) {
-
-  # generate unique design matrix and lookup
-  date_design <- enw_unique_design(date_design)
-
   # check dist type is supported and change to numeric
   dist <- match.arg(dist, c("lognormal", "gamma"))
   dist <- data.table::fcase(
@@ -63,27 +62,27 @@ enw_stan_data <- function(pobs, date_design = list(NULL, NULL),
   data <- list(
     t = pobs$time[[1]],
     s = pobs$snapshots[[1]],
-    g = pobbs$groups[[1]],
+    g = pobs$groups[[1]],
     st = snap_time,
     ts = snap_lookup,
     sl = snap_length,
     sg = unique(pobs$new_confirm[[1]][, .(date, group)])$group,
     dmax = pobs$max_delay[[1]],
     obs = as.matrix(pobs$reporting_triangle[[1]][, -c(1:2)]),
-    latest_obs = latest_obs,
-    ncmfs = nrow(design$fixed),
-    scmfs = design$lookup,
-    neffs = design$neffs,
-    design = design$fixed,
-    neff_sds = design$neffs_sd,
-    design_sd = design$pool,
+    latest_obs = latest_matrix,
+    ncmfs = nrow(date_effects$fixed$design),
+    scmfs = date_effects$fixed$index,
+    neffs = ncol(date_effects$fixed$design) - 1,
+    design = date_effects$fixed$design,
+    neff_sds = ncol(date_effects$random$design) - 1,
+    design_sd = date_effects$random$design,
     dist = dist,
     debug = as.numeric(debug),
     likelihood = as.numeric(likelihood),
-    pp = as.numeric(pp),
+    pp = as.numeric(pp)
   )
 
-  return(out)
+  return(data)
 }
 
 enw_inits <- function(data) {
@@ -94,8 +93,8 @@ enw_inits <- function(data) {
       uobs_logsd = abs(rnorm(1, 0, 0.1)),
       sqrt_phi = abs(rnorm(1, 0, 0.1))
     )
-    init$logmean <- rep(init$logmean_init, data$ncmfs)
-    init$logsd <- rep(init$logsd_init, data$ncmfs)
+    init$logmean <- rep(init$logmean_int, data$ncmfs)
+    init$logsd <- rep(init$logsd_int, data$ncmfs)
     init$phi <- 1 / sqrt(init$sqrt_phi)
 
     if (data$neffs > 0) {

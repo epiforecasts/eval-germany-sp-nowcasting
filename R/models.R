@@ -1,10 +1,21 @@
-enw_intercept_model <- function(pobs) {
-  return(list(design = NULL, design_sd = NULL))
+enw_intercept_model <- function(metaobs) {
+
+  # build effects design matrix (with  no contrasts)
+  fixed <- enw_design(~1, metaobs, sparse = TRUE)
+
+  # extract effects metadata
+  effects <- enw_effects_metadata(fixed$design)
+
+  # construct random effect for date
+  effects <- enw_add_pooling_effect(effects, "date")
+
+  # build design matrix for pooled parameters
+  random <- enw_design(~1, effects, sparse = FALSE)
+
+  return(list(fixed = fixed, random = random))
 }
 
-enw_random_intercept_model <- function(pobs) {
-  # extract metadata about reported snapshots
-  metaobs <- pobs$metadate[[1]]
+enw_random_intercept_model <- function(metaobs) {
 
   # turn dates into factors
   metaobs <- enw_dates_to_factors(metaobs)
@@ -19,7 +30,7 @@ enw_random_intercept_model <- function(pobs) {
   effects <- enw_add_pooling_effect(effects, "date")
 
   # build design matrix for pooled parameters
-  design_sd <- enw_design(~ fixed + sd, effects)
+  design_sd <- enw_design(~ 1 + sd, effects)
 
   return(list(design = design, design_sd = design_sd))
 }
