@@ -74,6 +74,6 @@ enw_effects_metadata <- function(design) {
 
 enw_add_pooling_effect <- function(effects, string) {
   effects[, sd := ifelse(grepl(string, effects), 1, 0)]
-  effects[grepl("report_date", effects), fixed := 0]
+  effects[grepl("report_date", effects), `(Intercept)` := 0] # nolint
   return(effects[])
 }

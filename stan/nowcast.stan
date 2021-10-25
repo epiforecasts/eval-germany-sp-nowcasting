@@ -19,7 +19,7 @@ data {
   int ncmfs; // how many unique cmfs there are
   int scmfs[s]; // how each snapshot links to a cmf
   int neffs; // number of effects to apply
-  matrix[ncmfs, neffs ? neffs : 1] design; // design matrix for CMFs
+  matrix[ncmfs, neffs + 1] design; // design matrix for CMFs
   int neff_sds; // number of standard deviations to use for pooling
   matrix[neffs, neff_sds + 1] design_sd; // Pooling CMF design matrix
   int dist; // distribution used for CMFs (0 = lognormal, 1 = gamma)
