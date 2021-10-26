@@ -57,8 +57,8 @@ transformed parameters{
   vector<lower=-10, upper=logdmax>[npmfs] logmean;
   vector<lower=1e-3, upper=dmax>[npmfs] logsd;
   matrix[dmax, npmfs] pmfs; // sparse report distributions
-  vector[urds] srdh; // sparse report day hazards
-  matrix[rd, g] rdh; // report day hazards
+  vector[urds] srdlh; // sparse report day logit hazards
+  matrix[rd, g] rdlh; // report day logit hazards
   vector[dmax] imp_obs[g]; // Expected imputed observations
   real phi; // Transformed overdispersion (joint across all observations)
 
@@ -73,11 +73,11 @@ transformed parameters{
     pmfs[, i] = calculate_pmf(logmean[i], logsd[i], dmax, dist);
   }
   // calculate sparse report date effects with forced 0 intercept
-  srdh = combine_effects(0, rd_eff, rd_fixed, rd_eff_sd, rd_random);
+  srdlh = combine_effects(0, rd_eff, rd_fixed, rd_eff_sd, rd_random);
   // allocate across all report dates and groups
   for (k in 1:g) {
     for (i in 1:rd) {
-      rdh[i, k] = srdh[rdlurd[k, i]];
+      rdlh[i, k] = srdlh[rdlurd[k, i]];
     }
   }
   // estimate unobserved final reported cases for each group
@@ -147,7 +147,7 @@ model {
         tar_obs = imp_obs[sg[i]][st[i] - (t - dmax)];
       }
       exp_obs = expected_obs(tar_obs, pmfs[1:sl[i],dpmfs[i]],
-                             rdh[st[i]:(st[i] + sl[i]), sg[i]]);
+                             rdlh[st[i]:(st[i] + sl[i]), sg[i]]);
       obs[i, 1:sl[i]] ~ neg_binomial_2(exp_obs, phi);
     }
   }
@@ -168,7 +168,7 @@ generated quantities {
         tar_obs = imp_obs[sg[i]][st[i] - (t - dmax)];
       }
       exp_obs = expected_obs(tar_obs, pmfs[1:dmax,dpmfs[i]],
-                             rdh[st[i]:(st[i] + dmax), sg[i]]);
+                             rdlh[st[i]:(st[i] + dmax), sg[i]]);
       pp_obs_tmp[i, 1:dmax] = neg_binomial_2_rng(exp_obs, phi);
     }
 
