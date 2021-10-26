@@ -64,6 +64,8 @@ transformed parameters{
     pmfs[, i] = calculate_pmf(logmean[i], logsd[i], dmax, dist);
   }
   // estimate unobserved final reported cases for each group
+  // this could be any forecasting model but here its a 
+  // first order random walk for each group on the log scale.
   for (k in 1:g) {
     real llast_obs;
     for (i in 1:dmax) {
@@ -88,8 +90,8 @@ transformed parameters{
 model {
   // priors for unobserved expected reported cases
   for (i in 1:g) {
-    uobs_logsd[g] ~ normal(0, 5) T[0,];
-    log_uobs_resids[g] ~ std_normal();
+    uobs_logsd[i] ~ normal(0, 5) T[0,];
+    log_uobs_resids[i] ~ std_normal();
   }
   // priors for the intercept of the log normal truncation distribution
   logmean_int ~ normal(0, 1);
