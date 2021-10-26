@@ -51,16 +51,17 @@ enw_reporting_triangle <- function(obs) {
     obs, group + date ~ delay,
     value.var = "new_confirm", fill = 0
   )
+  data.table::setorderv(reports, c("date", "group"))
   return(reports[])
 }
 
 enw_reporting_triangle_to_long <- function(obs) {
   reports_long <- data.table::melt(
     obs,
-    id.vars = c("group", "date"),
+    id.vars = c("date", "group"),
     variable.name = "delay", value.name = "new_confirm"
   )
-  data.table::setorderv(reports_long, c("group", "date"))
+  data.table::setorderv(reports_long, c("date", "group"))
   return(reports_long[])
 }
 
