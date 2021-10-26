@@ -19,10 +19,19 @@ data {
   int npmfs; // how many unique pmfs there are
   int dpmfs[s]; // how each date links to a pmf
   int neffs; // number of effects to apply
-  matrix[npmfs, neffs + 1] design; // design matrix for pmfs
+  matrix[npmfs, neffs + 1] d_fixed; // design matrix for pmfs
   int neff_sds; // number of standard deviations to use for pooling
-  matrix[neffs, neff_sds + 1] design_sd; // Pooling pmf design matrix
+  matrix[neffs, neff_sds + 1] d_random; // Pooling pmf design matrix
   int dist; // distribution used for pmfs (0 = lognormal, 1 = gamma)
+
+  int rd; // how many reporting days are there (t + dmax)
+  int urds; // how many unique reporting days are there
+  int rdlurd[g, rd]; // how each report date links to a sparse report effect
+  int nrd_effs; // number of report day effects to apply
+  matrix[urds, nrd_effs + 1] rd_fixed; // design matrix for report dates
+  int nrd_eff_sds; // number of standard deviations to use for pooling for rds
+  matrix[nrd_effs, nrd_eff_sds + 1] d_random; // Pooling pmf design matrix
+
   // design matrix for dates of report
   //lLinkage between dates of report and report_design matrix
   int debug; // should debug information be shown
@@ -42,8 +51,10 @@ parameters {
   real<lower=1e-3, upper = dmax> logsd_int; // logsd intercept
   vector[neffs] logmean_eff; // unscaled modifiers to log mean
   vector[neffs] logsd_eff; // unscaled modifiers to log sd
+  vector[nrd_eff] rd_eff; // unscaled modifiers to report date hazard
   vector<lower=0>[neff_sds] logmean_sd; // pooled modifiers to logmean
-  vector<lower=0>[neff_sds] logsd_sd; // ppoled modifiers to logsd
+  vector<lower=0>[neff_sds] logsd_sd; // pooled modifiers to logsd
+  vector<lower=0>[nrd_eff_sds] rd_eff_sd; // pooled modifiers to report date
   real<lower=0, upper=1e4> sqrt_phi; // Overall dispersion by group
 }
 
@@ -54,14 +65,20 @@ transformed parameters{
   real phi;
   vector[dmax] imp_obs[g];
   // calculate log mean and sd parameters for each dataset from design matrices
-  logmean = combine_effects(logmean_int, logmean_eff, design, logmean_sd,
-                            design_sd);
-  logsd = combine_effects(log(logsd_int), logsd_eff, design, logsd_sd,
-                          design_sd);
+  logmean = combine_effects(logmean_int, logmean_eff, d_fixed, logmean_sd,
+                            d_random);
+  logsd = combine_effects(log(logsd_int), logsd_eff, d_fixed, logsd_sd,
+                          d_random);
   logsd = exp(logsd);
   // calculate pmfs
   for (i in 1:npmfs) {
     pmfs[, i] = calculate_pmf(logmean[i], logsd[i], dmax, dist);
+  }
+  // calculate report date effects with forced 0 intercept
+  srd_hazard = combine_effects(0, rd_eff, rd_fixed, rd_efff_sd, rd_random);
+  for (k in 1:g) {
+    for (i in 1:rd) {
+      rd_hazard[k, i] = srd_hazard[rdlurd[k, i]];
   }
   // estimate unobserved final reported cases for each group
   // this could be any forecasting model but here its a 
@@ -105,6 +122,15 @@ model {
       for (i in 1:neff_sds) {
         logmean_sd[i] ~ normal(0, 0.1) T[0,];
         logsd_sd[i] ~ normal(0, 0.1) T[0,];
+      }
+    }
+  }
+  // priors and scaling for date of report effects
+  if (nrd_effs) {
+    rd_eff ~ std_normal();
+    if (nrd_eff_sds) {
+      for (i in 1:nrd_eff_sds) {
+        rd_eff_sd[i] ~ normal(0, 0.1) T[0,];
       }
     }
   }
