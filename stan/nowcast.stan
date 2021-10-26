@@ -17,7 +17,7 @@ data {
   int obs[s, dmax]; // obs for each primary date (row) and report date (column)
   int latest_obs[t, g]; // latest obs for each snapshot group
   int npmfs; // how many unique pmfs there are
-  int spmfs[s]; // how each snapshot links to a pmf
+  int dpmfs[s]; // how each date links to a pmf
   int neffs; // number of effects to apply
   matrix[npmfs, neffs + 1] design; // design matrix for pmfs
   int neff_sds; // number of standard deviations to use for pooling
@@ -120,7 +120,7 @@ model {
       }else{
         target_obs = imp_obs[sg[i]][st[i] - (t - dmax)];
       }
-      exp_obs = target_obs * pmfs[1:sl[i], spmfs[i]] + 1e-3;
+      exp_obs = target_obs * pmfs[1:sl[i], dpmfs[i]] + 1e-3;
       obs[i, 1:sl[i]] ~ neg_binomial_2(exp_obs, phi);
     }
   }
@@ -140,7 +140,7 @@ generated quantities {
       }else{
         target_obs = imp_obs[sg[i]][st[i] - (t - dmax)];
       }
-      exp_obs = target_obs * pmfs[1:dmax, spmfs[i]] + 1e-3;
+      exp_obs = target_obs * pmfs[1:dmax,dpmfs[i]] + 1e-3;
       pp_obs_tmp[i, 1:dmax] = neg_binomial_2_rng(exp_obs, phi);
     }
 
