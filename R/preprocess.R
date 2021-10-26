@@ -6,6 +6,29 @@ enw_metadata <- function(obs, date_to_drop = c("report_date")) {
   return(metaobs[])
 }
 
+enw_extend_report_date <- function(metaobs, max_delay = 20) {
+  exts <- data.table::copy(metaobs)
+  exts <- exts[, .SD[report_date == max(report_date)], by = group]
+  exts <- split(exts, by = "group")
+  exts <- purrr::map(
+    exts,
+    ~ data.table::data.table(
+      extend_date = .$report_date + 1:(max_delay - 1),
+      .
+    )
+  )
+  exts <- data.table::rbindlist(exts)
+  exts[, report_date := extend_date][, extend_date := NULL]
+  exts[, observed := FALSE]
+
+  exts <- rbind(
+    data.table::copy(metaobs)[, observed := TRUE],
+    exts[, observed := FALSE]
+  )
+  data.table::setorderv(exts, c("group", "report_date"))
+  return(exts[])
+}
+
 enw_assign_group <- function(obs, by = c()) {
   obs <- data.table::as.data.table(obs)
   if (length(by) == 0) {
@@ -108,13 +131,17 @@ enw_preprocess_data <- function(obs, by = c(), max_delay = 20,
   # extract latest data
   latest <- enw_latest_data(obs)
 
+  # extract and extend report date meta data to include unobserved reports
+  metareport <- enw_metadata(obs, date_to_drop = "date")
+  metareport <- enw_extend_report_date(metareport, max_delay = max_delay)
+
   out <- data.table::data.table(
     obs = list(obs),
     new_confirm = list(diff_obs),
     latest = list(latest),
     reporting_triangle = list(reporting_triangle),
     metareference = list(enw_metadata(obs)),
-    metareport = list(enw_metadata(obs, date_to_drop = "date")),
+    metareport = list(metareport),
     time = nrow(latest[group == 1]),
     snapshots = nrow(unique(obs[, .(group, report_date)])),
     groups = length(unique(obs$group)),
