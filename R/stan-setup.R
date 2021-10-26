@@ -17,8 +17,11 @@ enw_default_design <- function(design, rows) {
 }
 
 enw_stan_data <- function(pobs,
-                          date_effects = enw_intercept_model(
-                            pobs$metadate[[1]]
+                          reference_effects = enw_intercept_model(
+                            pobs$metareference[[1]]
+                          ),
+                          report_effects = enw_intercept_model(
+                            pobs$metareport[[1]]
                           ),
                           dist = "lognormal",
                           likelihood = TRUE, debug = FALSE,
@@ -74,12 +77,12 @@ enw_stan_data <- function(pobs,
     dmax = pobs$max_delay[[1]],
     obs = as.matrix(pobs$reporting_triangle[[1]][, -c(1:2)]),
     latest_obs = latest_matrix,
-    npmfs = nrow(date_effects$fixed$design),
-    dpmfs = date_effects$fixed$index,
-    neffs = ncol(date_effects$fixed$design) - 1,
-    d_fixed = date_effects$fixed$design,
-    neff_sds = ncol(date_effects$random$design) - 1,
-    d_random = date_effects$random$design,
+    npmfs = nrow(reference_effects$fixed$design),
+    dpmfs = reference_effects$fixed$index,
+    neffs = ncol(reference_effects$fixed$design) - 1,
+    d_fixed = reference_effects$fixed$design,
+    neff_sds = ncol(reference_effects$random$design) - 1,
+    d_random = reference_effects$random$design,
     dist = dist,
     debug = as.numeric(debug),
     likelihood = as.numeric(likelihood),

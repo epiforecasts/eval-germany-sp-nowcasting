@@ -42,8 +42,8 @@ transformed data{
 parameters {
   real<lower=0> uobs_logsd[g]; // standard deviation of rw for primary obs 
   vector[dmax] log_uobs_resids[g]; // unscaled rw for primary obs
-  real<lower=-10, upper=logdmax> logmean_int; // logmean intercept
-  real<lower=1e-3, upper = dmax> logsd_int; // logsd intercept
+  real<lower=-10, upper =logdmax> logmean_int; // logmean intercept
+  real<lower=1e-3, upper =dmax> logsd_int; // logsd intercept
   vector[neffs] logmean_eff; // unscaled modifiers to log mean
   vector[neffs] logsd_eff; // unscaled modifiers to log sd
   vector[nrd_effs] rd_eff; // unscaled modifiers to report date hazard

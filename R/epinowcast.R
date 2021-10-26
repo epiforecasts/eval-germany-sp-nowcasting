@@ -11,14 +11,20 @@ enw_fit <- function(data, model, inits, ...) {
 }
 
 epinowcast <- function(pobs,
-                       model = NULL, probs = c(0.2, 0.5, 0.9),
-                       dist = "lognormal", date_effects = NULL,
-                       nowcast = TRUE, likelihood = TRUE, debug = FALSE,
-                       pp = FALSE, ...) {
+                       reference_effects = enw_intercept_model(
+                         pobs$metareference[[1]]
+                       ),
+                       report_effects = enw_intercept_model(
+                         pobs$metareport[[1]]
+                       ),
+                       dist = "lognormal", probs = c(0.2, 0.5, 0.9),
+                       model = NULL, nowcast = TRUE, likelihood = TRUE,
+                       debug = FALSE, pp = FALSE, ...) {
   stan_data <- enw_stan_data(pobs,
-    dist = dist, date_effects = date_effects,
-    likelihood = likelihood, debug = debug, pp = pp,
-    nowcast = nowcast
+    reference_effects = reference_effects,
+    report_effects = report_effects,
+    dist = dist, nowcast = nowcast,
+    likelihood = likelihood, debug = debug, pp = pp
   )
 
   inits <- enw_inits(stan_data)
