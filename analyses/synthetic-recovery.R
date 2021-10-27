@@ -27,7 +27,7 @@ scenarios <- enw_random_intercept_scenario(
 # simulate observations
 scenarios <- enw_simulate_lnorm_trunc_obs(scenarios, latest_cases)
 sim_reported_cases <- rbindlist(scenarios$reported_cases)
-
+setnames(sim_reported_cases, "date", "reference_date")
 sim_reported_cases <- rbind(
   copy(sim_reported_cases)[, age := 1],
   copy(sim_reported_cases)[, age := 2]
@@ -36,15 +36,19 @@ sim_reported_cases <- rbind(
 # Preprocess data
 pobs <- enw_preprocess_data(sim_reported_cases, by = "age")
 
-# Construct design matrices for the desired effects
-date_effects <- enw_intercept_model(pobs$metadate[[1]])
+# Construct design matrices for the desired reference date effects
+reference_effects <- enw_intercept_model(pobs$metareference[[1]])
+
+# Construct design matrices for the desired report day effects
+report_effects <- enw_intercept_model(pobs$metareport[[1]])
 
 # compile model
 model <- rstan::stan_model(here("stan", "nowcast.stan"))
 
 # fit model to example data and produce nowcast
 est <- epinowcast(pobs,
-  model = model, date_effects = date_effects,
+  model = model,
+  report_effects = report_effects, reference_effects = reference_effects,
   control = list(max_treedepth = 12, adapt_delta = 0.8),
   debug = TRUE, pp = FALSE
 )
