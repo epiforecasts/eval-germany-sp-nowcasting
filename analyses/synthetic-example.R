@@ -50,7 +50,7 @@ est <- epinowcast(pobs,
   model = model,
   report_effects = report_effects, reference_effects = reference_effects,
   control = list(max_treedepth = 12, adapt_delta = 0.8),
-  debug = TRUE, pp = FALSE
+  debug = TRUE, pp = FALSE, save_warmup = FALSE
 )
 
 # observations linked to truncation adjusted estimates
