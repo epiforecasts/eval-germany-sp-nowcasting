@@ -15,6 +15,8 @@
         print("Logmean and Logsd for pmf");
         print(logmean[i]);
         print(logsd[i]);
+        print("Unique report day hazards");
+        print(srdlh);
         print("Overdispersion");
         print(sqrt_phi);
       }

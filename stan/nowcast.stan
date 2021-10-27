@@ -22,7 +22,7 @@ data {
   int neff_sds; // number of standard deviations to use for pooling
   matrix[neffs, neff_sds + 1] d_random; // Pooling pmf design matrix
   int dist; // distribution used for pmfs (0 = lognormal, 1 = gamma)
-  int rd; // how many reporting days are there (t + dmax)
+  int rd; // how many reporting days are there (t + dmax - 1)
   int urds; // how many unique reporting days are there
   int rdlurd[g, rd]; // how each report date links to a sparse report effect
   int nrd_effs; // number of report day effects to apply
@@ -42,8 +42,8 @@ transformed data{
 parameters {
   real<lower=0> uobs_logsd[g]; // standard deviation of rw for primary obs 
   vector[dmax] log_uobs_resids[g]; // unscaled rw for primary obs
-  real<lower=-10, upper =logdmax> logmean_int; // logmean intercept
-  real<lower=1e-3, upper =dmax> logsd_int; // logsd intercept
+  real<lower=-10, upper=logdmax> logmean_int; // logmean intercept
+  real<lower=1e-3, upper=dmax> logsd_int; // logsd intercept
   vector[neffs] logmean_eff; // unscaled modifiers to log mean
   vector[neffs] logsd_eff; // unscaled modifiers to log sd
   vector[nrd_effs] rd_eff; // unscaled modifiers to report date hazard
@@ -113,7 +113,6 @@ model {
   // priors for the intercept of the log normal truncation distribution
   logmean_int ~ normal(0, 1);
   logsd_int ~ normal(0, 1);
-
   // priors and scaling for date of reference effects
   if (neffs) {
     logmean_eff ~ std_normal();
@@ -130,7 +129,7 @@ model {
     rd_eff ~ std_normal();
     if (nrd_eff_sds) {
       for (i in 1:nrd_eff_sds) {
-        rd_eff_sd[i] ~ normal(0, 0.1) T[0,];
+        rd_eff_sd[i] ~ normal(0, 1) T[0,];
       }
     }
   }
@@ -181,6 +180,8 @@ generated quantities {
         pp_inf_obs[i, k] += sum(pp_obs_tmp[snap, (sl[snap]+1):dmax]);
       }
     }
+    // If posterior predictions for all observations are needed copy
+    // from a temporary object to a permanent one
     if (pp) {
     pp_obs = pp_obs_tmp;
     }
