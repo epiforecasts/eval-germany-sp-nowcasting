@@ -148,7 +148,8 @@ enw_preprocess_data <- function(obs, by = c(), max_delay = 20,
     time = nrow(latest[group == 1]),
     snapshots = nrow(unique(obs[, .(group, report_date)])),
     groups = length(unique(obs$group)),
-    max_delay = max_delay
+    max_delay = max_delay,
+    max_date = max(obs$report_date)
   )
   return(out[])
 }

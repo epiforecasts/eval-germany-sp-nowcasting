@@ -19,7 +19,7 @@ latest_cases <- latest_cases[, .(date, confirm = cases_new)]
 # get a range of dates to generate synthetic data for
 scenarios <- enw_random_intercept_scenario(
   obs = latest_cases,
-  snapshots = seq(30, 0, by = -1),
+  snapshots = seq(6 * 7, 0, by = -1),
   logmean = 1.9, logmean_sd = 0.1,
   logsd = 1, logsd_sd = 0.1
 )
@@ -40,7 +40,7 @@ pobs <- enw_preprocess_data(sim_reported_cases, by = "age")
 reference_effects <- enw_intercept_model(pobs$metareference[[1]])
 
 # Construct design matrices for the desired report day effects
-report_effects <- enw_day_of_week_model(pobs$metareport[[1]])
+report_effects <- enw_intercept_model(pobs$metareport[[1]])
 
 # compile model
 model <- rstan::stan_model(here("stan", "nowcast.stan"))
