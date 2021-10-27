@@ -65,7 +65,7 @@ enw_stan_data <- function(pobs,
   snap_time[, t := 1:.N, by = "group"]
   snap_time <- snap_time$t
 
-  # convert to stan list
+  # Format indexing and observed data
   data <- list(
     t = pobs$time[[1]],
     s = pobs$snapshots[[1]],
@@ -76,20 +76,44 @@ enw_stan_data <- function(pobs,
     sg = unique(pobs$new_confirm[[1]][, .(date, group)])$group,
     dmax = pobs$max_delay[[1]],
     obs = as.matrix(pobs$reporting_triangle[[1]][, -c(1:2)]),
-    latest_obs = latest_matrix,
+    latest_obs = latest_matrix
+  )
+
+  # Add reference date data
+  data <- c(data, list(
     npmfs = nrow(reference_effects$fixed$design),
     dpmfs = reference_effects$fixed$index,
     neffs = ncol(reference_effects$fixed$design) - 1,
     d_fixed = reference_effects$fixed$design,
     neff_sds = ncol(reference_effects$random$design) - 1,
-    d_random = reference_effects$random$design,
+    d_random = reference_effects$random$design
+  ))
+
+  # map report date effects to groups and days
+  report_date_eff_ind <- matrix(
+    report_effects$fixed$index,
+    ncol = data$g, nrow = data$t + data$dmax - 1
+  )
+
+  # Add report date data
+  data <- c(data, list(
+    rd = data$t + data$dmax - 1,
+    urds = nrow(report_effects$fixed$design),
+    rdlurd = report_date_eff_ind,
+    nrd_effs = ncol(report_effects$fixed$design) - 1,
+    rd_fixed = report_effects$fixed$design,
+    nrd_eff_sds = ncol(report_effects$random$design) - 1,
+    rd_random = report_effects$random$design
+  ))
+
+  # Add model options
+  data <- c(data, list(
     dist = dist,
     debug = as.numeric(debug),
     likelihood = as.numeric(likelihood),
     pp = as.numeric(pp),
     cast = as.numeric(nowcast)
-  )
-
+  ))
   return(data)
 }
 
@@ -104,10 +128,14 @@ enw_inits <- function(data) {
     init$logmean <- rep(init$logmean_int, data$npmfs)
     init$logsd <- rep(init$logsd_int, data$npmfs)
     init$phi <- 1 / sqrt(init$sqrt_phi)
-
+    # initialise reference date effects
     if (data$neffs > 0) {
       data$logmean_eff <- rnorm(data$neffs, 0, 0.01)
       data$logsd_eff <- rnorm(data$neffs, 0, 0.01)
+    }
+    # initialise report date effects
+    if (data$nrd_effs > 0) {
+      data$rd_eff <- rnorm(data$nrd_effs, 0, 0.01)
     }
     return(init)
   }
