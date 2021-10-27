@@ -66,6 +66,7 @@ enw_stan_data <- function(pobs,
   snap_time <- snap_time$t
 
   # Format indexing and observed data
+  # See stan code for docs on what all of these are
   data <- list(
     t = pobs$time[[1]],
     s = pobs$snapshots[[1]],

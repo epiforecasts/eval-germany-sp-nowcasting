@@ -24,7 +24,7 @@ data {
   int dist; // distribution used for pmfs (0 = lognormal, 1 = gamma)
   int rd; // how many reporting days are there (t + dmax - 1)
   int urds; // how many unique reporting days are there
-  int rdlurd[g, rd]; // how each report date links to a sparse report effect
+  int rdlurd[rd, g]; // how each report date links to a sparse report effect
   int nrd_effs; // number of report day effects to apply
   matrix[urds, nrd_effs + 1] rd_fixed; // design matrix for report dates
   int nrd_eff_sds; // number of standard deviations to use for pooling for rds
@@ -58,10 +58,8 @@ transformed parameters{
   vector<lower=1e-3, upper=dmax>[npmfs] logsd;
   matrix[dmax, npmfs] pmfs; // sparse report distributions
   vector[urds] srdlh; // sparse report day logit hazards
-  matrix[rd, g] rdlh; // report day logit hazards
   vector[dmax] imp_obs[g]; // Expected imputed observations
   real phi; // Transformed overdispersion (joint across all observations)
-
   // calculate log mean and sd parameters for each dataset from design matrices
   logmean = combine_effects(logmean_int, logmean_eff, d_fixed, logmean_sd,
                             d_random);
@@ -74,12 +72,6 @@ transformed parameters{
   }
   // calculate sparse report date effects with forced 0 intercept
   srdlh = combine_effects(0, rd_eff, rd_fixed, rd_eff_sd, rd_random);
-  // allocate across all report dates and groups
-  for (k in 1:g) {
-    for (i in 1:rd) {
-      rdlh[i, k] = srdlh[rdlurd[k, i]];
-    }
-  }
   // estimate unobserved final reported cases for each group
   // this could be any forecasting model but here its a 
   // first order random walk for each group on the log scale.
@@ -140,13 +132,18 @@ model {
     real tar_obs;
     for (i in 1:s) {
       vector[sl[i]] exp_obs;
+      vector[sl[i]] rdlh;
+      // Find final observed/imputed expected observation
       if (st[i] <= (t - dmax)) {
         tar_obs = latest_obs[st[i], sg[i]];
       }else{
         tar_obs = imp_obs[sg[i]][st[i] - (t - dmax)];
-      }
-      exp_obs = expected_obs(tar_obs, pmfs[1:sl[i],dpmfs[i]],
-                             rdlh[st[i]:(st[i] + sl[i]), sg[i]]);
+      }  
+      // allocate report day effects
+      rdlh = srdlh[rdlurd[st[i]:(st[i] + sl[i] - 1), sg[i]]];
+      // combine expected final obs and date effects to get expected obs
+      exp_obs = expected_obs(tar_obs, pmfs[1:sl[i], dpmfs[i]], rdlh);
+      // observation error model
       obs[i, 1:sl[i]] ~ neg_binomial_2(exp_obs, phi);
     }
   }
@@ -156,9 +153,10 @@ generated quantities {
   int pp_obs[pp ? s : 0, pp ? dmax : 0];
   int pp_inf_obs[dmax, g];
   if (cast) {
-    int pp_obs_tmp[s, dmax];
-    vector[dmax] exp_obs;
     real tar_obs;
+    vector[dmax] exp_obs;
+    vector[dmax] rdlh;
+    int pp_obs_tmp[s, dmax];
     // Posterior predictions for observations
     for (i in 1:s) {
       if (st[i] <= (t - dmax)) {
@@ -166,8 +164,8 @@ generated quantities {
       }else{
         tar_obs = imp_obs[sg[i]][st[i] - (t - dmax)];
       }
-      exp_obs = expected_obs(tar_obs, pmfs[1:dmax,dpmfs[i]],
-                             rdlh[st[i]:(st[i] + dmax), sg[i]]);
+      rdlh = srdlh[rdlurd[st[i]:(st[i] + dmax - 1), sg[i]]];
+      exp_obs = expected_obs(tar_obs, pmfs[1:dmax, dpmfs[i]], rdlh);
       pp_obs_tmp[i, 1:dmax] = neg_binomial_2_rng(exp_obs, phi);
     }
 
@@ -177,7 +175,9 @@ generated quantities {
       for (i in 1:dmax) {
         int snap = ts[start_t + i, k];
         pp_inf_obs[i, k] = sum(obs[snap, 1:sl[snap]]);
-        pp_inf_obs[i, k] += sum(pp_obs_tmp[snap, (sl[snap]+1):dmax]);
+        if (sl[snap] < dmax) {
+          pp_inf_obs[i, k] += sum(pp_obs_tmp[snap, (sl[snap]+1):dmax]);
+        }
       }
     }
     // If posterior predictions for all observations are needed copy
