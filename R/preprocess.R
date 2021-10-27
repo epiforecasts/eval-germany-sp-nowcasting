@@ -54,7 +54,7 @@ enw_latest_data <- function(obs) {
   return(latest_data[])
 }
 
-enw_new_reports <- function(obs, max_delay = 20) {
+enw_new_reports <- function(obs) {
   reports <- data.table::copy(obs)
   reports <- reports[order(reference_date)]
   reports[, new_confirm := confirm - data.table::shift(confirm, fill = 0),
@@ -64,7 +64,6 @@ enw_new_reports <- function(obs, max_delay = 20) {
     by = c("group")
   ]
   reports <- reports[, delay := 0:(.N - 1), by = c("reference_date", "group")]
-  reports <- reports[delay < max_delay]
   return(reports[])
 }
 
@@ -103,8 +102,13 @@ enw_preprocess_data <- function(obs, by = c(), max_delay = 20,
   # assign groups
   obs <- enw_assign_group(obs, by = by)
 
+  # filter by maximum report date
+  obs <- obs[, .SD[report_date <= (reference_date + max_delay - 1)],
+    by = c("reference_date", "group")
+  ]
+
   # difference reports and filter for max delay an report date
-  diff_obs <- enw_new_reports(obs, max_delay = max_delay)
+  diff_obs <- enw_new_reports(obs)
 
   if (set_negatives_to_zero) {
     diff_obs <- diff_obs[new_confirm < 0, new_confirm := 0]

@@ -17,7 +17,7 @@ enw_nowcast_summary <- function(fit, obs,
     nowcast
   )
   data.table::setorderv(nowcast, c("group", "reference_date"))
-  sreturn(nowcast)
+  return(nowcast[])
 }
 
 enw_add_latest_obs_to_nowcast <- function(nowcast, obs) {
@@ -31,5 +31,5 @@ enw_add_latest_obs_to_nowcast <- function(nowcast, obs) {
     out,
     neworder = c("reference_date", "group", "latest_confirm", "confirm")
   )
-  return(out)
+  return(out[])
 }
