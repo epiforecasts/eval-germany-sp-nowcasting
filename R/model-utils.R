@@ -74,3 +74,19 @@ enw_add_pooling_effect <- function(effects, string, var_name = "sd") {
   effects[grepl(string, effects), fixed := 0]
   return(effects[])
 }
+
+enw_add_day_of_week <- function(metaobs, holidays = c()) {
+
+}
+
+enw_add_week <- function(metaobs) {
+
+}
+
+enw_cumulative_week_membership <- function(metaobs) {
+
+}
+
+enw_cumulative_day_membership <- function(metaobs) {
+
+}

@@ -12,7 +12,7 @@ enw_intercept_model <- function(metaobs) {
   return(list(fixed = fixed, random = random))
 }
 
-enw_random_intercept_model <- function(metaobs) {
+enw_day_model <- function(metaobs, rw = FALSE) {
 
   # turn dates into factors
   metaobs <- enw_dates_to_factors(metaobs)
@@ -27,18 +27,18 @@ enw_random_intercept_model <- function(metaobs) {
   effects <- enw_add_pooling_effect(effects, "date")
 
   # build design matrix for pooled parameters
-  random <- enw_design(~ 0 + fixed + sd, effects)
+  random <- enw_design(~ 0 + fixed + sd, effects, sparse = FALSE)
 
   return(list(fixed = fixed, random = random))
 }
 
-enw_day_of_week_model <- function(metaobs, holidays) {
+enw_day_of_week_model <- function(metaobs, holidays = c()) {
   # add days of week
   metaobs <- data.table::copy(metaobs)
   metaobs[, day_of_week := weekdays(date)]
 
   # make holidays be sundays
-  if (!missing(holidays)) {
+  if (length(holidays) != 0) {
     metaobs[date %in% as.Date(holidays), day_of_week := "Sunday"]
   }
 
@@ -55,15 +55,12 @@ enw_day_of_week_model <- function(metaobs, holidays) {
   effects <- enw_add_pooling_effect(effects, "day_of_week")
 
   # build design matrix for pooled parameters
-  random <- enw_design(~ 0 + fixed + sd, effects)
+  random <- enw_design(~ 0 + fixed + sd, effects, sparse = FALSE)
 
   return(list(fixed = fixed, random = random))
 }
 
-enw_weekly_rw_model <- function(obs, day_of_week = FALSE, rw = FALSE) {
-
-}
-
-enw_weekly_rw_model <- function(obs, day_of_week = FALSE, rw = FALSE) {
+enw_weekly_model <- function(metaobs, rw = FALSE, day_of_week = FALSE,
+                             holidays = c()) {
 
 }

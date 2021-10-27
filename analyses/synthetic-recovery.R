@@ -40,7 +40,7 @@ pobs <- enw_preprocess_data(sim_reported_cases, by = "age")
 reference_effects <- enw_intercept_model(pobs$metareference[[1]])
 
 # Construct design matrices for the desired report day effects
-report_effects <- enw_intercept_model(pobs$metareport[[1]])
+report_effects <- enw_day_of_week_model(pobs$metareport[[1]])
 
 # compile model
 model <- rstan::stan_model(here("stan", "nowcast.stan"))
