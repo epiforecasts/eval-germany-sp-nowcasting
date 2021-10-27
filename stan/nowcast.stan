@@ -39,7 +39,7 @@ data {
 transformed data{
   real logdmax = log(dmax); // scaled maxmimum delay to log for crude bounds
   // prior mean of cases based on thoose observed
-  vector[g] eobs_init = log(to_vector(latest_obs[1, 1:g]));
+  vector[g] eobs_init = log(to_vector(latest_obs[1, 1:g]) + 1);
   // if no reporting day effects use native probability for reference day
   // effects
   int ref_p = nrd_effs > 0 ? 0 : 1; 

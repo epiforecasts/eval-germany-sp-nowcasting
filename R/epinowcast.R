@@ -17,7 +17,8 @@ epinowcast <- function(pobs,
                        report_effects = enw_intercept_model(
                          pobs$metareport[[1]]
                        ),
-                       dist = "lognormal", probs = c(0.2, 0.5, 0.9),
+                       dist = "lognormal",
+                       probs = c(0.05, 0.35, 0.5, 0.65, 0.95),
                        model = NULL, nowcast = TRUE, likelihood = TRUE,
                        debug = FALSE, pp = FALSE, ...) {
   stan_data <- enw_stan_data(pobs,
@@ -31,10 +32,13 @@ epinowcast <- function(pobs,
 
   fit <- enw_fit(data = stan_data, model = model, inits = inits, ...)
 
+  nowcast <- enw_nowcast_summary(fit, pobs$latest[[1]], probs = probs)
+
   out <- pobs[, `:=`(
     stan_data = list(stan_data),
     inits = list(inits),
-    fit = list(fit)
+    fit = list(fit),
+    nowcast = list(nowcast)
   )]
 
   class(out) <- c("epinowcast", class(out))
