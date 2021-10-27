@@ -14,7 +14,7 @@ enw_design <- function(formula, data, no_contrasts = FALSE, sparse = TRUE,
   # make data.table and copy
   data <- data.table::as.data.table(data)
 
-  # make no  intercept model.matrix
+  # make model.matrix helper
   mod_matrix <- function(formula, data, ...) {
     design <- model.matrix(formula, data, ...)
     if (sparse) {
@@ -23,9 +23,6 @@ enw_design <- function(formula, data, no_contrasts = FALSE, sparse = TRUE,
     } else {
       sparse_design <- design
       index <- seq_len(nrow(design))
-    }
-    if (!any(colnames(sparse_design) %in% "(Intercept)")) {
-      stop("The model matrix must contain an intercept")
     }
     return(list(design = sparse_design, index = index))
   }
@@ -74,6 +71,6 @@ enw_effects_metadata <- function(design) {
 
 enw_add_pooling_effect <- function(effects, string, var_name = "sd") {
   effects[, (var_name) := ifelse(grepl(string, effects), 1, 0)]
-  effects[grepl("report_date", effects), `(Intercept)` := 0] # nolint
+  effects[grepl(string, effects), fixed := 0]
   return(effects[])
 }
