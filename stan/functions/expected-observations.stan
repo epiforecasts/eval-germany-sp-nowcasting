@@ -1,24 +1,3 @@
-vector prob_to_hazard(vector p) {
-  int l = num_elements(p);
-  vector[l] h;
-  vector[l + 1] cum_p;
-  cum_p[1] = 0;
-  cum_p[2:(l+1)] = cumulative_sum(p);
-  h = p ./ (1 - cum_p[1:l]);
-  return(h);
-}
-
-vector hazard_to_prob(vector h) {
-  int l = num_elements(h);
-  vector[l] p;
-  real p_sum = 0;
-  for (i in 1:l) { 
-    p[i] = (1 - p_sum) * h[i];
-    p_sum += p[i];
-  }
-  p[l] = 1 - sum(p[1:(l-1)]);
-  return(p);
-}
 // Calculate expected observations
 // 
 // Calculate expected observations over time from a combination of final
@@ -40,7 +19,8 @@ vector hazard_to_prob(vector h) {
 // @examples
 // # compile function for use in R
 // source(here::here("R", "utils.R"))
-// expose_stan_fns("expected-observations.stan", "stan/functions")
+// expose_stan_fns(c("hazard.stan", "expected-observations.stan"),
+//                 "stan/functions")
 //
 // tar_obs <- 1
 // date_p <- (plnorm(1:30, 1.5, 2) - plnorm(0:29, 1.5, 2)) / plnorm(30, 1.5, 2)
