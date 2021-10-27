@@ -6,9 +6,6 @@ enw_intercept_model <- function(metaobs) {
   # extract effects metadata
   effects <- enw_effects_metadata(fixed$design)
 
-  # construct random effect for date
-  effects <- enw_add_pooling_effect(effects, "date")
-
   # build design matrix for pooled parameters
   random <- enw_design(~1, effects, sparse = FALSE)
 
@@ -21,24 +18,52 @@ enw_random_intercept_model <- function(metaobs) {
   metaobs <- enw_dates_to_factors(metaobs)
 
   # build effects design matrix (with  no contrasts)
-  design <- enw_design(~"date", metaobs, no_contrasts = TRUE)
+  fixed <- enw_design(~date, metaobs, no_contrasts = TRUE)
 
   # extract effects metadata
-  effects <- enw_effects_metadata(design$design)
+  effects <- enw_effects_metadata(fixed$design)
 
   # construct random effect for date
   effects <- enw_add_pooling_effect(effects, "date")
 
   # build design matrix for pooled parameters
-  design_sd <- enw_design(~ 1 + sd, effects)
+  random <- enw_design(~ 0 + fixed + sd, effects)
 
   return(list(fixed = fixed, random = random))
 }
 
-enw_day_of_week_model <- function(obs) {
+enw_day_of_week_model <- function(metaobs, holidays) {
+  # add days of week
+  metaobs <- data.table::copy(metaobs)
+  metaobs[, day_of_week := weekdays(date)]
+
+  # make holidays be sundays
+  if (!missing(holidays)) {
+    metaobs[date %in% as.Date(holidays), day_of_week := "Sunday"]
+  }
+
+  # make day of week a factor
+  metaobs[, day_of_week := factor(day_of_week)]
+
+  # build effects design matrix (with  no contrasts)
+  fixed <- enw_design(~day_of_week, metaobs, no_contrasts = TRUE)
+
+  # extract effects metadata
+  effects <- enw_effects_metadata(fixed$design)
+
+  # construct random effect for date
+  effects <- enw_add_pooling_effect(effects, "day_of_week")
+
+  # build design matrix for pooled parameters
+  random <- enw_design(~ 0 + fixed + sd, effects)
+
+  return(list(fixed = fixed, random = random))
+}
+
+enw_weekly_rw_model <- function(obs, day_of_week = FALSE, rw = FALSE) {
 
 }
 
-enw_weekly_model <- function(obs, day_of_week = FALSE, rw = FALSE) {
+enw_weekly_rw_model <- function(obs, day_of_week = FALSE, rw = FALSE) {
 
 }
