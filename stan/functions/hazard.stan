@@ -4,7 +4,8 @@ vector prob_to_hazard(vector p) {
   vector[l + 1] cum_p;
   cum_p[1] = 0;
   cum_p[2:(l+1)] = cumulative_sum(p);
-  h = p ./ (1 - cum_p[1:l]);
+  h[1:(l-1)] = p[1:(l-1)] ./ (1 - cum_p[1:(l-1)]);
+  h[l] = 1;
   return(h);
 }
 
@@ -16,6 +17,5 @@ vector hazard_to_prob(vector h) {
     p[i] = (1 - p_sum) * h[i];
     p_sum += p[i];
   }
-  p[l] = 1 - sum(p[1:(l-1)]);
   return(p);
 }

@@ -79,3 +79,13 @@ extract_stan_param <- function(fit, params = NULL,
   summary <- summary[, c("n_eff", "Rhat") := NULL]
   return(summary)
 }
+
+inv_logit <- function(x) {
+  il <- 1 / (1 + exp(-x))
+  return(il)
+}
+
+logit <- function(p) {
+  l <- log(p / (1 - p))
+  return(l)
+}

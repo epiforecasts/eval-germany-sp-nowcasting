@@ -38,7 +38,11 @@ data {
 
 transformed data{
   real logdmax = log(dmax); // scaled maxmimum delay to log for crude bounds
+  // prior mean of cases based on thoose observed
   vector[g] eobs_init = log(to_vector(latest_obs[1, 1:g]));
+  // if no reporting day effects use native probability for reference day
+  // effects
+  int ref_p = nrd_effs > 0 ? 0 : 1; 
 }
 
 parameters {
@@ -60,6 +64,7 @@ transformed parameters{
   vector<lower=-10, upper=logdmax>[npmfs] logmean;
   vector<lower=1e-3, upper=dmax>[npmfs] logsd;
   matrix[dmax, npmfs] pmfs; // sparse report distributions
+  matrix[dmax, npmfs] ref_lh; // sparse report logit hazards
   vector[urds] srdlh; // sparse report day logit hazards
   vector[t] imp_obs[g]; // Expected final observations
   real phi; // Transformed overdispersion (joint across all observations)
@@ -72,6 +77,14 @@ transformed parameters{
   // calculate pmfs
   for (i in 1:npmfs) {
     pmfs[, i] = calculate_pmf(logmean[i], logsd[i], dmax, dist);
+  }
+  if (ref_p == 0) {
+    for (i in 1:npmfs) {
+      ref_lh[, i] = prob_to_hazard(pmfs[, i]);
+      ref_lh[, i] = logit(ref_lh[, i]);
+    }
+  }else{
+    ref_lh = pmfs;
   }
   // calculate sparse report date effects with forced 0 intercept
   srdlh = combine_effects(0, rd_eff, rd_fixed, rd_eff_sd, rd_random);
@@ -137,7 +150,7 @@ model {
       // allocate report day effects
       rdlh = srdlh[rdlurd[st[i]:(st[i] + sl[i] - 1), sg[i]]];
       // combine expected final obs and date effects to get expected obs
-      exp_obs = expected_obs(tar_obs, pmfs[1:sl[i], dpmfs[i]], rdlh);
+      exp_obs = expected_obs(tar_obs, ref_lh[1:sl[i], dpmfs[i]], rdlh, ref_p);
       // observation error model
       obs[i, 1:sl[i]] ~ neg_binomial_2(exp_obs, phi);
     }
@@ -146,7 +159,7 @@ model {
 
 generated quantities {
   int pp_obs[pp ? s : 0, pp ? dmax : 0];
-  int pp_inf_obs[dmax, g];
+  int pp_inf_obs[cast ? dmax : 0,cast ? g : 0];
   if (cast) {
     real tar_obs;
     vector[dmax] exp_obs;
@@ -156,7 +169,7 @@ generated quantities {
     for (i in 1:s) {
       tar_obs = imp_obs[sg[i]][st[i]];
       rdlh = srdlh[rdlurd[st[i]:(st[i] + dmax - 1), sg[i]]];
-      exp_obs = expected_obs(tar_obs, pmfs[1:dmax, dpmfs[i]], rdlh);
+      exp_obs = expected_obs(tar_obs, ref_lh[1:dmax, dpmfs[i]], rdlh, ref_p);
       pp_obs_tmp[i, 1:dmax] = neg_binomial_2_rng(exp_obs, phi);
     }
 
