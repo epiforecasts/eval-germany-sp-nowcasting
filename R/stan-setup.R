@@ -29,7 +29,6 @@ enw_stan_data <- function(pobs,
   if (pp) {
     nowcast <- TRUE
   }
-
   # check dist type is supported and change to numeric
   dist <- match.arg(dist, c("lognormal", "gamma"))
   dist <- data.table::fcase(
@@ -39,7 +38,7 @@ enw_stan_data <- function(pobs,
   # format latest matrix
   latest_matrix <- pobs$latest[[1]]
   latest_matrix <- data.table::dcast(
-    latest_matrix, date ~ group,
+    latest_matrix, reference_date ~ group,
     value.var = "confirm"
   )
   latest_matrix <- as.matrix(latest_matrix[, -1])
@@ -47,21 +46,21 @@ enw_stan_data <- function(pobs,
   # format vector of snapshot lengths
   snap_length <- pobs$new_confirm[[1]]
   snap_length <- snap_length[, .SD[delay == max(delay)],
-    by = c("date", "group")
+    by = c("reference_date", "group")
   ]
   snap_length <- snap_length$delay + 1
 
   # snap lookup
-  snap_lookup <- unique(pobs$new_confirm[[1]][, .(date, group)])
+  snap_lookup <- unique(pobs$new_confirm[[1]][, .(reference_date, group)])
   snap_lookup[, s := 1:.N]
   snap_lookup <- data.table::dcast(
-    snap_lookup, date ~ group,
+    snap_lookup, reference_date ~ group,
     value.var = "s"
   )
   snap_lookup <- as.matrix(snap_lookup[, -1])
 
   # snap time
-  snap_time <- unique(pobs$new_confirm[[1]][, .(date, group)])
+  snap_time <- unique(pobs$new_confirm[[1]][, .(reference_date, group)])
   snap_time[, t := 1:.N, by = "group"]
   snap_time <- snap_time$t
 
@@ -74,7 +73,7 @@ enw_stan_data <- function(pobs,
     st = snap_time,
     ts = snap_lookup,
     sl = snap_length,
-    sg = unique(pobs$new_confirm[[1]][, .(date, group)])$group,
+    sg = unique(pobs$new_confirm[[1]][, .(reference_date, group)])$group,
     dmax = pobs$max_delay[[1]],
     obs = as.matrix(pobs$reporting_triangle[[1]][, -c(1:2)]),
     latest_obs = latest_matrix

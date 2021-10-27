@@ -27,7 +27,7 @@ scenarios <- enw_random_intercept_scenario(
 # simulate observations
 scenarios <- enw_simulate_lnorm_trunc_obs(scenarios, latest_cases)
 sim_reported_cases <- rbindlist(scenarios$reported_cases)
-
+setnames(sim_reported_cases, "date", "reference_date")
 sim_reported_cases <- rbind(
   copy(sim_reported_cases)[, age := 1],
   copy(sim_reported_cases)[, age := 2]
