@@ -122,7 +122,7 @@ enw_inits <- function(data) {
     init <- list(
       logmean_int = rnorm(1, 1, 0.1),
       logsd_int = abs(rnorm(1, 0.5, 0.1)),
-      uobs_logsd = array(abs(rnorm(data$g, 0, 0.1))),
+      eobs_lsd = array(abs(rnorm(data$g, 0, 0.1))),
       sqrt_phi = abs(rnorm(1, 0, 0.1))
     )
     init$logmean <- rep(init$logmean_int, data$npmfs)
@@ -130,12 +130,16 @@ enw_inits <- function(data) {
     init$phi <- 1 / sqrt(init$sqrt_phi)
     # initialise reference date effects
     if (data$neffs > 0) {
-      data$logmean_eff <- rnorm(data$neffs, 0, 0.01)
-      data$logsd_eff <- rnorm(data$neffs, 0, 0.01)
+      init$logmean_eff <- rnorm(data$neffs, 0, 0.01)
+      init$logsd_eff <- rnorm(data$neffs, 0, 0.01)
+    }
+    if (data$neffs > 0) {
+      init$logmean_eff <- rnorm(data$neffs, 0, 0.01)
+      init$logsd_eff <- rnorm(data$neffs, 0, 0.01)
     }
     # initialise report date effects
     if (data$nrd_effs > 0) {
-      data$rd_eff <- rnorm(data$nrd_effs, 0, 0.01)
+      init$rd_eff <- rnorm(data$nrd_effs, 0, 0.01)
     }
     return(init)
   }
