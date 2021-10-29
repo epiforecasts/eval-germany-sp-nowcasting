@@ -28,6 +28,9 @@ germany_hosp[, report_date := as.Date(reference_date) + 0:(.N - 1),
 germany_hosp <- germany_hosp[report_date <= max(reference_date)]
 germany_hosp[, delay := NULL]
 germany_hosp[is.na(confirm), confirm := 0]
+germany_hosp[, confirm := cumsum(confirm),
+  by = c("reference_date", "location", "age_group")
+]
 
 # national only and only for the last 28 days of data
 germany_nat_hosp <- germany_hosp[location == "DE"]
