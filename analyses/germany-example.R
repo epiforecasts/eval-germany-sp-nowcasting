@@ -1,3 +1,4 @@
+library(epinowcast)
 suppressMessages(library(data.table, quietly = TRUE))
 suppressMessages(library(rstan, quietly = TRUE))
 library(purrr)
@@ -38,27 +39,22 @@ germany_nat_hosp <-
   germany_nat_hosp[reference_date >= (max(reference_date) - 27)]
 
 # Preprocess data
-pobs <- enw_preprocess_data(germany_nat_hosp, by = "age_group", max_delay = 20)
+pobs <- enw_preprocess_data(germany_nat_hosp, by = "age_group", max_delay = 30)
 
 # Construct design matrices for the desired reference date effects
-reference_effects <- enw_intercept_model(pobs$metareference[[1]])
+reference_effects <- enw_formula(pobs$metareference[[1]])
 
 # Construct design matrices for the desired report day effects
-report_effects <- enw_day_of_week_model(pobs$metareport[[1]])
-
-# compile model
-model <- rstan::stan_model(here("stan", "nowcast.stan"))
+report_effects <- enw_formula(pobs$metareport[[1]], random = "day_of_week")
 
 # fit model to example data and produce a nowcast
 est <- epinowcast(pobs,
-  model = model,
   report_effects = report_effects, reference_effects = reference_effects,
-  control = list(max_treedepth = 10, adapt_delta = 0.8),
   debug = FALSE, pp = FALSE, save_warmup = FALSE,
 )
 
 # observations linked to truncation adjusted estimates
-est$nowcast[[1]]
+summary(nowcast)
 
 # Plot nowcast vs latest observations
 plot(est, obs = latest_cases)
