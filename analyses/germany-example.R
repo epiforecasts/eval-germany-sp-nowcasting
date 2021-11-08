@@ -30,8 +30,9 @@ report_effects <- enw_formula(pobs$metareport[[1]], random = "day_of_week")
 
 # fit model to example data and produce a nowcast
 est <- epinowcast(pobs,
-  report_effects = report_effects, reference_effects = reference_effects,
-  debug = FALSE, pp = FALSE, save_warmup = FALSE,
+  report_effects = report_effects,
+  reference_effects = reference_effects,
+  debug = FALSE, pp = TRUE, save_warmup = FALSE,
 )
 
 # observations linked to truncation adjusted estimates

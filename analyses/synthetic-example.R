@@ -45,15 +45,19 @@ report_effects <- enw_formula(pobs$metareport[[1]], random = "day_of_week")
 
 # fit model to example data and produce nowcast
 est <- epinowcast(pobs,
-  report_effects = report_effects, reference_effects = reference_effects,
-  debug = FALSE, pp = FALSE, save_warmup = FALSE
+  report_effects = report_effects,
+  reference_effects = reference_effects,
+  debug = FALSE, pp = TRUE, save_warmup = FALSE
 )
 
 # summarise nowcast
 summary(est)
 
 # Plot nowcast vs latest observations
-plot(est, latest_obs = latest_cases)
+plot(est, latest_obs = copy(latest_cases)[, reference_date := date])
 
 # Plot posterior prediction for observed cases at date of report
-plot(est, latest_cases, type = "pos", log = TRUE)
+plot(est,
+  latest_obs = copy(latest_cases)[, reference_date := date],
+  type = "pos", log = TRUE
+)
