@@ -1,4 +1,4 @@
-# Evaluating Semi-Mechanistic Nowcasts of COVID-19 Hospital Admissions in Germany
+ # Evaluating Semi-Mechanistic Nowcasts of COVID-19 Hospital Admissions in Germany
 
 This repository contains the write-up, results, and code of a project evaluating the use of a semi-mechanistic nowcasting approach for COVID-19 hospitalisations in Germany. 
 

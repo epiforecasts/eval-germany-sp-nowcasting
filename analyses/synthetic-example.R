@@ -1,3 +1,4 @@
+library(epinowcast)
 library(covidregionaldata)
 suppressMessages(library(data.table, quietly = TRUE))
 suppressMessages(library(rstan, quietly = TRUE))
@@ -37,27 +38,22 @@ sim_reported_cases <- rbind(
 pobs <- enw_preprocess_data(sim_reported_cases, by = "age")
 
 # Construct design matrices for the desired reference date effects
-reference_effects <- enw_intercept_model(pobs$metareference[[1]])
+reference_effects <- enw_formula(pobs$metareference[[1]])
 
 # Construct design matrices for the desired report day effects
-report_effects <- enw_intercept_model(pobs$metareport[[1]])
-
-# compile model
-model <- rstan::stan_model(here("stan", "nowcast.stan"))
+report_effects <- enw_formula(pobs$metareport[[1]], random = "day_of_week")
 
 # fit model to example data and produce nowcast
 est <- epinowcast(pobs,
-  model = model,
   report_effects = report_effects, reference_effects = reference_effects,
-  control = list(max_treedepth = 12, adapt_delta = 0.8),
-  debug = TRUE, pp = FALSE, save_warmup = FALSE
+  debug = FALSE, pp = FALSE, save_warmup = FALSE
 )
 
-# observations linked to truncation adjusted estimates
-est$nowcast[[1]]
+# summarise nowcast
+summary(est)
 
 # Plot nowcast vs latest observations
-plot(est, obs = latest_cases)
+plot(est, latest_obs = latest_cases)
 
 # Plot posterior prediction for observed cases at date of report
-plot(est, obs = latest_cases, type = "pos", log = TRUE)
+plot(est, latest_cases, type = "pos", log = TRUE)
