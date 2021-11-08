@@ -35,8 +35,8 @@ library(tarchetypes)
 functions <- list.files(here("R"), full.names = TRUE)
 walk(functions, source)
 tar_option_set(
-  packages = c("data.table", "scoringutils", "ggplot2", "purrr",
-               "rstan"),
+  packages = c("data.table", "epinowcast", "scoringutils", "ggplot2", "purrr",
+               "cmdstanr"),
   deployment = "worker",
   memory = "transient",
   workspace_on_error = TRUE,
@@ -45,6 +45,71 @@ tar_option_set(
 )
 ```
 
+# Ingest data and stratify by location and report date
+
+* Download and process hospitalisation data.
+
+* Download and process public holidays data.
+
+* Define dates to nowcast.
+
+* Define latest available data.
+
+* Plot reporting delay percentage by date, location, and age group.
+
+# Fit models and produce nowcast
+
+## Model settings
+
+Define stan settings shared across models
+
+## Models
+
+* Intercept only model.
+
+* Intercept model with day of the week reporting effects.
+
+* Age group random effect model with day of the week effect reporting effects.
+
+* Age group random effect model with a weekly random walk and a day of the week reporting effect.
+
+* Age group random effect model with a weekly random walk, an age group specific weekly random walk in the residuals,  and a day of the week reporting effect.
+
+* Independent age group model with a weekly random walk and a day of the week reporting model.
+
+# Postprocess
+
+* Make nowcasts into 7 day incidence.
+
+* Make latest observations into 7 day incidence.
+
+* Save nowcasts stratified by nowcasting date.
+
+* Format nowcasts for hub submission.
+
+# Visualise
+
+* Plot most recent nowcast by location, age group, and model.
+
+* Plot nowcasts at 0 horizon by location, age group, and model.
+
+* Plot nowcasts at 3 day horizon by location, age group and model
+
+# Evaluation
+
+* Score nowcasts overall both on a natural scale and on a log scale.
+
+* Score nowcasts by location on a natural scale and on a log scale.
+
+* Score nowcasts by age group on a natural scale and on a log scale.
+
+* Score nowcasts by horizon on a natural scale and on a log scale.
+
+* Plot scores relative to the baseline by location and age group on both the natural and log scale.
+
+# Reporting
+
+* Render nowcast report.
 
 # Pipeline
 
