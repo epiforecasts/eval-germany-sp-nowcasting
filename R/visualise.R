@@ -1,0 +1,28 @@
+
+plot_relative_scores <- function(score, baseline) {
+  score <- data.table::as.data.table(score)
+  fixed_score <- score[
+    model %in% baseline,
+    .(reference_date, age_group, fixed_is = interval_score)
+  ]
+  score <- merge(score, fixed_score, by = c("reference_date", "age_group"))
+
+  score <- score[, interval_score := interval_score / fixed_is]
+  score <- score[!model %in% baseline]
+  plot <- ggplot(score) +
+    aes(x = reference_date, y = interval_score, col = model) +
+    geom_hline(yintercept = 1, linetype = 2, size = 1.2, alpha = 0.5) +
+    geom_line(size = 1.1, alpha = 0.6) +
+    geom_point(size = 1.2) +
+    facet_wrap(vars(age_group)) +
+    scale_color_brewer(palette = "Dark2") +
+    scale_y_log10(labels = scales::percent)
+
+  plot <- enw_plot_theme(plot) +
+    labs(
+      x = "Reference date",
+      y = paste0("Weighted interval score (", baseline, ")")
+    ) + # nolint
+    guides(col = guide_legend(title = "Model", ncol = 2))
+  return(plot[])
+}
