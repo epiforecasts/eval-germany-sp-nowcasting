@@ -1,7 +1,7 @@
 get_germany_hospitalisations <- function(url = "https://raw.githubusercontent.com/jbracher/hospitalization-nowcast-hub/main/data-truth/COVID-19/COVID-19_hospitalizations_preprocessed.csv") { # nolint
   germany_hosp <- data.table::fread(url)
 
-  germany_hosp <- melt(
+  germany_hosp <- data.table::melt(
     germany_hosp,
     variable.name = "delay",
     value.name = "confirm",

@@ -32,7 +32,8 @@ Suggests:
     piggyback,
     precommit,
     spelling
-    styler
+    styler,
+    visNetwork
 VignetteBuilder: 
     knitr
 Remotes:
