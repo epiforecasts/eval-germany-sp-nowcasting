@@ -12,6 +12,7 @@ Depends:
     R (>= 2.10)
 Imports:
     callr,
+    cmdstanr,
     covidregionaldata,
     data.table,
     epinowcast,
@@ -39,7 +40,8 @@ VignetteBuilder:
 Remotes:
     seabbs/epinowcast,
     lorenzwalthert/precommit,
-    ropensci/piggyback
+    ropensci/piggyback,
+    stan-dev/cmdstanr
 Encoding: UTF-8
 Language: en-GB
 LazyData: true

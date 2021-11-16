@@ -83,6 +83,30 @@ tar_target(nowcast_dates, {
 #> Establish _targets.R and _targets_r/targets/nowcast_dates.R.
 ```
 
+  - Define age groups
+
+<!-- end list -->
+
+``` r
+tar_target(age_groups, {
+  unique(hospitalisations$age_group)
+})
+#> Define target age_groups from chunk code.
+#> Establish _targets.R and _targets_r/targets/age_groups.R.
+```
+
+  - Define locations to nowcast
+
+<!-- end list -->
+
+``` r
+tar_target(locations, {
+  unique(hospitalisations$location)
+})
+#> Define target locations from chunk code.
+#> Establish _targets.R and _targets_r/targets/locations.R.
+```
+
   - Define maximum allowed reporting delay (in days).
 
 <!-- end list -->
@@ -116,20 +140,53 @@ tar_target(
 <!-- end list -->
 
 ``` r
-tar_target(latest_obs, {
+tar_target(latest_hospitalisations, {
    enw_latest_data(hospitalisations)
 })
-#> Define target latest_obs from chunk code.
-#> Establish _targets.R and _targets_r/targets/latest_obs.R.
+#> Define target latest_hospitalisations from chunk code.
+#> Establish _targets.R and _targets_r/targets/latest_hospitalisations.R.
 ```
 
   - Plot reporting delay percentage by date, location, and age group.
 
 # Fit models and produce nowcast
 
-## Model settings
+## Model and model settings
 
-Define stan settings shared across models
+  - Compile the model for multithread use.
+
+<!-- end list -->
+
+``` r
+tar_target(
+  epinowcast_model,
+  compile_model(threads = TRUE),
+  format = "file", deployment = "main",
+)
+#> Establish _targets.R and _targets_r/targets/epinowcast_model.R.
+```
+
+  - Define stan settings shared across models and used for fitting
+
+<!-- end list -->
+
+``` r
+tar_target(epinowcast_settings, {
+  list(
+    save_warmup = FALSE,
+    output_loglik = FALSE,
+    pp = FALSE,
+    iter_warmup = 1000,
+    iter_sampling = 2000,
+    chains = 2,
+    threads_per_chain = 2,
+    adapt_delta = 0.95,
+    show_messages = FALSE
+  )
+})
+#> Define target epinowcast_settings from chunk code.
+#> Establish _targets.R and _targets_r/targets/epinowcast_settings.R.
+```
 
 ## Models
 
