@@ -61,6 +61,18 @@ get_germany_hospitalisations()
 hospitalisations[reference_date >= as.Date("2021-09-01")]$reference_date[1:7]
 ```
 
+* Define age groups
+
+```{targets age_groups, tar_simple = TRUE}
+unique(hospitalisations$age_group)
+```
+
+* Define locations to nowcast
+
+```{targets locations, tar_simple = TRUE}
+unique(hospitalisations$location)
+```
+
 * Define maximum allowed reporting delay (in days).
 
 ```{targets max_report_delay, tar_simple = TRUE}
@@ -94,10 +106,27 @@ tar_target(
 
 * Compile the model for multithread use.
 
+```{targets, epinowcast_model}
+tar_target(
+  epinowcast_model,
+  compile_model(threads = TRUE),
+  format = "file", deployment = "main",
+)
+```
 * Define stan settings shared across models and used for fitting
 
-```{targets model_settings, tar_simple = TRUE}
-
+```{targets epinowcast_settings, tar_simple = TRUE}
+list(
+  save_warmup = FALSE,
+  output_loglik = FALSE,
+  pp = FALSE,
+  iter_warmup = 1000,
+  iter_sampling = 2000,
+  chains = 2,
+  threads_per_chain = 2,
+  adapt_delta = 0.95,
+  show_messages = FALSE
+)
 ```
 ## Models
 
