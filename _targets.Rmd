@@ -49,20 +49,56 @@ tar_option_set(
 
 * Download and process hospitalisation data.
 
+```{targets hospitalisations, tar_simple = TRUE}
+get_germany_hospitalisations()
+```
+
 * Download and process public holidays data.
 
 * Define dates to nowcast.
 
+```{targets nowcast_dates, tar_simple = TRUE}
+hospitalisations[reference_date >= as.Date("2021-09-01")]$reference_date[1:7]
+```
+
+* Define maximum allowed reporting delay (in days).
+
+```{targets max_report_delay, tar_simple = TRUE}
+40
+```
+
+* Define hospitalisations by date of report
+
+```{targets hospitalisations_by_date_report}
+tar_target(
+    hospitalisations_by_date_report,
+    enw_retrospective_data(
+      hospitalisations, rep_date = nowcast_dates,
+      ref_days = max_report_delay
+  )[, nowcast_date := nowcast_dates],
+  map(nowcast_dates)
+)
+```
+
 * Define latest available data.
+
+```{targets latest_hospitalisations, tar_simple = TRUE}
+ enw_latest_data(hospitalisations)
+```
 
 * Plot reporting delay percentage by date, location, and age group.
 
 # Fit models and produce nowcast
 
-## Model settings
+## Model and model settings
 
-Define stan settings shared across models
+* Compile the model for multithread use.
 
+* Define stan settings shared across models and used for fitting
+
+```{targets model_settings, tar_simple = TRUE}
+
+```
 ## Models
 
 * Intercept only model.
