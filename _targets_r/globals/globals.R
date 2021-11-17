@@ -7,6 +7,7 @@ library(purrr, quietly = TRUE)
 library(here)
 functions <- list.files(here("R"), full.names = TRUE)
 walk(functions, source)
+rm("functions")
 tar_option_set(
   packages = c("data.table", "epinowcast", "scoringutils", "ggplot2", "purrr",
                "cmdstanr"),
