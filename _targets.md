@@ -495,7 +495,7 @@ tar_target(summarised_7day_nowcast, {
 ``` r
 tar_target(
   save_daily_nowcasts,
-  summarise_nowcast[nowcast_date == nowcast_dates] |>
+  summarised_nowcast[nowcast_date == nowcast_dates] |>
     save_csv(
       filename = paste0(nowcast_dates, ".csv"),
       path = here("data/nowcasts/daily")
@@ -513,7 +513,7 @@ tar_target(
 ``` r
 tar_target(
   save_7day_nowcasts,
-  summarise_7day_nowcast[nowcast_date == nowcast_dates] |>
+  summarised_7day_nowcast[nowcast_date == nowcast_dates] |>
     save_csv(
       filename = paste0(nowcast_dates, ".csv"),
       path = here("data/nowcasts/seven_day")
