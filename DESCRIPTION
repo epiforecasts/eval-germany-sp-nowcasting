@@ -1,12 +1,12 @@
 Package: eval.germany.sm.nowcasting
-Title: Evaluating Semi-Mechanistic Nowcasts of COVID-19 Hospital Admissions in Germany
+Title: Evaluating Semi-Parametric Nowcasts of COVID-19 Hospital Admissions in Germany
 Version: 0.1.0
 Authors@R: 
     person(given = "Sam Abbott",
            role = c("aut", "cre"),
            email = "sam.abbott@lshtm.ac.uk",
            comment = c(ORCID = "0000-0001-8057-8037"))
-Description: Evaluating Semi-Mechanistic Nowcasts of COVID-19 Hospital Admissions in Germany.
+Description: Evaluating Semi-Parametric Nowcasts of COVID-19 Hospital Admissions in Germany.
 License: MIT + file LICENSE
 Depends: 
     R (>= 2.10)
