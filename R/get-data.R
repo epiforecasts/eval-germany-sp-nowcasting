@@ -1,3 +1,17 @@
+get_public_holidays <- function(today,
+                                url = "https://raw.githubusercontent.com/jbracher/hospitalization-nowcast-hub/main/other_data/public_holidays.csv") { # nolint
+  message("Downloading public holiday data available on the: ", today)
+
+  holidays <- data.table::fread(url)
+  holidays <- data.table::melt(holidays, id.vars = "date")
+  holidays <- holidays[value == TRUE]
+  holidays <- holidays[
+    ,
+    .(report_date = date, location = variable, holiday = value)
+  ]
+  return(holidays[])
+}
+
 get_germany_hospitalisations <- function(today,
                                          url = "https://raw.githubusercontent.com/jbracher/hospitalization-nowcast-hub/main/data-truth/COVID-19/COVID-19_hospitalizations_preprocessed.csv") { # nolint
   message("Downloading hospitalisation data available on the: ", today)
@@ -28,5 +42,11 @@ get_germany_hospitalisations <- function(today,
       levels = c("00+", "00-04", "05-14", "15-34", "35-59", "60-79", "80+")
     )
   ]
+  holidays <- get_public_holidays(today)
+  germany_hosp <- merge(
+    germany_hosp, holidays,
+    by = c("report_date", "location"), all.x = TRUE, all.y = FALSE
+  )
+  germany_hosp[is.na(holiday), holiday := FALSE]
   return(germany_hosp[])
 }
