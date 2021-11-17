@@ -1,3 +1,3 @@
 tar_target(locations, {
-  unique(hospitalisations$location)[1]
+  unique(hospitalisations$location)
 })
