@@ -49,7 +49,9 @@ library(purrr, quietly = TRUE)
 #> 
 #>     transpose
 library(here)
-#> here() starts at /workspaces/eval-germany-sm-nowcasting
+#> here() starts at /workspaces/eval-germany-sp-nowcasting
+library(future)
+library(future.callr)
 tar_unscript()
 ```
 
@@ -64,6 +66,9 @@ library(epinowcast)
 library(ggplot2)
 library(purrr, quietly = TRUE)
 library(here)
+library(future)
+library(future.callr)
+plan(callr)
 functions <- list.files(here("R"), full.names = TRUE)
 walk(functions, source)
 rm("functions")
@@ -123,7 +128,7 @@ tar_target(start_date, {
 tar_target(nowcast_dates, {
   unique(
     hospitalisations[reference_date >= start_date]$reference_date
-  )[1]
+  )[1:7]
 })
 #> Define target nowcast_dates from chunk code.
 #> Establish _targets.R and _targets_r/targets/nowcast_dates.R.
@@ -147,7 +152,7 @@ tar_target(age_groups, {
 
 ``` r
 tar_target(locations, {
-  unique(hospitalisations$location)[1]
+  unique(hospitalisations$location)
 })
 #> Define target locations from chunk code.
 #> Establish _targets.R and _targets_r/targets/locations.R.
@@ -242,7 +247,7 @@ tar_target(epinowcast_settings, {
     chains = 2,
     parallel_chains = 2,
     threads_per_chain = 2,
-    adapt_delta = 0.8,
+    adapt_delta = 0.9,
     show_messages = FALSE,
     refresh = 0
   )

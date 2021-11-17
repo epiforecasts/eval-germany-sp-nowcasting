@@ -1,5 +1,5 @@
 tar_target(nowcast_dates, {
   unique(
     hospitalisations[reference_date >= start_date]$reference_date
-  )[1]
+  )[1:7]
 })
