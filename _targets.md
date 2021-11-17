@@ -49,7 +49,7 @@ library(purrr, quietly = TRUE)
 #> 
 #>     transpose
 library(here)
-#> here() starts at /workspaces/eval-germany-sp-nowcasting
+#> here() starts at /workspaces/eval-germany-sm-nowcasting
 library(future)
 library(future.callr)
 tar_unscript()

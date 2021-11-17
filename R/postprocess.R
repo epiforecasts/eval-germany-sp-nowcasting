@@ -18,7 +18,7 @@ format_for_submission <- function(nowcast, horizon = -28,
     type = "quantile"
   )]
   long[is.na(quantile), type := "mean"]
-  long <- long[, .(model, location, age_group,
+  long <- long[, .(location, age_group,
     forecast_date = nowcast_date,
     target_end_date = reference_date, target, type, quantile,
     value = prediction, pathogen = pathogen
