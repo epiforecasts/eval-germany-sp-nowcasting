@@ -65,6 +65,7 @@ library(purrr, quietly = TRUE)
 library(here)
 functions <- list.files(here("R"), full.names = TRUE)
 walk(functions, source)
+rm("functions")
 tar_option_set(
   packages = c("data.table", "epinowcast", "scoringutils", "ggplot2", "purrr",
                "cmdstanr"),
@@ -217,7 +218,7 @@ do.call(prior_epinowcast, c(
 
 * Intercept only model.
 
-```{targets, fixed_nowcast}
+```{targets fixed_nowcast}
 tar_target(
   fixed_nowcast,
   nowcast(
@@ -234,7 +235,7 @@ tar_target(
 
 * Intercept model with day of the week reporting effects.
 
-```{target dow_nowcast}
+```{targets dow_nowcast}
 tar_target(
   dow_nowcast,
   nowcast(
@@ -268,7 +269,7 @@ tar_target(
 
 * Age group random effect model with a weekly random walk and a day of the week reporting effect.
 
-```{target week_nowcast}
+```{targets week_nowcast}
 tar_target(
   week_nowcast,
   nowcast(
@@ -285,7 +286,7 @@ tar_target(
 
 * Age group random effect model with a weekly random walk, an age group specific weekly random walk in the residuals,  and a day of the week reporting effect.
 
-```{target age_week_nowcast}
+```{targets age_week_nowcast}
 tar_target(
   age_week_nowcast,
   nowcast(
@@ -302,7 +303,7 @@ tar_target(
 
 * Independent age group model with a weekly random walk and a day of the week reporting model.
 
-```{target independent_nowcast}
+```{targets independent_nowcast}
 tar_target(
   independent_nowcast,
   nowcast(
@@ -321,7 +322,7 @@ tar_target(
 
 * Combine nowcasts from each model
 
-```{target combined_nowcasts, tar_simple = TRUE}
+```{targets combined_nowcasts, tar_simple = TRUE}
 rbindlist(list(
   fixed_nowcast,
   dow_nowcast,
@@ -344,13 +345,13 @@ rbindlist(list(
 
 * Extract summarised daily nowcast
 
-```{target summarised_nowcast, tar_simple = TRUE}
+```{targets summarised_nowcast, tar_simple = TRUE}
 combined_nowcasts[, rbindlist(daily), by = c("model", "nowcast_date")]
 ```
 
 * Extract summarised 7 day nowcast
 
-```{target summarised_7day_nowcast, tar_simple = TRUE}
+```{targets summarised_7day_nowcast, tar_simple = TRUE}
 combined_nowcasts[, rbindlist(seven_day), by = c("model", "nowcast_date")]
 ```
 

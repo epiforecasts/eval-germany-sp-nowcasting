@@ -66,6 +66,7 @@ library(purrr, quietly = TRUE)
 library(here)
 functions <- list.files(here("R"), full.names = TRUE)
 walk(functions, source)
+rm("functions")
 tar_option_set(
   packages = c("data.table", "epinowcast", "scoringutils", "ggplot2", "purrr",
                "cmdstanr"),
@@ -331,7 +332,7 @@ tar_target(
 
 <!-- end list -->
 
-``` target
+``` r
 tar_target(
   dow_nowcast,
   nowcast(
@@ -344,6 +345,7 @@ tar_target(
   ),
   cross(hospitalisations_by_date_report, locations)
 )
+#> Establish _targets.R and _targets_r/targets/dow_nowcast.R.
 ```
 
   - Age group random effect model with day of the week effect reporting
@@ -372,7 +374,7 @@ tar_target(
 
 <!-- end list -->
 
-``` target
+``` r
 tar_target(
   week_nowcast,
   nowcast(
@@ -385,6 +387,7 @@ tar_target(
   ),
   cross(hospitalisations_by_date_report, locations)
 )
+#> Establish _targets.R and _targets_r/targets/week_nowcast.R.
 ```
 
   - Age group random effect model with a weekly random walk, an age
@@ -393,7 +396,7 @@ tar_target(
 
 <!-- end list -->
 
-``` target
+``` r
 tar_target(
   age_week_nowcast,
   nowcast(
@@ -406,6 +409,7 @@ tar_target(
   ),
   cross(hospitalisations_by_date_report, locations)
 )
+#> Establish _targets.R and _targets_r/targets/age_week_nowcast.R.
 ```
 
   - Independent age group model with a weekly random walk and a day of
@@ -413,7 +417,7 @@ tar_target(
 
 <!-- end list -->
 
-``` target
+``` r
 tar_target(
   independent_nowcast,
   nowcast(
@@ -426,6 +430,7 @@ tar_target(
   ),
   cross(hospitalisations_by_date_report, locations, age_groups)
 )
+#> Establish _targets.R and _targets_r/targets/independent_nowcast.R.
 ```
 
 # Postprocess
@@ -434,41 +439,53 @@ tar_target(
 
 <!-- end list -->
 
-``` target
-rbindlist(list(
-  fixed_nowcast,
-  dow_nowcast,
-  age_nowcast,
-  week_nowcast,
-  age_week_nowcast,
-  independent_nowcast
-))[,
-   model := factor(
-    model,
-    levels = c("Reference: Fixed, Report: Fixed",
-               "Reference: Fixed, Report: Day of week",
-               "Reference: Age, Report: Day of week",
-               "Reference: Age and week, Report: Day of week",
-               "Reference: Age and week by age, Report: Day of week",
-               "Independent by age, Reference: Week, Report: Day of week")
-   )
-  ]
+``` r
+tar_target(combined_nowcasts, {
+  rbindlist(list(
+    fixed_nowcast,
+    dow_nowcast,
+    age_nowcast,
+    week_nowcast,
+    age_week_nowcast,
+    independent_nowcast
+  ))[,
+     model := factor(
+      model,
+      levels = c("Reference: Fixed, Report: Fixed",
+                 "Reference: Fixed, Report: Day of week",
+                 "Reference: Age, Report: Day of week",
+                 "Reference: Age and week, Report: Day of week",
+                 "Reference: Age and week by age, Report: Day of week",
+                 "Independent by age, Reference: Week, Report: Day of week")
+     )
+    ]
+})
+#> Define target combined_nowcasts from chunk code.
+#> Establish _targets.R and _targets_r/targets/combined_nowcasts.R.
 ```
 
   - Extract summarised daily nowcast
 
 <!-- end list -->
 
-``` target
-combined_nowcasts[, rbindlist(daily), by = c("model", "nowcast_date")]
+``` r
+tar_target(summarised_nowcast, {
+  combined_nowcasts[, rbindlist(daily), by = c("model", "nowcast_date")]
+})
+#> Define target summarised_nowcast from chunk code.
+#> Establish _targets.R and _targets_r/targets/summarised_nowcast.R.
 ```
 
   - Extract summarised 7 day nowcast
 
 <!-- end list -->
 
-``` target
-combined_nowcasts[, rbindlist(seven_day), by = c("model", "nowcast_date")]
+``` r
+tar_target(summarised_7day_nowcast, {
+  combined_nowcasts[, rbindlist(seven_day), by = c("model", "nowcast_date")]
+})
+#> Define target summarised_7day_nowcast from chunk code.
+#> Establish _targets.R and _targets_r/targets/summarised_7day_nowcast.R.
 ```
 
   - Save daily nowcasts stratified by nowcasting date.
