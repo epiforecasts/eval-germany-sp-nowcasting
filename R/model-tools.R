@@ -1,16 +1,37 @@
 compile_model <- function(...) {
-  model <- epinowcast::enw_model(thread = TRUE, ...)
-  return(model$exe_file())
+  model <- epinowcast::enw_model(
+    thread = TRUE, dir = here::here("data"),
+    ...
+  )
+  return(model$stan_file())
 }
 
-load_model <- function(model_file) {
-  model <- suppressMessages(
-    cmdstanr::cmdstan_model(
-      exe_file = model_file,
-      cpp_options = list(stan_threads = TRUE)
-    )
+load_model <- function() {
+  model <- epinowcast::enw_model(
+    dir = here::here("data"), thread = TRUE
   )
   return(model)
+}
+
+prior_epinowcast <- function(obs, priors, max_delay = 40, scale = 5, ...) {
+  pobs <- enw_preprocess_data(obs, max_delay = max_delay)
+
+  model <- load_model()
+
+  nowcast <- epinowcast(
+    pobs,
+    model = model,
+    ...
+  )
+
+  priors <- enw_posterior_as_prior(
+    nowcast,
+    priors = priors,
+    variables = c("logmean_int", "logsd_int", "sqrt_phi"),
+    scale = scale
+  )
+
+  return(priors)
 }
 
 summarise_nowcast <- function(nowcast, model,
@@ -24,7 +45,7 @@ summarise_nowcast <- function(nowcast, model,
 
   cols <- c("confirm", "sample")
   samples[, (cols) := lapply(.SD, data.table::frollsum, n = 7),
-    .SDcols = cols, by = ".draw"
+    .SDcols = cols, by = c(".draw", "age_group", "location")
   ][!is.na(sample)]
 
   # Summarise 7 day nowcast
@@ -36,19 +57,30 @@ summarise_nowcast <- function(nowcast, model,
     daily = list(daily),
     seven_day = list(seven_day)
   )
+  out <- cbind(
+    out,
+    nowcast[
+      ,
+      .(
+        max_rhat, divergent_transitions, per_divergent_transitions,
+        max_treedepth, no_at_max_treedepth, per_at_max_treedepth, time
+      )
+    ]
+  )
   return(out[])
 }
 
-nowcast <- function(obs, tar_loc, tar_date, model, model_file,
-                    max_delay, settings) {
-  do.call(
+nowcast <- function(obs, tar_loc, model,
+                    max_delay, priors, settings) {
+  cast <- do.call(
     model, c(
       list(
-        obs = obs[location == tar_loc][nowcast_date == tar_date],
+        obs = obs[location == tar_loc],
         max_delay = max_delay,
-        model_file = model_file
+        priors = priors
       ),
       settings
     )
   )
+  return(cast)
 }

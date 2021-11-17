@@ -15,10 +15,8 @@ Set up the workflow pipeline and options. We first load the `targets` package an
 ```{r}
 library(targets)
 library(tarchetypes)
-library(tibble)
-library(tidyr)
-library(dplyr)
-library(scoringutils)
+library(data.table)
+library(epinowcast)
 library(ggplot2)
 library(purrr)
 library(here)
@@ -29,9 +27,13 @@ We now define shared global options across our workflow and load R functions fro
 
 
 ```{targets globals, tar_globals = TRUE}
+library(targets)
+library(tarchetypes)
+library(data.table)
+library(epinowcast)
+library(ggplot2)
 library(purrr)
 library(here)
-library(tarchetypes)
 functions <- list.files(here("R"), full.names = TRUE)
 walk(functions, source)
 tar_option_set(
@@ -47,10 +49,15 @@ tar_option_set(
 
 # Ingest data and stratify by location and report date
 
+* Specify todays date to trigger downloading new data.
+
+```{targets today, tar_globals = TRUE}
+today <- Sys.Date()
+```
 * Download and process hospitalisation data.
 
 ```{targets hospitalisations, tar_simple = TRUE}
-get_germany_hospitalisations()
+get_germany_hospitalisations(today)
 ```
 
 * Download and process public holidays data.
@@ -60,7 +67,7 @@ get_germany_hospitalisations()
 ```{targets nowcast_dates, tar_simple = TRUE}
 unique(
   hospitalisations[reference_date >= as.Date("2021-09-01")]$reference_date
-)[1:7]
+)[1:2]
 ```
 
 * Define age groups
@@ -72,7 +79,7 @@ unique(hospitalisations$age_group)
 * Define locations to nowcast
 
 ```{targets locations, tar_simple = TRUE}
-unique(hospitalisations$location)[1]
+unique(hospitalisations$location)[1:2]
 ```
 
 * Define maximum allowed reporting delay (in days).
@@ -90,7 +97,8 @@ tar_target(
     hospitalisations, rep_date = nowcast_dates,
     ref_days = max_report_delay
   )[, nowcast_date := nowcast_dates],
-  map(nowcast_dates)
+  map(nowcast_dates),
+  iteration = "list"
 )
 ```
 
@@ -100,9 +108,17 @@ tar_target(
  enw_latest_data(hospitalisations)
 ```
 
+* Make latest observations into 7 day incidence.
+
+```{targets, latest_7day_hospitalisations, tar_simple = TRUE}
+copy(latest_hospitalisations)[,
+  confirm := frollsum(confirm, n =  7), by = c("age_group", "location")
+][!is.na(confirm)]
+```
+
 * Plot reporting delay percentage by date, location, and age group.
 
-# Fit models and produce nowcast
+# Fit models and produce nowcasts
 
 ## Model and model settings
 
@@ -123,15 +139,45 @@ list(
   output_loglik = FALSE,
   pp = FALSE,
   iter_warmup = 1000,
-  iter_sampling = 2000,
+  iter_sampling = 1000,
   chains = 2,
   parallel_chains = 2,
   threads_per_chain = 2,
-  adapt_delta = 0.95,
+  adapt_delta = 0.8,
   show_messages = FALSE,
   refresh = 0
 )
 ```
+
+## Priors
+
+* Define a set of uninformed priors using the defaults from `epinowcast`.
+
+```{targets uninformed_priors, tar_simple = TRUE}
+enw_priors()
+```
+
+* Define a set of observations to use as a source for informed priors. Here we use overall national hospitalisations and data from the 1st of September 2021.
+
+```{targets prior_obs, tar_simple = TRUE}
+enw_retrospective_data(
+  hospitalisations[location == "DE"][age_group == "00+"],
+  rep_date = as.Date("2021-09-01"), ref_days = max_report_delay
+)
+```
+
+* Fit a model to national overall hospitalisations only and extract posterior estimates for the delay distribution and overdispersion to use as informed priors for other models by assuming a normal distribution with their posterior standard deviations scaled by 5 times.
+
+```{targets priors, tar_simple = TRUE} 
+do.call(prior_epinowcast, c(
+  list(
+    prior_obs, max_delay = max_report_delay, scale = 5,
+    priors = uninformed_priors
+  ),
+  epinowcast_settings
+))
+```
+
 ## Models
 
 * Intercept only model.
@@ -141,33 +187,112 @@ tar_target(
   fixed_nowcast,
   nowcast(
     obs = hospitalisations_by_date_report,
-    tar_loc = locations, tar_date = nowcast_dates,
-    model = fixed_epinowcast, model_file = epinowcast_model,
-    max_delay = max_report_delay, settings = epinowcast_settings
+    tar_loc = locations,
+    model = fixed_epinowcast,
+    priors = priors,
+    max_delay = max_report_delay,
+    settings = epinowcast_settings
   ),
-  cross(nowcast_dates, locations)
+  cross(hospitalisations_by_date_report, locations)
 )
 ```
 
 * Intercept model with day of the week reporting effects.
 
+```{r, dow_nowcast, eval = FALSE}
+tar_target(
+  dow_nowcast,
+  nowcast(
+    obs = hospitalisations_by_date_report,
+    tar_loc = locations,
+    model = dow_epinowcast,
+    priors = priors,
+    max_delay = max_report_delay,
+    settings = epinowcast_settings
+  ),
+  cross(hospitalisations_by_date_report, locations)
+)
+```
+
 * Age group random effect model with day of the week effect reporting effects.
+
+```{r, age_nowcast, eval = FALSE}
+tar_target(
+  age_nowcast,
+  nowcast(
+    obs = hospitalisations_by_date_report,
+    tar_loc = locations,
+    model = age_epinowcast,
+    priors = priors,
+    max_delay = max_report_delay,
+    settings = epinowcast_settings
+  ),
+  cross(hospitalisations_by_date_report, locations)
+)
+```
 
 * Age group random effect model with a weekly random walk and a day of the week reporting effect.
 
+```{r, week_nowcast, eval = FALSE}
+tar_target(
+  week_nowcast,
+  nowcast(
+    obs = hospitalisations_by_date_report,
+    tar_loc = locations,
+    model = week_epinowcast,
+    priors = priors,
+    max_delay = max_report_delay,
+    settings = epinowcast_settings
+  ),
+  cross(hospitalisations_by_date_report, locations)
+)
+```
+
 * Age group random effect model with a weekly random walk, an age group specific weekly random walk in the residuals,  and a day of the week reporting effect.
+
+```{r, age_week_nowcast, eval = FALSE}
+tar_target(
+  age_week_nowcast,
+  nowcast(
+    obs = hospitalisations_by_date_report,
+    tar_loc = locations,
+    model = age_week_epinowcast,
+    priors = priors,
+    max_delay = max_report_delay,
+    settings = epinowcast_settings
+  ),
+  cross(hospitalisations_by_date_report, locations)
+)
+```
 
 * Independent age group model with a weekly random walk and a day of the week reporting model.
 
+```{r, independent_nowcast, eval = FALSE}
+tar_target(
+  independent_nowcast,
+  nowcast(
+    obs = hospitalisations_by_date_report[age_group == age_groups],
+    tar_loc = locations,
+    model = independent_epinowcast,
+    priors = priors,
+    max_delay = max_report_delay,
+    settings = epinowcast_settings
+  ),
+  cross(hospitalisations_by_date_report, locations, age_groups)
+)
+```
+
 # Postprocess
-
-* Make nowcasts into 7 day incidence.
-
-* Make latest observations into 7 day incidence.
 
 * Save nowcasts stratified by nowcasting date.
 
-* Format nowcasts for hub submission.
+* Format 7 day nowcasts for hub submission.
+
+* Save 7 day nowcasts formatted for hub submission.
+
+* Save latest hospitalisation data 
+
+* Save 7 day hospitalisation data
 
 # Visualise
 

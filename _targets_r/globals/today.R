@@ -1,0 +1,1 @@
+today <- Sys.Date()

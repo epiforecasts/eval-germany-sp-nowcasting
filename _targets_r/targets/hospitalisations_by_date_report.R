@@ -4,5 +4,6 @@ tar_target(
     hospitalisations, rep_date = nowcast_dates,
     ref_days = max_report_delay
   )[, nowcast_date := nowcast_dates],
-  map(nowcast_dates)
+  map(nowcast_dates),
+  iteration = "list"
 )
