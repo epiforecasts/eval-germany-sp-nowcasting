@@ -127,10 +127,10 @@ tar_target(max_report_delay, {
 
 ``` r
 tar_target(
-    hospitalisations_by_date_report,
-    enw_retrospective_data(
-      hospitalisations, rep_date = nowcast_dates,
-      ref_days = max_report_delay
+  hospitalisations_by_date_report,
+  enw_retrospective_data(
+    hospitalisations, rep_date = nowcast_dates,
+    ref_days = max_report_delay
   )[, nowcast_date := nowcast_dates],
   map(nowcast_dates)
 )
@@ -162,7 +162,7 @@ tar_target(latest_hospitalisations, {
 ``` r
 tar_target(
   epinowcast_model,
-  compile_model(threads = TRUE),
+  compile_model(),
   format = "file", deployment = "main",
 )
 #> Establish _targets.R and _targets_r/targets/epinowcast_model.R.
@@ -181,9 +181,11 @@ tar_target(epinowcast_settings, {
     iter_warmup = 1000,
     iter_sampling = 2000,
     chains = 2,
+    parallel_chains = 2,
     threads_per_chain = 2,
     adapt_delta = 0.95,
-    show_messages = FALSE
+    show_messages = FALSE,
+    refresh = 0
   )
 })
 #> Define target epinowcast_settings from chunk code.
@@ -199,17 +201,13 @@ tar_target(epinowcast_settings, {
 ``` r
 tar_target(
   fixed_nowcast,
-  do.call(
-    fixed_epinowcast, c(
-      list(
-        obs = hospitalisations,
-        max_delay = max_report_delay,
-        model_file = epinowcast_model
-      ),
-      epinowcast_settings
-    )
+  nowcast(
+    obs = hospitalisations_by_date_report,
+    tar_loc = locations, tar_date = nowcast_dates,
+    model = fixed_epinowcast, model_file = epinowcast_model,
+    max_delay = max_report_delay, settings = epinowcast_settings
   ),
-  cross(nowcast_dates, location)
+  cross(nowcast_dates, locations)
 )
 #> Establish _targets.R and _targets_r/targets/fixed_nowcast.R.
 ```
