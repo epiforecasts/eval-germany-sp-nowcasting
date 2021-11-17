@@ -1,7 +1,7 @@
 #!bin/bash
 
 # render the workflow
-Rscript -e "rmarkdown::render('_targets.Rmd')" 
+Rscript -e "suppressMessages(rmarkdown::render('_targets.Rmd'))" 
 
 nohup \
   Rscript -e "targets::tar_make_future(workers = floor(future::availableCores() / 2))" \
