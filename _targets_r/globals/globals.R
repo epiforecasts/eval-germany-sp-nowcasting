@@ -1,6 +1,10 @@
+library(targets)
+library(tarchetypes)
+library(data.table)
+library(epinowcast)
+library(ggplot2)
 library(purrr)
 library(here)
-library(tarchetypes)
 functions <- list.files(here("R"), full.names = TRUE)
 walk(functions, source)
 tar_option_set(

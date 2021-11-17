@@ -1,3 +1,3 @@
 tar_target(hospitalisations, {
-  get_germany_hospitalisations()
+  get_germany_hospitalisations(today)
 })

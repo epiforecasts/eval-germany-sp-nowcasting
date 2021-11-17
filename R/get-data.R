@@ -1,4 +1,7 @@
-get_germany_hospitalisations <- function(url = "https://raw.githubusercontent.com/jbracher/hospitalization-nowcast-hub/main/data-truth/COVID-19/COVID-19_hospitalizations_preprocessed.csv") { # nolint
+get_germany_hospitalisations <- function(today,
+                                         url = "https://raw.githubusercontent.com/jbracher/hospitalization-nowcast-hub/main/data-truth/COVID-19/COVID-19_hospitalizations_preprocessed.csv") { # nolint
+  message("Downloading hospitalisation data available on the: ", today)
+
   germany_hosp <- data.table::fread(url)
 
   germany_hosp <- data.table::melt(
