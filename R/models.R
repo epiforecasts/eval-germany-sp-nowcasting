@@ -1,44 +1,13 @@
-compile_model <- function(...) {
-  model <- epinowcast::enw_model(...)
-  return(model$stan_file())
-}
-
-summarise_nowcast <- function(nowcast, model,
-                              probs = c(
-                                0.025, 0.05, seq(0.1, 0.9, by = 0.1),
-                                0.95, 0.975
-                              )) {
-  daily <- summary(nowcast, type = "nowcast", probs = probs)
-
-  samples <- summary(nowcast, type = "nowcast_samples")
-
-  cols <- c("confirm", "sample")
-  samples[, (cols) := lapply(.SD, data.table::frollsum, n = 7),
-    .SDcols = cols, by = ".draw"
-  ][!is.na(sample)]
-
-  # Summarise 7 day nowcast
-  seven_day <- enw_summarise_samples(samples, probs = probs)
-
-  out <- data.table::data.table(
-    model = model,
-    nowcast_date = max(daily$reference_date),
-    daily = list(daily),
-    seven_day = list(seven_day)
-  )
-  return(out[])
-}
-
 fixed_epinowcast <- function(obs, model_file, max_delay = 40, ...) {
   pobs <- enw_preprocess_data(
     obs,
-    max_delay = max_delay, group = "age_group"
+    max_delay = max_delay, by = "age_group"
   )
 
   reference_effects <- enw_formula(pobs$metareference)
   report_effects <- enw_formula(pobs$metareport)
 
-  model <- cmdstanr::cmdstan_model(model_file)
+  model <- load_model(model_file)
 
   nowcast <- epinowcast(
     pobs,
@@ -55,13 +24,13 @@ fixed_epinowcast <- function(obs, model_file, max_delay = 40, ...) {
 dow_epinowcast <- function(obs, model_file, max_delay = 40, ...) {
   pobs <- enw_preprocess_data(
     obs,
-    max_delay = max_delay, group = "age_group"
+    max_delay = max_delay, by = "age_group"
   )
 
   reference_effects <- enw_formula(pobs$metareference)
   report_effects <- enw_formula(pobs$metareport, random = "day_of_week")
 
-  model <- cmdstanr::cmdstan_model(model_file)
+  model <- suppressMessages(cmdstanr::cmdstan_model(model_file))
 
   nowcast <- epinowcast(
     pobs,
@@ -81,13 +50,13 @@ dow_epinowcast <- function(obs, model_file, max_delay = 40, ...) {
 age_epinowcast <- function(obs, model_file, max_delay = 40, ...) {
   pobs <- enw_preprocess_data(
     obs,
-    max_delay = max_delay, group = "age_group"
+    max_delay = max_delay, by = "age_group"
   )
 
   reference_effects <- enw_formula(pobs$metareference, random = "age_group")
   report_effects <- enw_formula(pobs$metareport, random = "day_of_week")
 
-  model <- cmdstanr::cmdstan_model(model_file)
+  model <- suppressMessages(cmdstanr::cmdstan_model(model_file))
 
   nowcast <- epinowcast(
     pobs,
@@ -107,7 +76,7 @@ age_epinowcast <- function(obs, model_file, max_delay = 40, ...) {
 week_epinowcast <- function(obs, model_file, max_delay = 40, ...) {
   pobs <- enw_preprocess_data(
     obs,
-    max_delay = max_delay, group = "age_group"
+    max_delay = max_delay, by = "age_group"
   )
 
   metareference <- enw_add_cumulative_membership(
@@ -120,7 +89,7 @@ week_epinowcast <- function(obs, model_file, max_delay = 40, ...) {
   )
   report_effects <- enw_formula(pobs$metareport, random = "day_of_week")
 
-  model <- cmdstanr::cmdstan_model(model_file)
+  model <- suppressMessages(cmdstanr::cmdstan_model(model_file))
 
   nowcast <- epinowcast(
     pobs,
@@ -140,7 +109,7 @@ week_epinowcast <- function(obs, model_file, max_delay = 40, ...) {
 age_week_epinowcast <- function(obs, model_file, max_delay = 40, ...) {
   pobs <- enw_preprocess_data(
     obs,
-    max_delay = max_delay, group = "age_group"
+    max_delay = max_delay, by = "age_group"
   )
 
   metareference <- pobs$metareference[[1]]
@@ -189,7 +158,7 @@ age_week_epinowcast <- function(obs, model_file, max_delay = 40, ...) {
 
   report_effects <- enw_formula(pobs$metareport, random = "day_of_week")
 
-  model <- cmdstanr::cmdstan_model(model_file)
+  model <- suppressMessages(cmdstanr::cmdstan_model(model_file))
 
   nowcast <- epinowcast(
     pobs,
@@ -217,7 +186,7 @@ independent_epinowcast <- function(obs, model_file, max_delay = 40, ...) {
   reference_effects <- enw_formula(metareference, custom_random = "cweek")
   report_effects <- enw_formula(pobs_ind$metareport, random = "day_of_week")
 
-  model <- cmdstanr::cmdstan_model(model_file)
+  model <- suppressMessages(cmdstanr::cmdstan_model(model_file))
 
   nowcast <- epinowcast(
     pobs,
