@@ -89,7 +89,7 @@ week_epinowcast <- function(obs, max_delay = 40, ...) {
   )
   report_effects <- enw_formula(pobs$metareport, random = "day_of_week")
 
-  model <- suppressMessages(cmdstanr::cmdstan_model(model_file))
+  model <- load_model()
 
   nowcast <- epinowcast(
     pobs,
@@ -113,6 +113,11 @@ age_week_epinowcast <- function(obs, max_delay = 40, ...) {
   )
 
   metareference <- pobs$metareference[[1]]
+
+  metareference <- enw_add_cumulative_membership(
+    pobs$metareference[[1]],
+    feature = "week"
+  )
 
   fixed_form <- as.formula(paste0(
     "~ 1 + age_group + ",
@@ -179,12 +184,12 @@ independent_epinowcast <- function(obs, max_delay = 40, ...) {
   pobs <- enw_preprocess_data(obs, max_delay = max_delay)
 
   metareference <- enw_add_cumulative_membership(
-    pobs_ind$metareference[[1]],
+    pobs$metareference[[1]],
     feature = "week"
   )
 
   reference_effects <- enw_formula(metareference, custom_random = "cweek")
-  report_effects <- enw_formula(pobs_ind$metareport, random = "day_of_week")
+  report_effects <- enw_formula(pobs$metareport, random = "day_of_week")
 
   model <- load_model()
 

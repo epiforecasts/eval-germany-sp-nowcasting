@@ -90,7 +90,8 @@ today <- Sys.Date()
 #> Establish _targets.R and _targets_r/globals/today.R.
 ```
 
-  - Download and process hospitalisation data.
+  - Download and process hospitalisation data. Also download and
+    combined data on public holidays in Germany.
 
 <!-- end list -->
 
@@ -101,8 +102,6 @@ tar_target(hospitalisations, {
 #> Define target hospitalisations from chunk code.
 #> Establish _targets.R and _targets_r/targets/hospitalisations.R.
 ```
-
-  - Download and process public holidays data.
 
   - Define date to start nowcasting
 
@@ -531,10 +530,8 @@ tar_target(
 ``` r
 tar_target(
   hierarchical_submission_nowcast,
-  combined_nowcasts[
-    model == "Reference: Age and week by age, Report: Day of week"][
-    nowcast_date == nowcast_dates
-    ]$seven_day |>
+  age_week_nowcast[nowcast_date == nowcast_dates]$seven_day |>
+    rbindlist() |>
     format_for_submission(),
   map(nowcast_dates),
   iteration = "list"
@@ -567,10 +564,8 @@ tar_target(
 ``` r
 tar_target(
   independent_submission_nowcast,
-  combined_nowcasts[
-    model == "Independent by age, Reference: Week, Report: Day of week"][
-    nowcast_date == nowcast_dates
-    ]$seven_day |>
+  independent_nowcast[nowcast_date == nowcast_dates]$seven_day |>
+    rbindlist() |>
     format_for_submission(),
   map(nowcast_dates),
   iteration = "list"
