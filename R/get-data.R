@@ -21,5 +21,12 @@ get_germany_hospitalisations <- function(today,
   germany_hosp[, confirm := cumsum(confirm),
     by = c("reference_date", "location", "age_group")
   ]
+  germany_hosp[
+    ,
+    age_group := factor(
+      age_group,
+      levels = c("00+", "00-04", "05-14", "15-34", "35-59", "60-79", "80+")
+    )
+  ]
   return(germany_hosp[])
 }
