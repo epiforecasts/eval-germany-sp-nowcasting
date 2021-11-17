@@ -73,7 +73,7 @@ age_epinowcast <- function(obs, max_delay = 40, ...) {
   return(out[])
 }
 
-week_epinowcast <- function(obs, model_file, max_delay = 40, ...) {
+week_epinowcast <- function(obs, max_delay = 40, ...) {
   pobs <- enw_preprocess_data(
     obs,
     max_delay = max_delay, by = "age_group"
