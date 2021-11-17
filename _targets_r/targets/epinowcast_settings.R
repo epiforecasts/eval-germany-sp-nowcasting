@@ -7,7 +7,7 @@ tar_target(epinowcast_settings, {
     iter_sampling = 1000,
     chains = 2,
     parallel_chains = 2,
-    threads_per_chain = 2,
+    threads_per_chain = 1,
     adapt_delta = 0.9,
     show_messages = FALSE,
     refresh = 0

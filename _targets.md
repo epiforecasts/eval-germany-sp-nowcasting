@@ -128,7 +128,7 @@ tar_target(start_date, {
 tar_target(nowcast_dates, {
   unique(
     hospitalisations[reference_date >= start_date]$reference_date
-  )[1:7]
+  )
 })
 #> Define target nowcast_dates from chunk code.
 #> Establish _targets.R and _targets_r/targets/nowcast_dates.R.
@@ -246,7 +246,7 @@ tar_target(epinowcast_settings, {
     iter_sampling = 1000,
     chains = 2,
     parallel_chains = 2,
-    threads_per_chain = 2,
+    threads_per_chain = 1,
     adapt_delta = 0.9,
     show_messages = FALSE,
     refresh = 0
