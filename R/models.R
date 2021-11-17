@@ -24,7 +24,7 @@ summarise_nowcast <- function(nowcast, model,
     model = model,
     nowcast_date = max(daily$reference_date),
     daily = list(daily),
-    seven_day = list(samples)
+    seven_day = list(seven_day)
   )
   return(out[])
 }

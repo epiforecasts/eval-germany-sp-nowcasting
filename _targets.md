@@ -77,7 +77,9 @@ tar_target(hospitalisations, {
 
 ``` r
 tar_target(nowcast_dates, {
-  hospitalisations[reference_date >= as.Date("2021-09-01")]$reference_date[1:7]
+  unique(
+    hospitalisations[reference_date >= as.Date("2021-09-01")]$reference_date
+  )[1:7]
 })
 #> Define target nowcast_dates from chunk code.
 #> Establish _targets.R and _targets_r/targets/nowcast_dates.R.
@@ -101,7 +103,7 @@ tar_target(age_groups, {
 
 ``` r
 tar_target(locations, {
-  unique(hospitalisations$location)
+  unique(hospitalisations$location)[1]
 })
 #> Define target locations from chunk code.
 #> Establish _targets.R and _targets_r/targets/locations.R.
@@ -191,6 +193,26 @@ tar_target(epinowcast_settings, {
 ## Models
 
   - Intercept only model.
+
+<!-- end list -->
+
+``` r
+tar_target(
+  fixed_nowcast,
+  do.call(
+    fixed_epinowcast, c(
+      list(
+        obs = hospitalisations,
+        max_delay = max_report_delay,
+        model_file = epinowcast_model
+      ),
+      epinowcast_settings
+    )
+  ),
+  cross(nowcast_dates, location)
+)
+#> Establish _targets.R and _targets_r/targets/fixed_nowcast.R.
+```
 
   - Intercept model with day of the week reporting effects.
 
