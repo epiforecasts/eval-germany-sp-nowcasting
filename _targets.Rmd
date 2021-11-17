@@ -58,7 +58,9 @@ get_germany_hospitalisations()
 * Define dates to nowcast.
 
 ```{targets nowcast_dates, tar_simple = TRUE}
-hospitalisations[reference_date >= as.Date("2021-09-01")]$reference_date[1:7]
+unique(
+  hospitalisations[reference_date >= as.Date("2021-09-01")]$reference_date
+)[1:7]
 ```
 
 * Define age groups
@@ -70,7 +72,7 @@ unique(hospitalisations$age_group)
 * Define locations to nowcast
 
 ```{targets locations, tar_simple = TRUE}
-unique(hospitalisations$location)
+unique(hospitalisations$location)[1]
 ```
 
 * Define maximum allowed reporting delay (in days).
@@ -131,6 +133,23 @@ list(
 ## Models
 
 * Intercept only model.
+
+```{targets, fixed_nowcast}
+tar_target(
+  fixed_nowcast,
+  do.call(
+    fixed_epinowcast, c(
+      list(
+        obs = hospitalisations,
+        max_delay = max_report_delay,
+        model_file = epinowcast_model
+      ),
+      epinowcast_settings
+    )
+  ),
+  cross(nowcast_dates, location)
+)
+```
 
 * Intercept model with day of the week reporting effects.
 
