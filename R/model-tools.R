@@ -14,7 +14,10 @@ load_model <- function() {
 }
 
 prior_epinowcast <- function(obs, priors, max_delay = 40, scale = 5, ...) {
-  pobs <- enw_preprocess_data(obs, max_delay = max_delay)
+  pobs <- enw_preprocess_data(obs,
+    max_delay = max_delay,
+    rep_holidays = "holiday"
+  )
 
   model <- load_model()
 

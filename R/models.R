@@ -1,6 +1,7 @@
 fixed_epinowcast <- function(obs, max_delay = 40, ...) {
   pobs <- enw_preprocess_data(
     obs,
+    rep_holidays = "holiday",
     max_delay = max_delay, by = "age_group"
   )
 
@@ -24,6 +25,7 @@ fixed_epinowcast <- function(obs, max_delay = 40, ...) {
 dow_epinowcast <- function(obs, max_delay = 40, ...) {
   pobs <- enw_preprocess_data(
     obs,
+    rep_holidays = "holiday",
     max_delay = max_delay, by = "age_group"
   )
 
@@ -50,6 +52,7 @@ dow_epinowcast <- function(obs, max_delay = 40, ...) {
 age_epinowcast <- function(obs, max_delay = 40, ...) {
   pobs <- enw_preprocess_data(
     obs,
+    rep_holidays = "holiday",
     max_delay = max_delay, by = "age_group"
   )
 
@@ -76,6 +79,7 @@ age_epinowcast <- function(obs, max_delay = 40, ...) {
 week_epinowcast <- function(obs, max_delay = 40, ...) {
   pobs <- enw_preprocess_data(
     obs,
+    rep_holidays = "holiday",
     max_delay = max_delay, by = "age_group"
   )
 
@@ -109,6 +113,7 @@ week_epinowcast <- function(obs, max_delay = 40, ...) {
 age_week_epinowcast <- function(obs, max_delay = 40, ...) {
   pobs <- enw_preprocess_data(
     obs,
+    rep_holidays = "holiday",
     max_delay = max_delay, by = "age_group"
   )
 
@@ -181,7 +186,10 @@ age_week_epinowcast <- function(obs, max_delay = 40, ...) {
 }
 
 independent_epinowcast <- function(obs, max_delay = 40, ...) {
-  pobs <- enw_preprocess_data(obs, max_delay = max_delay)
+  pobs <- enw_preprocess_data(obs,
+    max_delay = max_delay,
+    rep_holidays = "holiday"
+  )
 
   metareference <- enw_add_cumulative_membership(
     pobs$metareference[[1]],
