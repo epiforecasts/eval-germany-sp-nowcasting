@@ -36,8 +36,8 @@ prior_epinowcast <- function(obs, priors, max_delay = 40, scale = 5, ...) {
 
 summarise_nowcast <- function(nowcast, model,
                               probs = c(
-                                0.025, 0.05, seq(0.1, 0.9, by = 0.1),
-                                0.95, 0.975
+                                0.025, 0.05, 0.2, 0.25, 0.5, 0.75,
+                                0.8, 0.9, 0.95, 0.975
                               )) {
   daily <- summary(nowcast, type = "nowcast", probs = probs)
 
@@ -46,7 +46,8 @@ summarise_nowcast <- function(nowcast, model,
   cols <- c("confirm", "sample")
   samples[, (cols) := lapply(.SD, data.table::frollsum, n = 7),
     .SDcols = cols, by = c(".draw", "age_group", "location")
-  ][!is.na(sample)]
+  ]
+  samples <- samples[!is.na(sample)]
 
   # Summarise 7 day nowcast
   seven_day <- enw_summarise_samples(samples, probs = probs)
