@@ -3,13 +3,12 @@
 {
 	"name": "eval-germany-sp-nowcasting",
 	"image": "ghcr.io/epiforecasts/eval-germany-sp-nowcasting:main",
+	"workspaceFolder": "workspace/eval-germany-sp-nowcasting"
+	"shutdownAction": "none",
 	// To use a volume, use the following syntax (then clone your code):
-	//"workspaceFolder": "/workspace/",
-	//"workspaceMount": "source=eval-germany-sp-nowcasting,target=/workspace/,type=volume"
+	//"workspaceMount": "source=eval-germany-sp-nowcasting,target=/workspace/eval-germany-sp-nowcasting,type=volume"
 	// To bind mount a volume, use the following syntax:
-	 "workspaceFolder": "workspace/eval-germany-sp-nowcasting"
 	 "workspaceMount": "source=/home/epiforecasts/eval-germany-sp-nowcasting,target=/workspace/eval-germany-sp-nowcasting,type=bind,consistency=cached",
-	 "shutdownAction": "none",
 	// Set *default* container specific settings.json values on container create.
 	"settings": {
 		"r.rterm.linux": "/usr/local/bin/radian",
