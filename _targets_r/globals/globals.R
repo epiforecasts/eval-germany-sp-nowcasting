@@ -13,7 +13,7 @@ walk(functions, source)
 rm("functions")
 tar_option_set(
   packages = c("data.table", "epinowcast", "scoringutils", "ggplot2", "purrr",
-               "cmdstanr"),
+               "cmdstanr", "here"),
   deployment = "worker",
   memory = "transient",
   workspace_on_error = TRUE,
