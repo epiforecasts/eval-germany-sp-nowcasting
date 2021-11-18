@@ -492,7 +492,7 @@ tar_target(
 
 * Filter nowcasts to only include those with "complete" data (more than 28 days of reports) and with horizons between 0 days and -7 days from the nowcast date.
 
-```{targets scored_nowcasts, tar_simple}
+```{targets scored_nowcasts, tar_simple = TRUE}
 summarised_nowcast[reference_date >= (report_date - 7)][
                    reference_date < (report_date - 28)][,
                    holiday := NULL][,
