@@ -668,11 +668,14 @@ tar_target(
 <!-- end list -->
 
 ``` r
-summarised_nowcast[reference_date >= (report_date - 7)][
-                   reference_date < (report_date - 28)][,
-                   holiday := NULL][,
-                   horizon := as.numeric(reference_date - report_date)]
-#> Establish _targets.R and _targets_r/targets/scored_nowcasts, tar_simple.R.
+tar_target(scored_nowcasts, {
+  summarised_nowcast[reference_date >= (report_date - 7)][
+                     reference_date < (report_date - 28)][,
+                     holiday := NULL][,
+                     horizon := as.numeric(reference_date - report_date)]
+})
+#> Define target scored_nowcasts from chunk code.
+#> Establish _targets.R and _targets_r/targets/scored_nowcasts.R.
 ```
 
   - Score daily nowcasts overall, by location, by age group, and by
