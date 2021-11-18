@@ -19,7 +19,6 @@ jobs:
 
       - name: Cancel previous builds if present
         uses: n1hility/cancel-previous-runs@v2
-        if: "!startsWith(github.ref, 'refs/tags/')"
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
         
