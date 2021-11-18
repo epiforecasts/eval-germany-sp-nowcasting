@@ -99,7 +99,7 @@ get_germany_hospitalisations(today)
 * Define date to start nowcasting
 
 ```{targets start_date, tar_simple = TRUE}
-as.Date("2021-10-15")
+as.Date("2021-11-01")
 ```
 
 * Define dates to nowcast.

@@ -3,7 +3,7 @@
 {
 	"name": "eval-germany-sp-nowcasting",
 	"image": "ghcr.io/epiforecasts/eval-germany-sp-nowcasting:main",
-	"workspaceFolder": "eval-germany-sp-nowcasting"
+	"workspaceFolder": "/eval-germany-sp-nowcasting",
 	"shutdownAction": "none",
 	// To use a volume, use the following syntax (then clone your code):
 	//"workspaceMount": "source=eval-germany-sp-nowcasting,target=/eval-germany-sp-nowcasting,type=volume"
