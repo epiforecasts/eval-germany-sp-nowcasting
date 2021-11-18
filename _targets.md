@@ -114,7 +114,7 @@ tar_target(hospitalisations, {
 
 ``` r
 tar_target(start_date, {
-  as.Date("2021-10-15")
+  as.Date("2021-11-01")
 })
 #> Define target start_date from chunk code.
 #> Establish _targets.R and _targets_r/targets/start_date.R.
@@ -212,6 +212,34 @@ tar_target(latest_7day_hospitalisations, {
 })
 #> Define target latest_7day_hospitalisations from chunk code.
 #> Establish _targets.R and _targets_r/targets/latest_7day_hospitalisations.R.
+```
+
+  - Define “complete” data (i.e more than 28 days have passed since
+    first reported)
+
+<!-- end list -->
+
+``` r
+tar_target(complete_hospitalisations, {
+  latest_hospitalisations[reference_date < (report_date - 28)][,
+                          horizon := as.numeric(reference_date - report_date)]
+})
+#> Define target complete_hospitalisations from chunk code.
+#> Establish _targets.R and _targets_r/targets/complete_hospitalisations.R.
+```
+
+  - Similarly, define “complete” 7 day hospitalisation incidence.
+
+<!-- end list -->
+
+``` r
+tar_target(complete_7day_hospitalisations, {
+  latest_7day_hospitalisations[reference_date < (report_date - 28)][,
+                               horizon := as.numeric(reference_date - report_date
+                              ]
+})
+#> Define target complete_7day_hospitalisations from chunk code.
+#> Establish _targets.R and _targets_r/targets/complete_7day_hospitalisations.R.
 ```
 
   - Plot reporting delay percentage by date, location, and age group.
@@ -631,23 +659,89 @@ tar_target(
 #> Establish _targets.R and _targets_r/targets/save_latest_7day_hospitalisations.R.
 ```
 
+# Evaluation
+
+  - Filter nowcasts to only include those with “complete” data (more
+    than 28 days of reports) and with horizons between 0 days and -7
+    days from the nowcast date.
+
+<!-- end list -->
+
+``` r
+summarised_nowcast[reference_date >= (report_date - 7)][
+                   reference_date < (report_date - 28)][,
+                   holiday := NULL][,
+                   horizon := as.numeric(reference_date - report_date)]
+#> Establish _targets.R and _targets_r/targets/scored_nowcasts, tar_simple.R.
+```
+
+  - Score daily nowcasts overall, by location, by age group, and by
+    horizon on both the natural and log scales (corresponding to
+    absolute and relative scoring). These summarised scores are then
+    saved to `data/scores`.
+
+<!-- end list -->
+
+``` r
+tar_map(
+  list(score_by = c("overall", "location", "age_group", "horizon")),
+  tar_target(
+    scores,
+    enw_score_nowcast(
+      overall_score, complete_hospitalisations, 
+      summarise_by = ifelse(score_by %in% "overall", "model", 
+                            c(score_by, "model")),
+      log = FALSE
+    )
+  ),
+  tar_target(
+    log_scores,
+    enw_score_nowcast(
+      overall_score, complete_hospitalisations, 
+      summarise_by = ifelse(score_by %in% "overall", "model", 
+                            c(score_by, "model")),
+      log = TRUE
+    )
+  ),
+  tar_target(
+    save_scores,
+    save_csv(
+      rind(scores[, scale := "natural"], log_scores[, scale := "log"])
+      filename = paste0(score_by, ".csv"),
+      path = here("data/scores")
+    ),
+    format = "file"
+  )
+)
+#> Establish _targets.R and _targets_r/targets/score.R.
+```
+
 # Visualise
 
   - Plot most recent nowcast by location, age group, and model.
 
+<!-- end list -->
+
+``` r
+tar_target(
+  plot_latest_nowcast,
+  enw_plot_nowcast_quantiles(
+    summarised_nowcasts[nowcast_date == max(nowcast_date)][
+                        location == locations][
+                        reference_date >= (nowcast_date - 28)], 
+    latest_obs = latest_hospitalisations[location == locations][
+                                         reference_date >= (max(report_date) - 
+                                                             40)]
+  ) +
+  facet_grid(vars(age_group), vars(model), scales = "free_y"),
+  map(locations)
+)
+#> Establish _targets.R and _targets_r/targets/plot-latest-nowcast.R.
+```
+
   - Plot nowcasts at 0 horizon by location, age group, and model.
 
   - Plot nowcasts at 3 day horizon by location, age group and model
-
-# Evaluation
-
-  - Score nowcasts overall both on a natural scale and on a log scale.
-
-  - Score nowcasts by location on a natural scale and on a log scale.
-
-  - Score nowcasts by age group on a natural scale and on a log scale.
-
-  - Score nowcasts by horizon on a natural scale and on a log scale.
 
   - Plot scores relative to the baseline by location and age group on
     both the natural and log scale.

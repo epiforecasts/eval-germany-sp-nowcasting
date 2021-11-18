@@ -1,6 +1,5 @@
 library(epinowcast)
 suppressMessages(library(data.table, quietly = TRUE))
-suppressMessages(library(rstan, quietly = TRUE))
 library(purrr)
 library(here)
 
