@@ -74,7 +74,7 @@ walk(functions, source)
 rm("functions")
 tar_option_set(
   packages = c("data.table", "epinowcast", "scoringutils", "ggplot2", "purrr",
-               "cmdstanr"),
+               "cmdstanr", "here"),
   deployment = "worker",
   memory = "transient",
   workspace_on_error = TRUE,
@@ -114,7 +114,7 @@ tar_target(hospitalisations, {
 
 ``` r
 tar_target(start_date, {
-  as.Date("2021-10-01")
+  as.Date("2021-10-15")
 })
 #> Define target start_date from chunk code.
 #> Establish _targets.R and _targets_r/targets/start_date.R.
