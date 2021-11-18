@@ -53,10 +53,12 @@ RUN Rscript -e 'devtools::install_github("stan-dev/cmdstanr")'
 
 # install cmdstan
 RUN mkdir -p /home/vscode/.cmdstan
+RUN Rscript -e 'cmdstanr::install_cmdstan("/home/vscode/.cmdstan")'
 RUN chmod -R ugo+rw /home/vscode
+
+# make workspace directory
 RUN mkdir -p /eval-germany-sp-nowcasting
 RUN chmod -R ugo+rw /eval-germany-sp-nowcasting
-RUN Rscript -e 'cmdstanr::install_cmdstan("/home/vscode/.cmdstan")'
 
 # install dependencies
 COPY DESCRIPTION /tmp/package/DESCRIPTION
