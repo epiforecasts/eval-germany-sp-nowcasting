@@ -7,7 +7,8 @@
 	//"workspaceFolder": "/workspace/",
 	//"workspaceMount": "source=eval-germany-sp-nowcasting,target=/workspace/,type=volume"
 	// To bind mount a volume, use the following syntax:
-	// "workspaceMount": "source=/absolute/path/on/remote/machine,target=/workspace,type=bind,consistency=cached"
+	 "workspaceFolder": "/workspace/eval-germany-sp-nowcasting"
+	 "workspaceMount": "source=~/home/epiforecasts/eval-germany-sp-nowcasting,target=/workspace/eval-germany-sp-nowcasting,type=bind,consistency=cached"
 	},
 
 	// Set *default* container specific settings.json values on container create.
