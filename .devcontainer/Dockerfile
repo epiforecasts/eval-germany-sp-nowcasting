@@ -48,9 +48,6 @@ RUN Rscript -e 'devtools::install_github("mdlincoln/docthis")'
 # install precommit
 RUN Rscript -e 'devtools::install_github("lorenzwalthert/precommit")'
 
-# initialise precommit
-RUN Rscript -e 'precommit::use_precommit()'
-
 # install cmdstanr
 RUN Rscript -e 'devtools::install_github("stan-dev/cmdstanr")'
 
