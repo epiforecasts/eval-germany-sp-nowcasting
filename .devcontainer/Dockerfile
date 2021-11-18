@@ -52,6 +52,7 @@ RUN Rscript -e 'devtools::install_github("lorenzwalthert/precommit")'
 RUN Rscript -e 'devtools::install_github("stan-dev/cmdstanr")'
 
 # install cmdstan
+RUN mkdir /home/vscode/.cmdstan
 RUN Rscript -e 'cmdstanr::install_cmdstan("/home/vscode/.cmdstan")'
 
 # install dependencies
