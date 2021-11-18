@@ -116,10 +116,10 @@ unique(
 unique(hospitalisations$age_group)
 ```
 
-* Define locations to nowcast
+* Define locations to nowcast (currently limited to just national level).
 
 ```{targets locations, tar_simple = TRUE}
-unique(hospitalisations$location)
+"DE"
 ```
 
 * Define maximum allowed reporting delay (in days).
