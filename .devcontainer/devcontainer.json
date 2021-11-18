@@ -6,7 +6,9 @@
 		"dockerfile": "Dockerfile",
 	        "context": "..",
 		// Update VARIANT to pick a specific R version: latest, ... ,4.0.1 , 4.0.0
-		"args": { "VARIANT": "latest" }
+		"args": { "VARIANT": "latest" },
+		"workspaceFolder": "/workspace",
+		"workspaceMount": "source=epiforecasts/eval-germany-sp-nowcasting,target=/workspace,type=volume"
 	},
 
 	// Set *default* container specific settings.json values on container create.
