@@ -49,7 +49,7 @@ library(purrr, quietly = TRUE)
 #> 
 #>     transpose
 library(here)
-#> here() starts at /workspaces/eval-germany-sm-nowcasting
+#> here() starts at /workspace
 library(future)
 library(future.callr)
 tar_unscript()
@@ -146,13 +146,14 @@ tar_target(age_groups, {
 #> Establish _targets.R and _targets_r/targets/age_groups.R.
 ```
 
-  - Define locations to nowcast
+  - Define locations to nowcast (currently limited to just national
+    level).
 
 <!-- end list -->
 
 ``` r
 tar_target(locations, {
-  unique(hospitalisations$location)
+  "DE"
 })
 #> Define target locations from chunk code.
 #> Establish _targets.R and _targets_r/targets/locations.R.
