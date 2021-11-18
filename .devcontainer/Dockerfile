@@ -53,6 +53,7 @@ RUN Rscript -e 'devtools::install_github("stan-dev/cmdstanr")'
 
 # install cmdstan
 RUN mkdir /home/vscode/.cmdstan
+RUN mkdir /workspace/eval-germany-sp-nowcasting
 RUN Rscript -e 'cmdstanr::install_cmdstan("/home/vscode/.cmdstan")'
 
 # install dependencies
