@@ -125,7 +125,7 @@ unique(hospitalisations$age_group)
 * Define locations in which to nowcast only for the overall count and not for each age group.
 
 ```{targets other_locations, tar_simple = TRUE}
-setdiff(unique(hospitalisations$locations), locations)
+setdiff(unique(hospitalisations$location), locations)
 ```
 
 * Define maximum allowed reporting delay (in days).

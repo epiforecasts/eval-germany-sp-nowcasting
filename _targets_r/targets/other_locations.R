@@ -1,3 +1,3 @@
 tar_target(other_locations, {
-  setdiff(unique(hospitalisations$locations), locations)
+  setdiff(unique(hospitalisations$location), locations)
 })
