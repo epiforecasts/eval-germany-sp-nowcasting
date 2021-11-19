@@ -159,16 +159,19 @@ copy(latest_hospitalisations)[,
 * Define "complete" data (i.e more than 28 days have passed since first reported)
 
 ```{targets, complete_hospitalisations, tar_simple = TRUE}
-latest_hospitalisations[reference_date < (report_date - 28)][,
-                        horizon := as.numeric(reference_date - report_date)]
+latest_hospitalisations[
+  reference_date < (max(reference_date) - 28)][,
+  horizon := as.numeric(reference_date - max(reference_date))
+]
 ```
 
 * Similarly, define "complete" 7 day hospitalisation incidence.
 
 ```{targets, complete_7day_hospitalisations, tar_simple = TRUE}
-latest_7day_hospitalisations[reference_date < (report_date - 28)][,
-                             horizon := as.numeric(reference_date - report_date)
-                            ]
+latest_7day_hospitalisations[
+  reference_date < (max(reference_date) - 28)][,
+  horizon := as.numeric(reference_date - max(reference_date))
+]
 ```
 
 * Plot reporting delay percentage by date, location, and age group.
