@@ -1,0 +1,19 @@
+model,nowcast_date,max_rhat,divergent_transitions,per_divergent_transitions,max_treedepth,no_at_max_treedepth,per_at_max_treedepth,time
+"Reference: Age and week by age, Report: Day of week",2021-10-01,2.26,1109,0.5545,10,2,0.001,41
+"Reference: Age and week by age, Report: Day of week",2021-10-06,1.02,247,0.1235,8,1741,0.8705,41
+"Reference: Age and week by age, Report: Day of week",2021-10-07,3.12,2000,1,9,13,0.0065,41
+"Reference: Age and week by age, Report: Day of week",2021-10-13,1.02,221,0.1105,8,1757,0.8785,41
+"Reference: Age and week by age, Report: Day of week",2021-10-14,1.03,897,0.4485,8,1100,0.55,41
+"Reference: Age and week by age, Report: Day of week",2021-10-17,1.01,518,0.259,8,1482,0.741,41
+"Reference: Age and week by age, Report: Day of week",2021-10-20,1.06,1671,0.8355,8,329,0.1645,41
+"Reference: Age and week by age, Report: Day of week",2021-10-21,1.04,1457,0.7285,8,543,0.2715,41
+"Reference: Age and week by age, Report: Day of week",2021-10-22,1.01,237,0.1185,8,1763,0.8815,41
+"Reference: Age and week by age, Report: Day of week",2021-10-28,1.02,283,0.1415,8,1717,0.8585,41
+"Reference: Age and week by age, Report: Day of week",2021-10-29,1.01,209,0.1045,8,1791,0.8955,41
+"Reference: Age and week by age, Report: Day of week",2021-11-04,1.02,854,0.427,8,1146,0.573,41
+"Reference: Age and week by age, Report: Day of week",2021-11-05,1.01,229,0.1145,8,1771,0.8855,41
+"Reference: Age and week by age, Report: Day of week",2021-11-11,1.01,227,0.1135,8,1773,0.8865,41
+"Independent by age, Reference: Week, Report: Day of week",2021-10-11,1.02,252,0.126,6,1747,0.8735,41
+"Independent by age, Reference: Week, Report: Day of week",2021-10-15,1.01,386,0.193,7,249,0.1245,41
+"Independent by age, Reference: Week, Report: Day of week",2021-10-16,2.24,1251,0.6255,8,11,0.0055,41
+"Independent by age, Reference: Week, Report: Day of week",2021-11-14,1.01,227,0.1135,7,418,0.209,41

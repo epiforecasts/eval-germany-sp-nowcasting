@@ -14,3 +14,7 @@ save_csv <- function(dt, filename, path) {
   data.table::fwrite(dt, path)
   return(path)
 }
+
+drop_string <- function(var, string) {
+  var[!grepl(string, var)]
+}

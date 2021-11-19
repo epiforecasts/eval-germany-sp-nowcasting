@@ -3,11 +3,9 @@ tar_target(
   enw_plot_nowcast_quantiles(
     summarised_nowcast[nowcast_date == max(nowcast_date)][
                        location == locations][
-                       reference_date >= (nowcast_date - 28)], 
-    latest_obs = latest_hospitalisations[location == locations][
-                                         reference_date >= (max(report_date) - 
-                                                             40)]
+                       reference_date >= (nowcast_date - 28)]
   ) +
   facet_grid(vars(age_group), vars(model), scales = "free_y"),
-  map(locations)
+  map(locations),
+  iteration = "list"
 )
