@@ -221,10 +221,7 @@ tar_target(latest_7day_hospitalisations, {
 
 ``` r
 tar_target(complete_hospitalisations, {
-  latest_hospitalisations[
-    reference_date < (max(reference_date) - 28)][,
-    horizon := as.numeric(reference_date - max(reference_date))
-  ]
+  latest_hospitalisations[reference_date < (max(reference_date) - 28)]
 })
 #> Define target complete_hospitalisations from chunk code.
 #> Establish _targets.R and _targets_r/targets/complete_hospitalisations.R.
@@ -236,10 +233,7 @@ tar_target(complete_hospitalisations, {
 
 ``` r
 tar_target(complete_7day_hospitalisations, {
-  latest_7day_hospitalisations[
-    reference_date < (max(reference_date) - 28)][,
-    horizon := as.numeric(reference_date - max(reference_date))
-  ]
+  latest_7day_hospitalisations[reference_date < (max(reference_date) - 28)]
 })
 #> Define target complete_7day_hospitalisations from chunk code.
 #> Establish _targets.R and _targets_r/targets/complete_7day_hospitalisations.R.
@@ -506,7 +500,7 @@ tar_target(combined_nowcasts, {
 
 ``` r
 tar_target(summarised_nowcast, {
-  combined_nowcasts[, rbindlist(daily), by = c("model", "nowcast_date")]
+  unnest_nowcasts(combined_nowcasts, "daily")
 })
 #> Define target summarised_nowcast from chunk code.
 #> Establish _targets.R and _targets_r/targets/summarised_nowcast.R.
@@ -518,7 +512,7 @@ tar_target(summarised_nowcast, {
 
 ``` r
 tar_target(summarised_7day_nowcast, {
-  combined_nowcasts[, rbindlist(seven_day), by = c("model", "nowcast_date")]
+  unnest_nowcasts(combined_nowcasts, "seven_daily")
 })
 #> Define target summarised_7day_nowcast from chunk code.
 #> Establish _targets.R and _targets_r/targets/summarised_7day_nowcast.R.
@@ -664,6 +658,51 @@ tar_target(
 
 # Evaluation
 
+  - Extract and save model fitting diagnostics.
+
+<!-- end list -->
+
+``` r
+tar_target(diagnostics, {
+  combined_nowcasts[, c("daily", "seven_day") := NULL]
+})
+#> Define target diagnostics from chunk code.
+#> Establish _targets.R and _targets_r/targets/diagnostics.R.
+```
+
+``` r
+list(
+  tar_target(
+    save_all_diagnostics,
+      save_csv(
+        diagnostics,
+        filename = "all.csv",
+        path = here("data/diagnostics")
+      ),
+      format = "file"
+  ),
+  tar_target(
+    save_high_rhat_diagnostics,
+      save_csv(
+        diagnostics[max_rhat > 1.05],
+        filename = "high-rhat.csv",
+        path = here("data/diagnostics")
+      ),
+      format = "file"
+  ),
+  tar_target(
+    save_high_divergent_transitions,
+      save_csv(
+        diagnostics[per_divergent_transitions > 0.1],
+        filename = "high-divergent-transitions.csv",
+        path = here("data/diagnostics")
+      ),
+      format = "file"
+  )
+)
+#> Establish _targets.R and _targets_r/targets/save_diagnostics.R.
+```
+
   - Filter nowcasts to only include those with “complete” data (more
     than 28 days of reports) and with horizons between 0 days and -7
     days from the nowcast date.
@@ -672,47 +711,46 @@ tar_target(
 
 ``` r
 tar_target(scored_nowcasts, {
-  summarised_nowcast[reference_date >= (report_date - 7)][
-                     reference_date < (report_date - 28)][,
-                     holiday := NULL][,
-                     horizon := as.numeric(reference_date - report_date)]
+  summarised_nowcast[
+    reference_date < (max(nowcast_date) - 28)][,
+    holiday := NULL][,
+    horizon := as.numeric(as.Date(reference_date) - nowcast_date)][
+    horizon >= -7
+    ]
 })
 #> Define target scored_nowcasts from chunk code.
 #> Establish _targets.R and _targets_r/targets/scored_nowcasts.R.
 ```
 
-  - Score daily nowcasts overall, by location, by age group, and by
-    horizon on both the natural and log scales (corresponding to
-    absolute and relative scoring). These summarised scores are then
-    saved to `data/scores`.
+  - Score daily nowcasts overall, by age group, and by horizon on both
+    the natural and log scales (corresponding to absolute and relative
+    scoring). These summarised scores are then saved to `data/scores`.
 
 <!-- end list -->
 
 ``` r
 tar_map(
-  list(score_by = c("overall", "location", "age_group", "horizon")),
+  list(score_by = c("overall", "age_group", "horizon")),
   tar_target(
     scores,
-    enw_score_nowcast(
+    epinowcast:::enw_score_nowcast(
       scored_nowcasts, complete_hospitalisations, 
-      summarise_by = ifelse(score_by %in% "overall", "model", 
-                            c(score_by, "model")),
+      summarise_by = drop_string(c(score_by, "model"), "overall"),
       log = FALSE
     )
   ),
   tar_target(
     log_scores,
-    enw_score_nowcast(
+    epinowcast:::enw_score_nowcast(
       scored_nowcasts, complete_hospitalisations, 
-      summarise_by = ifelse(score_by %in% "overall", "model", 
-                            c(score_by, "model")),
+      summarise_by = drop_string(c(score_by, "model"), "overall"),
       log = TRUE
     )
   ),
   tar_target(
     save_scores,
     save_csv(
-      rind(scores[, scale := "natural"], log_scores[, scale := "log"]),
+      rbind(scores[, scale := "natural"], log_scores[, scale := "log"]),
       filename = paste0(score_by, ".csv"),
       path = here("data/scores")
     ),
@@ -734,13 +772,11 @@ tar_target(
   enw_plot_nowcast_quantiles(
     summarised_nowcast[nowcast_date == max(nowcast_date)][
                        location == locations][
-                       reference_date >= (nowcast_date - 28)], 
-    latest_obs = latest_hospitalisations[location == locations][
-                                         reference_date >= (max(report_date) - 
-                                                             40)]
+                       reference_date >= (nowcast_date - 28)]
   ) +
   facet_grid(vars(age_group), vars(model), scales = "free_y"),
-  map(locations)
+  map(locations),
+  iteration = "list"
 )
 #> Establish _targets.R and _targets_r/targets/plot-latest-nowcast.R.
 ```

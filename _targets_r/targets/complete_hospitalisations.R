@@ -1,6 +1,3 @@
 tar_target(complete_hospitalisations, {
-  latest_hospitalisations[
-    reference_date < (max(reference_date) - 28)][,
-    horizon := as.numeric(reference_date - max(reference_date))
-  ]
+  latest_hospitalisations[reference_date < (max(reference_date) - 28)]
 })

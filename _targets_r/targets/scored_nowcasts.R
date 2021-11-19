@@ -1,6 +1,8 @@
 tar_target(scored_nowcasts, {
-  summarised_nowcast[reference_date >= (report_date - 7)][
-                     reference_date < (report_date - 28)][,
-                     holiday := NULL][,
-                     horizon := as.numeric(reference_date - report_date)]
+  summarised_nowcast[
+    reference_date < (max(nowcast_date) - 28)][,
+    holiday := NULL][,
+    horizon := as.numeric(as.Date(reference_date) - nowcast_date)][
+    horizon >= -7
+    ]
 })
