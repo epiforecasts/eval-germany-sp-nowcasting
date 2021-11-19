@@ -1,7 +1,7 @@
 unnest_nowcasts <- function(nowcasts, target) {
   nowcasts <- nowcasts[,
     (target) := pmap(
-      list(daily, model, nowcast_date),
+      list(get(target), model, nowcast_date),
         function(df, m, d) {
           df[, model := m][, nowcast_date := d]
         })][,
