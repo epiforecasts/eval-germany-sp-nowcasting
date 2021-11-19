@@ -130,11 +130,7 @@ age_week_epinowcast <- function(obs, max_delay = 40, ...) {
       "age_group:",
       grep("cweek", colnames(metareference), value = TRUE),
       collapse = " + "
-    )),
-    " + ",
-    paste(grep("cweek", colnames(metareference), value = TRUE),
-      collapse = " + "
-    )
+    ))
   ))
   fixed <- enw_design(fixed_form, metareference,
     no_contrasts = TRUE,
@@ -143,7 +139,6 @@ age_week_epinowcast <- function(obs, max_delay = 40, ...) {
 
   effects <- enw_effects_metadata(fixed$design)
 
-  effects <- enw_add_pooling_effect(effects, "cweek", "cweek")
   effects <- enw_add_pooling_effect(effects, "age_group", "age_group")
   for (i in unique(metareference$age_group)) {
     effects <- enw_add_pooling_effect(
@@ -157,7 +152,7 @@ age_week_epinowcast <- function(obs, max_delay = 40, ...) {
 
   form <- as.formula(
     paste0(
-      "~ 0 + fixed + cweek + age_group + ",
+      "~ 0 + fixed + age_group + ",
       paste(paste0("`", unique(metareference$age_group), "_walk`"),
         collapse = " + "
       )

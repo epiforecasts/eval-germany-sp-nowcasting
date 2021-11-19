@@ -5,7 +5,8 @@ tar_target(combined_nowcasts, {
     age_nowcast,
     week_nowcast,
     age_week_nowcast,
-    independent_nowcast
+    independent_nowcast,
+    overall_only_nowcast
   ))[,
      model := factor(
       model,

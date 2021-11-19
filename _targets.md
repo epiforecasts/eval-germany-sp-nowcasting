@@ -146,8 +146,8 @@ tar_target(age_groups, {
 #> Establish _targets.R and _targets_r/targets/age_groups.R.
 ```
 
-  - Define locations to nowcast (currently limited to just national
-    level).
+  - Define locations to nowcast using age group data (currently limited
+    to just national level).
 
 <!-- end list -->
 
@@ -157,6 +157,19 @@ tar_target(locations, {
 })
 #> Define target locations from chunk code.
 #> Establish _targets.R and _targets_r/targets/locations.R.
+```
+
+  - Define locations in which to nowcast only for the overall count and
+    not for each age group.
+
+<!-- end list -->
+
+``` r
+tar_target(other_locations, {
+  setdiff(unique(hospitalisations$locations), locations)
+})
+#> Define target other_locations from chunk code.
+#> Establish _targets.R and _targets_r/targets/other_locations.R.
 ```
 
   - Define maximum allowed reporting delay (in days).
@@ -273,7 +286,7 @@ tar_target(epinowcast_settings, {
     chains = 2,
     parallel_chains = 2,
     threads_per_chain = 1,
-    adapt_delta = 0.9,
+    adapt_delta = 0.95,
     show_messages = FALSE,
     refresh = 0
   )
@@ -420,9 +433,8 @@ tar_target(
 #> Establish _targets.R and _targets_r/targets/week_nowcast.R.
 ```
 
-  - Age group random effect model with a weekly random walk, an age
-    group specific weekly random walk in the residuals, and a day of the
-    week reporting effect.
+  - Age group random effect model with an age group specific weekly
+    random walk, and a day of the week reporting effect.
 
 <!-- end list -->
 
@@ -463,6 +475,27 @@ tar_target(
 #> Establish _targets.R and _targets_r/targets/independent_nowcast.R.
 ```
 
+  - Model for locations without age groups. As for the previous model
+    this has a weekly random walk and a day of the week reporting model.
+
+<!-- end list -->
+
+``` r
+tar_target(
+  overall_only_nowcast,
+  nowcast(
+    obs = hospitalisations_by_date_report[age_group == "00+"],
+    tar_loc = other_locations,
+    model = independent_epinowcast,
+    priors = priors,
+    max_delay = max_report_delay,
+    settings = epinowcast_settings
+  ),
+  cross(hospitalisations_by_date_report, other_locations)
+)
+#> Establish _targets.R and _targets_r/targets/overall_only_nowcast.R.
+```
+
 # Postprocess
 
   - Combine nowcasts from each model
@@ -477,7 +510,8 @@ tar_target(combined_nowcasts, {
     age_nowcast,
     week_nowcast,
     age_week_nowcast,
-    independent_nowcast
+    independent_nowcast,
+    overall_only_nowcast
   ))[,
      model := factor(
       model,
@@ -595,7 +629,10 @@ tar_target(
 ``` r
 tar_target(
   independent_submission_nowcast,
-  independent_nowcast[nowcast_date == nowcast_dates]$seven_day |>
+  rbind(
+    independent_nowcast[nowcast_date == nowcast_dates],
+    overall_only_nowcast[nowcast_date == nowcast_dates],
+  )$seven_day |>
     rbindlist() |>
     format_for_submission(),
   map(nowcast_dates),
@@ -703,20 +740,20 @@ list(
 #> Establish _targets.R and _targets_r/targets/save_diagnostics.R.
 ```
 
-  - Filter nowcasts to only include those with “complete” data (more
-    than 28 days of reports) and with horizons between 0 days and -7
-    days from the nowcast date.
+  - Filter nowcasts to only include those with “complete” (more than 28
+    days of reports) data for all age groupsand with horizons between 0
+    days and -7 days from the nowcast date.
 
 <!-- end list -->
 
 ``` r
 tar_target(scored_nowcasts, {
-  summarised_nowcast[
+  summarised_nowcast[location == locations][
     reference_date < (max(nowcast_date) - 28)][,
     holiday := NULL][,
     horizon := as.numeric(as.Date(reference_date) - nowcast_date)][
     horizon >= -7
-    ]
+  ]
 })
 #> Define target scored_nowcasts from chunk code.
 #> Establish _targets.R and _targets_r/targets/scored_nowcasts.R.
@@ -861,6 +898,12 @@ tar_map(
 )
 #> Establish _targets.R and _targets_r/targets/plot_7day_nowcast_horizon.R.
 ```
+
+  - Plot daily nowcasts for locations without age groups stratified
+    nowcasts.
+
+  - Plot 7 day nowcasts for locations without age group stratified
+    nowcasts.
 
   - Plot scores relative to the baseline by location and age group on
     both the natural and log scale.
