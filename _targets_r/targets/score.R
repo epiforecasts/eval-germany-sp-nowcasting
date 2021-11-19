@@ -3,7 +3,7 @@ tar_map(
   tar_target(
     scores,
     enw_score_nowcast(
-      overall_score, complete_hospitalisations, 
+      scored_nowcasts, complete_hospitalisations, 
       summarise_by = ifelse(score_by %in% "overall", "model", 
                             c(score_by, "model")),
       log = FALSE
@@ -12,7 +12,7 @@ tar_map(
   tar_target(
     log_scores,
     enw_score_nowcast(
-      overall_score, complete_hospitalisations, 
+      scored_nowcasts, complete_hospitalisations, 
       summarise_by = ifelse(score_by %in% "overall", "model", 
                             c(score_by, "model")),
       log = TRUE
@@ -21,7 +21,7 @@ tar_map(
   tar_target(
     save_scores,
     save_csv(
-      rind(scores[, scale := "natural"], log_scores[, scale := "log"])
+      rind(scores[, scale := "natural"], log_scores[, scale := "log"]),
       filename = paste0(score_by, ".csv"),
       path = here("data/scores")
     ),
