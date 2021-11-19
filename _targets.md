@@ -114,7 +114,7 @@ tar_target(hospitalisations, {
 
 ``` r
 tar_target(start_date, {
-  as.Date("2021-11-01")
+  as.Date("2021-10-01")
 })
 #> Define target start_date from chunk code.
 #> Establish _targets.R and _targets_r/targets/start_date.R.
@@ -235,7 +235,7 @@ tar_target(complete_hospitalisations, {
 ``` r
 tar_target(complete_7day_hospitalisations, {
   latest_7day_hospitalisations[reference_date < (report_date - 28)][,
-                               horizon := as.numeric(reference_date - report_date
+                               horizon := as.numeric(reference_date - report_date)
                               ]
 })
 #> Define target complete_7day_hospitalisations from chunk code.
@@ -691,7 +691,7 @@ tar_map(
   tar_target(
     scores,
     enw_score_nowcast(
-      overall_score, complete_hospitalisations, 
+      scored_nowcasts, complete_hospitalisations, 
       summarise_by = ifelse(score_by %in% "overall", "model", 
                             c(score_by, "model")),
       log = FALSE
@@ -700,7 +700,7 @@ tar_map(
   tar_target(
     log_scores,
     enw_score_nowcast(
-      overall_score, complete_hospitalisations, 
+      scored_nowcasts, complete_hospitalisations, 
       summarise_by = ifelse(score_by %in% "overall", "model", 
                             c(score_by, "model")),
       log = TRUE
@@ -709,7 +709,7 @@ tar_map(
   tar_target(
     save_scores,
     save_csv(
-      rind(scores[, scale := "natural"], log_scores[, scale := "log"])
+      rind(scores[, scale := "natural"], log_scores[, scale := "log"]),
       filename = paste0(score_by, ".csv"),
       path = here("data/scores")
     ),
@@ -729,9 +729,9 @@ tar_map(
 tar_target(
   plot_latest_nowcast,
   enw_plot_nowcast_quantiles(
-    summarised_nowcasts[nowcast_date == max(nowcast_date)][
-                        location == locations][
-                        reference_date >= (nowcast_date - 28)], 
+    summarised_nowcast[nowcast_date == max(nowcast_date)][
+                       location == locations][
+                       reference_date >= (nowcast_date - 28)], 
     latest_obs = latest_hospitalisations[location == locations][
                                          reference_date >= (max(report_date) - 
                                                              40)]
