@@ -622,7 +622,7 @@ tar_target(
     filename = paste0(nowcast_dates, ".csv"),
     path = here("data/nowcasts/submission/independent")
   ),
-  map(nowcast_dates),
+  map(independent_submission_nowcast, nowcast_dates),
   format = "file"
 )
 #> Establish _targets.R and _targets_r/targets/save_independent_submission.R.

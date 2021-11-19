@@ -1,6 +1,6 @@
 format_for_submission <- function(nowcast, horizon = -28,
                                   pathogen = "COVID-19") {
-  long <- enw_quantiles_to_long(nowcast)
+  long <- epinowcast::enw_quantiles_to_long(nowcast)
   long <- long[
     as.character(quantile) %in% as.character(
       c(0.025, 0.1, 0.25, 0.5, 0.75, 0.9, 0.975)
@@ -23,5 +23,6 @@ format_for_submission <- function(nowcast, horizon = -28,
     target_end_date = reference_date, target, type, quantile,
     value = prediction, pathogen = pathogen
   )]
+  long[order(location, age_group, forecast_date, target_end_date)]
   return(long)
 }
