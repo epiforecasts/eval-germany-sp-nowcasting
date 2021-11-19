@@ -166,7 +166,7 @@ tar_target(locations, {
 
 ``` r
 tar_target(other_locations, {
-  setdiff(unique(hospitalisations$locations), locations)
+  setdiff(unique(hospitalisations$location), locations)
 })
 #> Define target other_locations from chunk code.
 #> Establish _targets.R and _targets_r/targets/other_locations.R.
