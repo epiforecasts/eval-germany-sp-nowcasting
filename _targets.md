@@ -512,7 +512,7 @@ tar_target(summarised_nowcast, {
 
 ``` r
 tar_target(summarised_7day_nowcast, {
-  unnest_nowcasts(combined_nowcasts, "seven_daily")
+  unnest_nowcasts(combined_nowcasts, "seven_day")
 })
 #> Define target summarised_7day_nowcast from chunk code.
 #> Establish _targets.R and _targets_r/targets/summarised_7day_nowcast.R.
@@ -762,7 +762,7 @@ tar_map(
 
 # Visualise
 
-  - Plot most recent nowcast by location, age group, and model.
+  - Plot most recent daily nowcast by location, age group, and model.
 
 <!-- end list -->
 
@@ -781,9 +781,86 @@ tar_target(
 #> Establish _targets.R and _targets_r/targets/plot-latest-nowcast.R.
 ```
 
-  - Plot nowcasts at 0 horizon by location, age group, and model.
+  - Plot most recent seven day nowcast by location, age group, and
+    model.
 
-  - Plot nowcasts at 3 day horizon by location, age group and model
+<!-- end list -->
+
+``` r
+tar_target(
+  plot_latest_7day_nowcast,
+  enw_plot_nowcast_quantiles(
+    summarised_7day_nowcast[nowcast_date == max(nowcast_date)][
+                            location == locations][
+                            reference_date >= (nowcast_date - 28)]
+  ) +
+  facet_grid(vars(age_group), vars(model), scales = "free_y"),
+  map(locations),
+  iteration = "list"
+)
+#> Establish _targets.R and _targets_r/targets/plot-latest-7day-nowcast.R.
+```
+
+  - Plot daily nowcasts at each horizon from the date of the nowcast to
+    7 days previously by location, age group and model.
+
+<!-- end list -->
+
+``` r
+tar_map(
+  list(horizons = 0:7),
+  tar_target(
+    plot_nowcast_horizon,
+    enw_plot_nowcast_quantiles(
+      scored_nowcasts[location == locations][horizon == -horizons][,
+                      confirm := NA],
+      latest_obs = latest_hospitalisations[
+        location == locations][
+        reference_date >= min(scored_nowcasts$reference_date)][
+        reference_date <= max(scored_nowcasts$reference_date)
+      ],
+      log = TRUE
+    ) +
+    facet_grid(vars(age_group), vars(model), scales = "free_y"),
+    map(locations),
+    iteration = "list"
+  )
+)
+#> Establish _targets.R and _targets_r/targets/plot_nowcast_horizon.R.
+```
+
+  - Plot 7 day nowcasts at each horizon from the date of the nowcast to
+    7 days previously by location, age group and model.
+
+<!-- end list -->
+
+``` r
+tar_map(
+  list(horizons = 0:7),
+  tar_target(
+    plot_7day_nowcast_horizon,
+    enw_plot_nowcast_quantiles(
+      summarised_7day_nowcast[
+        reference_date < (max(nowcast_date) - 28)][,
+        holiday := NULL][,
+        horizon := as.numeric(as.Date(reference_date) - nowcast_date)][
+        location == locations][
+        horizon == -horizons][,
+        confirm := NA],
+      latest_obs = latest_7day_hospitalisations[
+        location == locations][
+        reference_date >= min(scored_nowcasts$reference_date)][
+        reference_date <= max(scored_nowcasts$reference_date)
+      ],
+      log = TRUE
+    ) +
+    facet_grid(vars(age_group), vars(model), scales = "free_y"),
+    map(locations),
+    iteration = "list"
+  )
+)
+#> Establish _targets.R and _targets_r/targets/plot_7day_nowcast_horizon.R.
+```
 
   - Plot scores relative to the baseline by location and age group on
     both the natural and log scale.
