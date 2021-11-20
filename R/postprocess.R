@@ -1,4 +1,26 @@
+adjust_posteriors <- function(nowcasts, target,
+                              max_median_scale = Inf
+                              condition = NULL) {
+  if (!is.null(condition)) {
+    nowcasts <- nowcasts[!(eval(condition))]
+    adjusted_nowcasts <- nowcasts[eval(condition)]
+    if (nrow(adjusted_nowcasts) > 0) {
+      adjusted_nowcasts <- adjusted_nowcasts[,
+        (target) := map(
+          get(target), 
+          function(dt) {
+            cols <- dt
+            dt[, (cols), purrr::map2(.SD, median), adjust_quantile), .SDcols = cols]
+          })
+      ]
+    nowcasts <- rbind(nowcasts, adjusted_nowcasts)
+    }
+  }
+  return(nowcasts)
+}
+
 unnest_nowcasts <- function(nowcasts, target) {
+
   nowcasts <- nowcasts[,
     (target) := pmap(
       list(get(target), model, nowcast_date),
