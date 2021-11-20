@@ -26,7 +26,7 @@ remotes::install_dev_deps()
 - The full analysis can be recreated using the following,
 
 ```bash
-. _targets.sh
+bash bin/update-targets.sh
 ```
 
 - Run the workflow using all available workers.

@@ -1,0 +1,78 @@
+---
+title: "Evaluating Semi-Parametric Nowcasts of COVID-19 Hospital Admissions in Germany"
+subtitle: "Real-time evaluation and current nowcasts"
+author: Sam Abbott 
+bibliography: library.bib
+csl: https://raw.githubusercontent.com/citation-style-language/styles/master/apa-numeric-superscript-brackets.csl
+date: "`r format(Sys.Date(), format = '%B %d, %Y')`"
+output:
+  html_document:
+    theme: cosmo
+    toc: true
+    toc_float: true
+    toc_depth: 4
+---
+
+```{r setup, echo = FALSE, cache = FALSE, include = FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE)
+library(knitr)
+library(here)
+library(data.table)
+library(DT)
+library(janitor)
+```
+
+# Summary
+
+- Outline the aim.
+- Discuss and link out to the hub ensemble.
+- Discuss the general method and link out to more details in `epinowcast`.
+- Discuss the specifics of the models deployed here for each target.
+- Outline the sections of this report (visualisation, evaluation and diagnostics).
+
+# Visualisation
+
+In the following sections nowcasts are visualised by forecast date and then by horizon for all models considered. Visualising by nowcast date corresponds to plotting a real-time nowcast whilst plotting by horizon is useful for understanding the performance of nowcasting models across a number of forecasts in a concise way.
+
+# Nowcast
+
+## Overview
+
+- Plot nowcast by location, age group and model. Aim for an interactive plot with `crosstalk` based filters.
+
+## National
+
+- Plot nowcast stratified by age group and model. Aim for an interactive plot with `crosstalk` based filters to allow choosing the date of the nowcast.
+
+## Sub-national
+
+- Plot nowcast stratified by location. Aim for an interactive plot with `crosstalk` based filters to allow choosing the date of the nowcast.
+
+# Nowcast by horizon
+
+- Plot nowcasts for a given horizon by location, age group and model. Aim for an interactive plot with `crosstalk` based filters to control at least the horizon shown.
+
+# Evaluation
+
+- Outline evaluations measures used and general approach. Discuss log scoring, meaning of horizons etc.
+
+## Overall nowcast model scores
+
+```{r load-scores}
+scores <- fread(here("data/scores/overall.csv"))
+scores <- clean_names(scores, case = "sentence")
+```
+
+## Nowcast model scores by horizon
+
+## Nowcast model scores by age group
+
+# Diagnostics
+
+## Convergence
+
+## Divergent transitions
+
+## Run time
+
+# References

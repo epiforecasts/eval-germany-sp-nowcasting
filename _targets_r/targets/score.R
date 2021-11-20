@@ -2,7 +2,7 @@ tar_map(
   list(score_by = c("overall", "age_group", "horizon")),
   tar_target(
     scores,
-    epinowcast:::enw_score_nowcast(
+    enw_score_nowcast(
       scored_nowcasts, complete_hospitalisations, 
       summarise_by = drop_string(c(score_by, "model"), "overall"),
       log = FALSE
@@ -10,7 +10,7 @@ tar_map(
   ),
   tar_target(
     log_scores,
-    epinowcast:::enw_score_nowcast(
+    enw_score_nowcast(
       scored_nowcasts, complete_hospitalisations, 
       summarise_by = drop_string(c(score_by, "model"), "overall"),
       log = TRUE
