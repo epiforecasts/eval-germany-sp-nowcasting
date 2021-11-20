@@ -1,5 +1,24 @@
+adjust_quantile <- function(quantile, median, max_scale = 0.5) {
+  q_ratio <- quantile / median
+
+  if (max(q_ratio, na.rm = TRUE) > 1) {
+    quantile <- ifelse(
+      q_ratio >= max_ratio + 1,
+      (max_ratio + 1) * median,
+      quantile
+    )
+  }else{
+    quantile <- ifelse(
+      q_ratio <= max_ratio,
+      (max_ratio + 1) * median,
+      quantile
+    )
+  }
+  return(quantile)
+}
+
 adjust_posteriors <- function(nowcasts, target,
-                              max_median_scale = Inf
+                              max_scale = 0.5,
                               condition = NULL) {
   if (!is.null(condition)) {
     nowcasts <- nowcasts[!(eval(condition))]
@@ -7,10 +26,13 @@ adjust_posteriors <- function(nowcasts, target,
     if (nrow(adjusted_nowcasts) > 0) {
       adjusted_nowcasts <- adjusted_nowcasts[,
         (target) := map(
-          get(target), 
+          get(target),
           function(dt) {
-            cols <- dt
-            dt[, (cols), purrr::map2(.SD, median), adjust_quantile), .SDcols = cols]
+            cols <- grep("^q[0-9]", colnames(dt), value = TRUE)
+            dt[,
+              (cols) := purrr::map2(.SD, median, adjust_quantile),
+              .SDcols = cols
+            ]
           })
       ]
     nowcasts <- rbind(nowcasts, adjusted_nowcasts)

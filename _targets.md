@@ -528,13 +528,22 @@ tar_target(combined_nowcasts, {
 #> Establish _targets.R and _targets_r/targets/combined_nowcasts.R.
 ```
 
-  - Extract summarised daily nowcast
+  - Extract summarised daily nowcast. As a temporary measure here we
+    adjust quantiles that are more than 50% of the median when there is
+    evidence of a fitting issue (based on divergent transistions and R
+    hat values).
 
 <!-- end list -->
 
 ``` r
 tar_target(summarised_nowcast, {
-  unnest_nowcasts(combined_nowcasts, "daily")
+  combined_nowcasts |> 
+    adjust_posterior(
+      target = "daily", 
+      max_scale = 0.5, 
+      condition = "max_rhat > 1.1 | per_divergent_transitions > 0.2"
+  ) |> 
+    unnest_nowcasts(target = "daily") 
 })
 #> Define target summarised_nowcast from chunk code.
 #> Establish _targets.R and _targets_r/targets/summarised_nowcast.R.
@@ -546,7 +555,13 @@ tar_target(summarised_nowcast, {
 
 ``` r
 tar_target(summarised_7day_nowcast, {
-  unnest_nowcasts(combined_nowcasts, "seven_day")
+  combined_nowcasts |> 
+    adjust_posterior(
+      target = "seven_day", 
+      max_scale = 0.5, 
+      condition = "max_rhat > 1.1 | per_divergent_transitions > 0.2"
+  ) |> 
+    unnest_nowcasts(target = "seven_day") 
 })
 #> Define target summarised_7day_nowcast from chunk code.
 #> Establish _targets.R and _targets_r/targets/summarised_7day_nowcast.R.
@@ -595,7 +610,12 @@ tar_target(
 ``` r
 tar_target(
   hierarchical_submission_nowcast,
-  age_week_nowcast[nowcast_date == nowcast_dates]$seven_day |>
+  age_week_nowcast[nowcast_date == nowcast_dates] |>
+    adjust_posterior(
+      target = "seven_day", 
+      max_scale = 0.5, 
+      condition = "max_rhat > 1.1 | per_divergent_transitions > 0.2"
+    )$seven_day |>
     rbindlist() |>
     format_for_submission(),
   map(nowcast_dates),
@@ -632,7 +652,12 @@ tar_target(
   rbind(
     independent_nowcast[nowcast_date == nowcast_dates],
     overall_only_nowcast[nowcast_date == nowcast_dates],
-  )$seven_day |>
+  ) |> 
+   adjust_posterior(
+      target = "seven_day", 
+      max_scale = 0.5, 
+      condition = "max_rhat > 1.1 | per_divergent_transitions > 0.2"
+    )$seven_day |>
     rbindlist() |>
     format_for_submission(),
   map(nowcast_dates),
