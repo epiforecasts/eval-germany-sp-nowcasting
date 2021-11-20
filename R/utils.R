@@ -18,3 +18,7 @@ save_csv <- function(dt, filename, path) {
 drop_string <- function(var, string) {
   var[!grepl(string, var)]
 }
+
+select_var <- function(dt, var) {
+  dt[[var]]
+}

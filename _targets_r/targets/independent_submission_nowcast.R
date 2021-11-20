@@ -8,7 +8,8 @@ tar_target(
       target = "seven_day", 
       max_scale = 0.5, 
       condition = "max_rhat > 1.1 | per_divergent_transitions > 0.2"
-    )$seven_day |>
+    ) |>
+    select_var("seven_day") |>
     rbindlist() |>
     format_for_submission(),
   map(nowcast_dates),

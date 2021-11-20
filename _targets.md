@@ -114,7 +114,7 @@ tar_target(hospitalisations, {
 
 ``` r
 tar_target(start_date, {
-  as.Date("2021-10-01")
+  as.Date("2021-11-01")
 })
 #> Define target start_date from chunk code.
 #> Establish _targets.R and _targets_r/targets/start_date.R.
@@ -621,7 +621,8 @@ tar_target(
       target = "seven_day", 
       max_scale = 0.5, 
       condition = "max_rhat > 1.1 | per_divergent_transitions > 0.2"
-    )$seven_day |>
+    ) |>
+    select_var("seven_day") |>
     rbindlist() |>
     format_for_submission(),
   map(nowcast_dates),
@@ -666,7 +667,8 @@ tar_target(
       target = "seven_day", 
       max_scale = 0.5, 
       condition = "max_rhat > 1.1 | per_divergent_transitions > 0.2"
-    )$seven_day |>
+    ) |>
+    select_var("seven_day") |>
     rbindlist() |>
     format_for_submission(),
   map(nowcast_dates),
