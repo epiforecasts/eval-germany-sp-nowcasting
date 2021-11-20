@@ -40,7 +40,7 @@ Suggests:
 VignetteBuilder: 
     knitr
 Remotes:
-    seabbs/epinowcast,
+    epiforecasts/epinowcast,
     lorenzwalthert/precommit,
     ropensci/piggyback,
     stan-dev/cmdstanr
