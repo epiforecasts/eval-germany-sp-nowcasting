@@ -34,23 +34,29 @@ library(janitor)
 
 In the following sections nowcasts are visualised by forecast date and then by horizon for all models considered. Visualising by nowcast date corresponds to plotting a real-time nowcast whilst plotting by horizon is useful for understanding the performance of nowcasting models across a number of forecasts in a concise way.
 
-# Nowcast
+## Nowcast
 
-## Overview
+### Overview
 
 - Plot nowcast by location, age group and model. Aim for an interactive plot with `crosstalk` based filters.
 
-## National
+### National
 
 - Plot nowcast stratified by age group and model. Aim for an interactive plot with `crosstalk` based filters to allow choosing the date of the nowcast.
 
-## Sub-national
+### Sub-national
 
 - Plot nowcast stratified by location. Aim for an interactive plot with `crosstalk` based filters to allow choosing the date of the nowcast.
 
-# Nowcast by horizon
+## Nowcast by horizon
 
 - Plot nowcasts for a given horizon by location, age group and model. Aim for an interactive plot with `crosstalk` based filters to control at least the horizon shown.
+
+### Overview
+
+### National
+
+### Sub-national
 
 # Evaluation
 
@@ -58,21 +64,86 @@ In the following sections nowcasts are visualised by forecast date and then by h
 
 ## Overall nowcast model scores
 
-```{r load-scores}
+```{r load-overall-scores}
 scores <- fread(here("data/scores/overall.csv"))
 scores <- clean_names(scores, case = "sentence")
 ```
 
+### Natural scale scores (absolute)
+
+```{r overall-scores}
+kable(scores[Scale == "natural"][, Scale := NULL])
+```
+
+### Log scale scores (relative)
+
+```{r relative-overall-scores}
+kable(scores[Scale == "log"][, Scale := NULL])
+```
+
 ## Nowcast model scores by horizon
+
+```{r load-horizon-scores}
+horizon_scores <- fread(here("data/scores/horizon.csv"))
+horizon_scores <- clean_names(horizon_scores, case = "sentence")
+```
+
+### Natural scale scores (absolute)
+
+```{r horizon-scores}
+datatable(horizon_scores[Scale == "natural"][, Scale := NULL])
+```
+
+### Log scale scores (relative)
+
+```{r relative-horizon-scores}
+datatable(horizon_scores[Scale == "log"][, Scale := NULL])
+```
 
 ## Nowcast model scores by age group
 
+```{r load-age-group-scores}
+age_group_scores <- fread(here("data/scores/age_group.csv"))
+age_group_scores <- clean_names(age_group_scores, case = "sentence")
+```
+
+### Natural scale scores (absolute)
+
+```{r age-group-scores}
+datatable(age_group_scores[Scale == "natural"][, Scale := NULL])
+```
+
+### Log scale scores (relative)
+
+```{r relative-age-group-scores}
+datatable(age_group_scores[Scale == "log"][, Scale := NULL])
+```
+
 # Diagnostics
 
-## Convergence
+This section summarises model fitting diagnostics. Whilst most model fits successfully a small subset have issues for as yet unidentified reasons. These issues can be split into issues with convergence and issues with exploring the posterior distribution (often leading to unreliable posterior samples). Resolving these issues is an area of [active research](https://github.com/epiforecasts/epinowcast/issues/22). Finally, model run-time is also summarised for national level nowcasts.
+
+
+## Convergence issues
+
+```{r rhat}
+rhat <- fread(here("data/diagnostics/high-rhat.csv"))
+datatable(rhat)
+```
 
 ## Divergent transitions
 
+
+```{r dts}
+dts <- fread(here("data/diagnostics/high-divergent-transitions.csv"))
+datatable(dts)
+```
+
 ## Run time
+
+```{r run-time}
+run_time <- fread(here("data/diagnostics/all.csv"))
+run_time <- run_time[location == "DE"]
+```
 
 # References

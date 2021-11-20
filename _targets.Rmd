@@ -395,7 +395,7 @@ combined_nowcasts |>
   unnest_nowcasts(target = "daily") 
 ```
 
-* Extract summarised 7 day nowcast
+* Extract summarised 7 day nowcast. As a temporary measure here we adjust quantiles that are more than 50% of the median when there is evidence of a fitting issue (based on divergent transistions and R hat values).
 
 ```{targets summarised_7day_nowcast, tar_simple = TRUE}
 combined_nowcasts |> 
@@ -437,7 +437,7 @@ tar_target(
 )
 ```
 
-* Define and format the hierarchical nowcast for submission.
+* Define and format the hierarchical nowcast for submission. As a temporary measure here we adjust quantiles that are more than 50% of the median when there is evidence of a fitting issue (based on divergent transistions and R hat values).
 
 ```{targets hierarchical_submission_nowcast}
 tar_target(
@@ -455,7 +455,7 @@ tar_target(
 )
 ```
 
-* Format and save 7 day hierarchical nowcasts for hub submission.
+* Format and save 7 day hierarchical nowcasts for hub submission. 
 
 ```{targets save_hierarchical_submission}
 tar_target(
@@ -470,7 +470,7 @@ tar_target(
 )
 ```
 
-* Define and format the independent nowcast for submission.
+* Define and format the independent nowcast for submission. As a temporary measure here we adjust quantiles that are more than 50% of the median when there is evidence of a fitting issue (based on divergent transistions and R hat values).
 
 ```{targets independent_submission_nowcast}
 tar_target(
@@ -677,7 +677,6 @@ tar_map(
 ```
 
 * Plot 7 day nowcasts at each horizon from the date of the nowcast to 7 days previously by location, age group and model.
-
 
 ```{targets plot_7day_nowcast_horizon}
 tar_map(

@@ -549,7 +549,10 @@ tar_target(summarised_nowcast, {
 #> Establish _targets.R and _targets_r/targets/summarised_nowcast.R.
 ```
 
-  - Extract summarised 7 day nowcast
+  - Extract summarised 7 day nowcast. As a temporary measure here we
+    adjust quantiles that are more than 50% of the median when there is
+    evidence of a fitting issue (based on divergent transistions and R
+    hat values).
 
 <!-- end list -->
 
@@ -603,7 +606,10 @@ tar_target(
 #> Establish _targets.R and _targets_r/targets/save_7day_nowcasts.R.
 ```
 
-  - Define and format the hierarchical nowcast for submission.
+  - Define and format the hierarchical nowcast for submission. As a
+    temporary measure here we adjust quantiles that are more than 50% of
+    the median when there is evidence of a fitting issue (based on
+    divergent transistions and R hat values).
 
 <!-- end list -->
 
@@ -642,7 +648,10 @@ tar_target(
 #> Establish _targets.R and _targets_r/targets/save_hierarchical_submission.R.
 ```
 
-  - Define and format the independent nowcast for submission.
+  - Define and format the independent nowcast for submission. As a
+    temporary measure here we adjust quantiles that are more than 50% of
+    the median when there is evidence of a fitting issue (based on
+    divergent transistions and R hat values).
 
 <!-- end list -->
 
