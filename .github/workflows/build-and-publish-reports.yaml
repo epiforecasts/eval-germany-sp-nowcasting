@@ -44,7 +44,8 @@ jobs:
         
       - name: Render evaluation report
         run: |
-          Rscript -e 'rmarkdown::render("reports/real-time/index.Rmd")'
+          rmarkdown::render("reports/real-time/index.Rmd")
+        shell: Rscript {0}
 
       - name: Upload reports
         uses: actions/upload-artifact@v2
