@@ -25,7 +25,7 @@ tar_visnetwork()
 The pipeline can be regenerated and run using the following single step
 
 ``` bash
-. _targets.sh
+bash bin/update-targets.sh
 ```
 
 Alternatively the pipeline can be explored interactively using this
@@ -770,7 +770,7 @@ tar_map(
   list(score_by = c("overall", "age_group", "horizon")),
   tar_target(
     scores,
-    epinowcast:::enw_score_nowcast(
+    enw_score_nowcast(
       scored_nowcasts, complete_hospitalisations, 
       summarise_by = drop_string(c(score_by, "model"), "overall"),
       log = FALSE
@@ -778,7 +778,7 @@ tar_map(
   ),
   tar_target(
     log_scores,
-    epinowcast:::enw_score_nowcast(
+    enw_score_nowcast(
       scored_nowcasts, complete_hospitalisations, 
       summarise_by = drop_string(c(score_by, "model"), "overall"),
       log = TRUE
