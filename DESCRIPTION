@@ -16,7 +16,6 @@ Imports:
     covidregionaldata,
     data.table,
     DT,
-    epinowcast,
     future,
     future.callr,
     ggplot2,
@@ -40,7 +39,6 @@ Suggests:
 VignetteBuilder: 
     knitr
 Remotes:
-    epiforecasts/epinowcast,
     lorenzwalthert/precommit,
     ropensci/piggyback,
     stan-dev/cmdstanr
