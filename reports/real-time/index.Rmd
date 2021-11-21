@@ -20,6 +20,16 @@ library(here)
 library(data.table)
 library(DT)
 library(janitor)
+
+
+fancy_datatable <- function(dt) {
+  datatable(
+    dt,
+    extensions = c("Buttons", "Responsive"), options = list(
+      dom = "Bfrtip", buttons = c("csv")
+    )
+  )
+}
 ```
 
 # Summary
@@ -91,13 +101,13 @@ horizon_scores <- clean_names(horizon_scores, case = "sentence")
 ### Natural scale scores (absolute)
 
 ```{r horizon-scores}
-datatable(horizon_scores[Scale == "natural"][, Scale := NULL])
+fancy_datatable(horizon_scores[Scale == "natural"][, Scale := NULL])
 ```
 
 ### Log scale scores (relative)
 
 ```{r relative-horizon-scores}
-datatable(horizon_scores[Scale == "log"][, Scale := NULL])
+fancy_datatable(horizon_scores[Scale == "log"][, Scale := NULL])
 ```
 
 ## Nowcast model scores by age group
@@ -110,13 +120,13 @@ age_group_scores <- clean_names(age_group_scores, case = "sentence")
 ### Natural scale scores (absolute)
 
 ```{r age-group-scores}
-datatable(age_group_scores[Scale == "natural"][, Scale := NULL])
+fancy_datatable(age_group_scores[Scale == "natural"][, Scale := NULL])
 ```
 
 ### Log scale scores (relative)
 
 ```{r relative-age-group-scores}
-datatable(age_group_scores[Scale == "log"][, Scale := NULL])
+fancy_datatable(age_group_scores[Scale == "log"][, Scale := NULL])
 ```
 
 # Diagnostics
@@ -128,7 +138,7 @@ This section summarises model fitting diagnostics. Whilst most model fits succes
 
 ```{r rhat}
 rhat <- fread(here("data/diagnostics/high-rhat.csv"))
-datatable(rhat)
+fancy_datatable(rhat)
 ```
 
 ## Divergent transitions
@@ -136,7 +146,7 @@ datatable(rhat)
 
 ```{r dts}
 dts <- fread(here("data/diagnostics/high-divergent-transitions.csv"))
-datatable(dts)
+fancy_datatable(dts)
 ```
 
 ## Run time
