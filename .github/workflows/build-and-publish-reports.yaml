@@ -46,7 +46,7 @@ jobs:
     - name: Make a clean gh-pages branch
       run: |
         git checkout --orphan gh-pages
-        git clean -fdx
+        git rm -rf .
     - uses: actions/download-artifact@v2
       with:
         name: reports
