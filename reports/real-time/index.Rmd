@@ -14,23 +14,18 @@ output:
 ---
 
 ```{r setup, echo = FALSE, cache = FALSE, include = FALSE}
-knitr::opts_chunk$set(echo = FALSE, message = FALSE)
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, dpi = 330, warning = FALSE)
 library(knitr)
 library(here)
 library(data.table)
 library(DT)
 library(janitor)
-
-
-fancy_datatable <- function(dt) {
-  dt <- janitor::clean_names(dt, case = "sentence")
-  datatable(
-    dt,
-    extensions = c("Buttons", "Responsive"), options = list(
-      dom = "Bfrtip", buttons = c("csv")
-    )
-  )
-}
+library(purrr)
+library(ggplot2)
+library(plotly)
+library(crosstalk)
+source(here("R", "utils.R"))
+source(here("R", "plot.R"))
 ```
 
 # Summary
@@ -47,31 +42,75 @@ In the following sections nowcasts are visualised by forecast date and then by h
 
 ## Nowcast
 
-### Overview
+```{r load-nowcasts}
+daily_nowcasts <- load_nowcasts(here("data", "nowcasts", "daily"))
+daily_nowcasts[, mean := NA][, median := NA]
 
-- Plot nowcast by location, age group and model. Aim for an interactive plot with `crosstalk` based filters.
+seven_day_nowcasts <- load_nowcasts(here("data", "nowcasts", "seven_day"))
+
+latest_hosp <- fread(here("data", "observations", "daily.csv"))
+latest_seven_day_hosp <- fread(here("data", "observations", "seven_day.csv"))
+```
+
+Plot latest nowcasts by location, age group and model.
 
 ### National
 
-- Plot nowcast stratified by age group and model. Aim for an interactive plot with `crosstalk` based filters to allow choosing the date of the nowcast.
+```{r latest-national-nowcast, fig.width = 24, fig.height = 16}
+p <- plot_nowcast(
+  daily_nowcasts[location == "DE"][
+                 nowcast_date == max(nowcast_date)][,
+                 confirm := NA],
+  latest_hosp[location == "DE"],
+  max_delay = 28
+) +
+  facet_grid(vars(age_group), vars(model), scales = "free_y")
+```
 
 ### Sub-national
 
-- Plot nowcast stratified by location. Aim for an interactive plot with `crosstalk` based filters to allow choosing the date of the nowcast.
+```{r latest-subnational-nowcast, fig.width = 16, fig.height = 16}
+plot_nowcast(
+  daily_nowcasts[!(location == "DE")][
+                 nowcast_date == max(nowcast_date)][,
+                 confirm := NA],
+  latest_hosp[!(location == "DE")][age_group == "00+"],
+  max_delay = 28
+) +
+  facet_wrap(vars(location), scales = "free_y")
+```
 
 ## Nowcast by horizon
 
-- Plot nowcasts for a given horizon by location, age group and model. Aim for an interactive plot with `crosstalk` based filters to control at least the horizon shown.
-
-### Overview
+Plot nowcasts at the date of forecast by location, age group and model.
 
 ### National
 
-### Sub-national
+```{r horizon-national-nowcast, fig.width = 24, fig.height = 16}
+plot_nowcast(
+  daily_nowcasts[location == "DE"][
+                 horizon == 0][,
+                 confirm := NA],
+  latest_hosp[location == "DE"]
+) +
+  facet_grid(vars(age_group), vars(model), scales = "free_y")
+```
+
+### Subnational
+
+```{r horizon-subnational-nowcast, fig.width = 16, fig.height = 16}
+plot_nowcast(
+  daily_nowcasts[!(location == "DE")][
+                 horizon == 0][,
+                 confirm := NA],
+  latest_hosp[!(location == "DE")][age_group == "00+"]
+) +
+  facet_wrap(vars(location), scales = "free_y")
+```
 
 # Evaluation
 
-- Outline evaluations measures used and general approach. Discuss log scoring, meaning of horizons etc.
+In this section we evaluate and compare the peformance of each nowcasting model using proper scoring rules on both the natural and the log scale. This corresponds to evaluating absolute and relative error. Only nowcasts from the national level are considered as sub-national nowcasts are not available for all models. For evaluation we consider only forecast targets for which the data is minimally informative which we defined as the 7 days prior to the date of the nowcast. We explore overall scores as well as scores stratified by age group and by nowcast horizon.
 
 ## Overall nowcast model scores
 
