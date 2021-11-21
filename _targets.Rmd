@@ -481,7 +481,7 @@ tar_target(
   independent_submission_nowcast,
   rbind(
     independent_nowcast[nowcast_date == nowcast_dates],
-    overall_only_nowcast[nowcast_date == nowcast_dates],
+    overall_only_nowcast[nowcast_date == nowcast_dates]
   ) |> 
    adjust_posteriors(
       target = "seven_day", 
