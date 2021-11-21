@@ -143,7 +143,7 @@ datatable(dts)
 
 ```{r run-time}
 run_time <- fread(here("data/diagnostics/all.csv"))
-run_time <- run_time[location == "DE"]
+run_time <- run_time
 ```
 
 # References
