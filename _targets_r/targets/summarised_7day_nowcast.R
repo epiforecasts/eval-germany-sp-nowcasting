@@ -2,7 +2,7 @@ tar_target(summarised_7day_nowcast, {
   combined_nowcasts |> 
     adjust_posteriors(
       target = "seven_day", 
-      max_scale = 0.5, 
+      max_ratio = 0.25, 
       rhat_bound = 1.1,
       per_dt_bound = 0.2
   ) |> 

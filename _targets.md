@@ -529,7 +529,7 @@ tar_target(combined_nowcasts, {
 ```
 
   - Extract summarised daily nowcast. As a temporary measure here we
-    adjust quantiles that are more than 50% of the median when there is
+    adjust quantiles that are more than 25% of the median when there is
     evidence of a fitting issue (based on divergent transistions and R
     hat values).
 
@@ -540,7 +540,7 @@ tar_target(summarised_nowcast, {
   combined_nowcasts |> 
     adjust_posteriors(
       target = "daily", 
-      max_scale = 0.5, 
+      max_ratio = 0.25, 
       rhat_bound = 1.1,
       per_dt_bound = 0.2
   ) |> 
@@ -551,7 +551,7 @@ tar_target(summarised_nowcast, {
 ```
 
   - Extract summarised 7 day nowcast. As a temporary measure here we
-    adjust quantiles that are more than 50% of the median when there is
+    adjust quantiles that are more than 25% of the median when there is
     evidence of a fitting issue (based on divergent transistions and R
     hat values).
 
@@ -562,7 +562,7 @@ tar_target(summarised_7day_nowcast, {
   combined_nowcasts |> 
     adjust_posteriors(
       target = "seven_day", 
-      max_scale = 0.5, 
+      max_ratio = 0.25, 
       rhat_bound = 1.1,
       per_dt_bound = 0.2
   ) |> 
@@ -609,7 +609,7 @@ tar_target(
 ```
 
   - Define and format the hierarchical nowcast for submission. As a
-    temporary measure here we adjust quantiles that are more than 50% of
+    temporary measure here we adjust quantiles that are more than 25% of
     the median when there is evidence of a fitting issue (based on
     divergent transistions and R hat values).
 
@@ -621,7 +621,7 @@ tar_target(
   age_week_nowcast[nowcast_date == nowcast_dates] |>
     adjust_posteriors(
       target = "seven_day", 
-      max_scale = 0.5, 
+      max_ratio = 0.25, 
       rhat_bound = 1.1,
       per_dt_bound = 0.2
     ) |>
@@ -653,7 +653,7 @@ tar_target(
 ```
 
   - Define and format the independent nowcast for submission. As a
-    temporary measure here we adjust quantiles that are more than 50% of
+    temporary measure here we adjust quantiles that are more than 25% of
     the median when there is evidence of a fitting issue (based on
     divergent transistions and R hat values).
 
@@ -668,7 +668,7 @@ tar_target(
   ) |> 
    adjust_posteriors(
       target = "seven_day", 
-      max_scale = 0.5, 
+      max_ratio = 0.25, 
       rhat_bound = 1.1,
       per_dt_bound = 0.2
     ) |>

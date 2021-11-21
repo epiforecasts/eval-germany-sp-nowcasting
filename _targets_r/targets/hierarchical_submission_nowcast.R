@@ -3,7 +3,7 @@ tar_target(
   age_week_nowcast[nowcast_date == nowcast_dates] |>
     adjust_posteriors(
       target = "seven_day", 
-      max_scale = 0.5, 
+      max_ratio = 0.25, 
       rhat_bound = 1.1,
       per_dt_bound = 0.2
     ) |>
