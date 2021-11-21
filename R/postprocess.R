@@ -17,30 +17,28 @@ adjust_quantile <- function(quantile, median, max_ratio = 0.5) {
   return(quantile)
 }
 
-adjust_posteriors <- function(nowcasts, target, max_ratio = 0.5,
+adjust_posteriors <- function(nowcasts, target, max_ratio = 0.25,
                               rhat_bound = 1.1, per_dt_bound = 0.2) {
-  if (!is.null(condition)) {
-    unadjusted_nowcasts <- nowcasts[
-      !(max_rhat > rhat_bound | per_divergent_transitions > per_dt_bound)
+  unadjusted_nowcasts <- nowcasts[
+    !(max_rhat > rhat_bound | per_divergent_transitions > per_dt_bound)
+  ]
+  adjusted_nowcasts <- nowcasts[
+    max_rhat > rhat_bound | per_divergent_transitions > per_dt_bound
+  ]
+  if (nrow(adjusted_nowcasts) > 0) {
+    adjusted_nowcasts <- adjusted_nowcasts[,
+      (target) := purrr::map(
+        get(target),
+        function(dt) {
+          cols <- grep("^q[0-9]", colnames(dt), value = TRUE)
+          dt[,
+            (cols) := purrr::map(.SD, adjust_quantile, median = median,
+                                  max_ratio = max_ratio),
+            .SDcols = cols
+          ]
+        })
     ]
-    adjusted_nowcasts <- nowcasts[
-      max_rhat > rhat_bound | per_divergent_transitions > per_dt_bound
-    ]
-    if (nrow(adjusted_nowcasts) > 0) {
-      adjusted_nowcasts <- adjusted_nowcasts[,
-        (target) := purrr::map(
-          get(target),
-          function(dt) {
-            cols <- grep("^q[0-9]", colnames(dt), value = TRUE)
-            dt[,
-              (cols) := purrr::map(.SD, adjust_quantile, median = median,
-                                   max_ratio = max_ratio),
-              .SDcols = cols
-            ]
-          })
-      ]
-    nowcasts <- rbind(unadjusted_nowcasts, adjusted_nowcasts)
-    }
+  nowcasts <- rbind(unadjusted_nowcasts, adjusted_nowcasts)
   }
   return(nowcasts)
 }
