@@ -36,10 +36,10 @@ load_nowcasts <- function(path) {
   if (!is.null(nowcasts$age_group)) {
     nowcasts[
     ,
-    age_group := factor(
-      age_group,
-      levels = c("00+", "00-04", "05-14", "15-34", "35-59", "60-79", "80+")
-    )
+      age_group := factor(
+        age_group,
+        levels = c("00+", "00-04", "05-14", "15-34", "35-59", "60-79", "80+")
+      )
   ]
   }
   nowcasts[,
@@ -53,7 +53,19 @@ load_nowcasts <- function(path) {
                "Independent by age, Reference: Week, Report: Day of week")
    )
   ]
-  return(nowcasts)
+  return(nowcasts[])
+}
+
+load_obs <- function(path) {
+  obs <- fread(path)
+  obs[
+    ,
+    age_group := factor(
+      age_group,
+      levels = c("00+", "00-04", "05-14", "15-34", "35-59", "60-79", "80+")
+    )
+  ]
+  return(obs[])
 }
 
 fancy_datatable <- function(dt) {
