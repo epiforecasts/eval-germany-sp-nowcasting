@@ -538,10 +538,11 @@ tar_target(combined_nowcasts, {
 ``` r
 tar_target(summarised_nowcast, {
   combined_nowcasts |> 
-    adjust_posterior(
+    adjust_posteriors(
       target = "daily", 
       max_scale = 0.5, 
-      condition = "max_rhat > 1.1 | per_divergent_transitions > 0.2"
+      rhat_bound = 1.1,
+      per_dt_bound = 0.2
   ) |> 
     unnest_nowcasts(target = "daily") 
 })
@@ -559,10 +560,11 @@ tar_target(summarised_nowcast, {
 ``` r
 tar_target(summarised_7day_nowcast, {
   combined_nowcasts |> 
-    adjust_posterior(
+    adjust_posteriors(
       target = "seven_day", 
       max_scale = 0.5, 
-      condition = "max_rhat > 1.1 | per_divergent_transitions > 0.2"
+      rhat_bound = 1.1,
+      per_dt_bound = 0.2
   ) |> 
     unnest_nowcasts(target = "seven_day") 
 })
@@ -617,10 +619,11 @@ tar_target(
 tar_target(
   hierarchical_submission_nowcast,
   age_week_nowcast[nowcast_date == nowcast_dates] |>
-    adjust_posterior(
+    adjust_posteriors(
       target = "seven_day", 
       max_scale = 0.5, 
-      condition = "max_rhat > 1.1 | per_divergent_transitions > 0.2"
+      rhat_bound = 1.1,
+      per_dt_bound = 0.2
     ) |>
     select_var("seven_day") |>
     rbindlist() |>
@@ -663,10 +666,11 @@ tar_target(
     independent_nowcast[nowcast_date == nowcast_dates],
     overall_only_nowcast[nowcast_date == nowcast_dates],
   ) |> 
-   adjust_posterior(
+   adjust_posteriors(
       target = "seven_day", 
       max_scale = 0.5, 
-      condition = "max_rhat > 1.1 | per_divergent_transitions > 0.2"
+      rhat_bound = 1.1,
+      per_dt_bound = 0.2
     ) |>
     select_var("seven_day") |>
     rbindlist() |>
