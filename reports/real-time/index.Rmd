@@ -57,7 +57,7 @@ Plot latest nowcasts by location, age group and model.
 ### National
 
 ```{r latest-national-nowcast, fig.width = 24, fig.height = 16}
-p <- plot_nowcast(
+plot_nowcast(
   daily_nowcasts[location == "DE"][
                  nowcast_date == max(nowcast_date)][,
                  confirm := NA],
