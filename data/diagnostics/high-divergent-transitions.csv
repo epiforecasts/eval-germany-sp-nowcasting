@@ -1,10 +1,10 @@
-model,nowcast_date,max_rhat,divergent_transitions,per_divergent_transitions,max_treedepth,no_at_max_treedepth,per_at_max_treedepth,time
-"Reference: Age and week by age, Report: Day of week",2021-11-04,2.41,1578,0.789,9,422,0.211,41
-"Reference: Age and week by age, Report: Day of week",2021-11-05,2.26,1100,0.55,10,10,0.005,41
-"Reference: Age and week by age, Report: Day of week",2021-11-11,1.01,310,0.155,9,770,0.385,41
-"Reference: Age and week by age, Report: Day of week",2021-11-17,1.01,203,0.1015,9,1051,0.5255,41
-"Independent by age, Reference: Week, Report: Day of week",2021-11-14,1.01,271,0.1355,7,1610,0.805,41
-"Independent by age, Reference: Week, Report: Day of week",2021-11-19,1.01,686,0.343,7,1190,0.595,41
-"Independent by age, Reference: Week, Report: Day of week",2021-11-09,1.01,211,0.1055,7,1033,0.5165,41
-"Independent by age, Reference: Week, Report: Day of week",2021-11-12,1.01,248,0.124,7,1737,0.8685,41
-"Independent by age, Reference: Week, Report: Day of week",2021-11-13,1.01,228,0.114,7,1495,0.7475,41
+model,nowcast_date,max_rhat,divergent_transitions,per_divergent_transitions,max_treedepth,no_at_max_treedepth,per_at_max_treedepth,time,id
+"Reference: Age and week by age, Report: Day of week",2021-11-04,2.41,1578,0.789,9,422,0.211,41,84
+"Reference: Age and week by age, Report: Day of week",2021-11-05,2.26,1100,0.55,10,10,0.005,41,85
+"Reference: Age and week by age, Report: Day of week",2021-11-11,1.01,310,0.155,9,770,0.385,41,91
+"Reference: Age and week by age, Report: Day of week",2021-11-17,1.01,203,0.1015,9,1051,0.5255,41,97
+"Independent by age, Reference: Week, Report: Day of week",2021-11-14,1.01,271,0.1355,7,1610,0.805,41,193
+"Independent by age, Reference: Week, Report: Day of week",2021-11-19,1.01,686,0.343,7,1190,0.595,41,228
+"Independent by age, Reference: Week, Report: Day of week",2021-11-09,1.01,211,0.1055,7,1033,0.5165,41,376
+"Independent by age, Reference: Week, Report: Day of week",2021-11-12,1.01,248,0.124,7,1737,0.8685,41,424
+"Independent by age, Reference: Week, Report: Day of week",2021-11-13,1.01,228,0.114,7,1495,0.7475,41,440

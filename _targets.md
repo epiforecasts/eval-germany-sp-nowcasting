@@ -522,7 +522,7 @@ tar_target(combined_nowcasts, {
                  "Reference: Age and week by age, Report: Day of week",
                  "Independent by age, Reference: Week, Report: Day of week")
      )
-    ]
+    ][, id := 1:.N]
 })
 #> Define target combined_nowcasts from chunk code.
 #> Establish _targets.R and _targets_r/targets/combined_nowcasts.R.
