@@ -13,9 +13,7 @@ Depends:
 Imports:
     callr,
     cmdstanr,
-    covidregionaldata,
     data.table,
-    DT,
     epinowcast,
     future,
     future.callr,
@@ -30,10 +28,15 @@ Imports:
     tarchetypes,
     targets
 Suggests:
+    covidregionaldata,
+    crosstalk,
+    DT,
+    fs,
     git2r,
     lintr,
     piggyback,
     precommit,
+    plotly,
     spelling,
     styler,
     visNetwork
