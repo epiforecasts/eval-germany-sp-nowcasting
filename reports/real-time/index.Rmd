@@ -23,6 +23,7 @@ library(janitor)
 
 
 fancy_datatable <- function(dt) {
+  dt <- janitor::clean_names(dt, case = "sentence")
   datatable(
     dt,
     extensions = c("Buttons", "Responsive"), options = list(
