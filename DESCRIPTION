@@ -40,10 +40,10 @@ Suggests:
 VignetteBuilder: 
     knitr
 Remotes:
-    epiforecasts/epinowcast,
     lorenzwalthert/precommit,
     ropensci/piggyback,
-    stan-dev/cmdstanr
+    stan-dev/cmdstanr,
+    epiforecasts/epinowcast
 Encoding: UTF-8
 Language: en-GB
 LazyData: true
