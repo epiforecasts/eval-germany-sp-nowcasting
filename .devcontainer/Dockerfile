@@ -42,6 +42,9 @@ RUN apt-get update \
      && apt-get -y install --no-install-recommends libglpk-dev libv8-dev \
             pandoc-citeproc tmux
 
+# install and enable git lfs
+RUN apt-get -y install git-lfs && git-lfs install
+
 # add docthis
 RUN Rscript -e 'devtools::install_github("mdlincoln/docthis")'
 
