@@ -31,7 +31,7 @@ Document | Purpose
 [Paper draft]() | The academic paper write up of this analysis.
 [Supplementary information]() | The supplementary information for the write up of this work.
 [Real-time evaluation](https://epiforecasts.io/eval-germany-sp-nowcasting/real-time/) | A report visualising and evaluation real-time nowcasts.
-[Analysis pipeline](https://github.com/epiforecasts/eval-germany-sp-nowcasting/blob/main/_targets.md)] | The `targets` based analysis pipeline.
+[Analysis pipeline](https://github.com/epiforecasts/eval-germany-sp-nowcasting/blob/main/_targets.md) | The `targets` based analysis pipeline.
 [Analysis archive](https://github.com/epiforecasts/eval-germany-sp-nowcasting/releases/tag/latest) | An archived version of the `_targets` directory. Download using `get_targets_archive()`.
 [Data README](https://github.com/epiforecasts/eval-germany-sp-nowcasting/blob/main/data/README.md) | Documentation for input data and summarised output from the analysis.
 [News](https://github.com/epiforecasts/eval-germany-sp-nowcasting/blob/main/NEWS.md) | Dated development notes.
