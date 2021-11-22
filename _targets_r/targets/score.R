@@ -16,13 +16,12 @@ tar_map(
       log = TRUE
     )
   ),
-  tar_target(
+  tar_file(
     save_scores,
     save_csv(
       rbind(scores[, scale := "natural"], log_scores[, scale := "log"]),
       filename = paste0(score_by, ".csv"),
       path = here("data/scores")
-    ),
-    format = "file"
+    )
   )
 )
