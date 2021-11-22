@@ -1,7 +1,14 @@
+# 2021-11-23
+
+- Added an introduction and methods write up. 
+- Added a real-time evaluation report skeleton.
+- Added additional repository and project details to the README.
+- Added a home page to the published reports webpage linking to resources.
+
 # 2021-11-20
 
 - Added a initial framework for reporting the nowcast results.
-- Added a simple adjust for spuriously large or small quantiles when models have had issues with fitting.
+- Added a simple adjustment for spuriously large or small quantiles when models have had issues with fitting. This is simply a rescaling of quantiles that are greater/smaller than 25% of the median.
 
 # 2021-11-19
 

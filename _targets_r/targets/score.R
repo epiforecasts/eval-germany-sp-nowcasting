@@ -1,5 +1,7 @@
 tar_map(
-  list(score_by = c("overall", "age_group", "horizon")),
+  list(score_by = list(
+    "overall", "age_group", "horizon", "reference_date", "nowcast_date"
+  )),
   tar_target(
     scores,
     enw_score_nowcast(
@@ -16,13 +18,12 @@ tar_map(
       log = TRUE
     )
   ),
-  tar_target(
+  tar_file(
     save_scores,
     save_csv(
       rbind(scores[, scale := "natural"], log_scores[, scale := "log"]),
-      filename = paste0(score_by, ".csv"),
+      filename = paste0(paste(score_by, sep = "-"), ".csv"),
       path = here("data/scores")
-    ),
-    format = "file"
+    )
   )
 )

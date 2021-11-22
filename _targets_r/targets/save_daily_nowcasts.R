@@ -1,10 +1,9 @@
-tar_target(
+tar_file(
   save_daily_nowcasts,
   summarised_nowcast[nowcast_date == nowcast_dates] |>
     save_csv(
       filename = paste0(nowcast_dates, ".csv"),
       path = here("data/nowcasts/daily")
     ),
-  map(nowcast_dates),
-  format = "file"
+  map(nowcast_dates)
 )

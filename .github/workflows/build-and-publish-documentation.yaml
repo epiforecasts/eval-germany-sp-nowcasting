@@ -7,10 +7,10 @@ on:
       - '*'
   workflow_dispatch:
 
-name: render-reports
+name: render-documentation
 
 jobs:
-  render-reports:
+  render-documentation:
     runs-on: macOS-latest
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -28,16 +28,26 @@ jobs:
           rmarkdown::render("reports/real-time/index.Rmd")
         shell: Rscript {0}
 
-      - name: Upload reports
+      - name: Render paper
+        run: |
+          rmarkdown::render("writeup/paper.Rmd", output_dir = "reports")
+        shell: Rscript {0}
+
+      - name: Render SI
+        run: |
+          rmarkdown::render("writeup/si.Rmd", output_dir = "reports")
+        shell: Rscript {0}
+
+      - name: Upload documentation
         uses: actions/upload-artifact@v2
         with:
-          name: reports
+          name: documentation
           retention-days: 5
           path: reports
 
   publish-reports:
     if: github.ref == 'refs/heads/main' && github.repository == 'epiforecasts/eval-germany-sp-nowcasting'
-    needs: render-reports
+    needs: render-documentation
     runs-on: macOS-latest
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -49,13 +59,13 @@ jobs:
         git rm -rf .
     - uses: actions/download-artifact@v2
       with:
-        name: reports
+        name: documentation
         path: .
-    - name: Commit and push reports
+    - name: Commit and push documentation
       run: |
         git config user.email "action@github.com"
-        git config user.name "GitHub Action - Published reports"
+        git config user.name "GitHub Action - Published documentation"
         git add --all
-        git commit -m "Published reports"
+        git commit -m "Published documentation"
         git push -f origin gh-pages:gh-pages
         echo "reports published to GitHub"

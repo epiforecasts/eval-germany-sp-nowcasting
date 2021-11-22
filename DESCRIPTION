@@ -2,10 +2,15 @@ Package: eval.germany.sm.nowcasting
 Title: Evaluating Semi-Parametric Nowcasts of COVID-19 Hospital Admissions in Germany
 Version: 0.1.0
 Authors@R: 
-    person(given = "Sam Abbott",
+    c(person(given = "Sam Abbott",
            role = c("aut", "cre"),
            email = "sam.abbott@lshtm.ac.uk",
-           comment = c(ORCID = "0000-0001-8057-8037"))
+           comment = c(ORCID = "0000-0001-8057-8037")),
+    person(given = "Sebastian",
+            family = "Funk",
+            role = c("aut"),
+            email = "sebastian.funk@lshtm.ac.uk",
+            comment = c(ORCID = "0000-0002-2842-3406")))
 Description: Evaluating Semi-Parametric Nowcasts of COVID-19 Hospital Admissions in Germany.
 License: MIT + file LICENSE
 Depends: 
@@ -18,6 +23,7 @@ Imports:
     future,
     future.callr,
     ggplot2,
+    gittargets,
     here,
     janitor,
     knitr,
@@ -43,10 +49,11 @@ Suggests:
 VignetteBuilder: 
     knitr
 Remotes:
+    epiforecasts/epinowcast
     lorenzwalthert/precommit,
     ropensci/piggyback,
     stan-dev/cmdstanr,
-    epiforecasts/epinowcast
+    wlandau/gittargets
 Encoding: UTF-8
 Language: en-GB
 LazyData: true
