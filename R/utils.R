@@ -77,3 +77,9 @@ fancy_datatable <- function(dt) {
     )
   )
 }
+
+archive_targets <- function(...) {
+  zip("_targets.zip", here::here("_targets"))
+  piggyback::pb_upload("_targets.zip")
+  fs::file_delete("_targets.zip")
+}
