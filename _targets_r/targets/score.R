@@ -1,6 +1,6 @@
 tar_map(
   list(score_by = list(
-    "overall", "age_group", "horizon", "reference_date", "nowcast_date", "id"
+    "overall", "age_group", "horizon", "reference_date", "nowcast_date"
   )),
   tar_target(
     scores,

@@ -784,16 +784,17 @@ tar_target(scored_nowcasts, {
 #> Establish _targets.R and _targets_r/targets/scored_nowcasts.R.
 ```
 
-  - Score daily nowcasts overall, by age group, and by horizon on both
-    the natural and log scales (corresponding to absolute and relative
-    scoring). These summarised scores are then saved to `data/scores`.
+  - Score daily nowcasts overall, by age group, by horizon, by nowcast
+    date, and by reference date on both the natural and log scales
+    (corresponding to absolute and relative scoring). These summarised
+    scores are then saved to `data/scores`.
 
 <!-- end list -->
 
 ``` r
 tar_map(
   list(score_by = list(
-    "overall", "age_group", "horizon", "reference_date", "nowcast_date", "id"
+    "overall", "age_group", "horizon", "reference_date", "nowcast_date"
   )),
   tar_target(
     scores,
