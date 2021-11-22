@@ -18,6 +18,7 @@ Imports:
     future,
     future.callr,
     ggplot2,
+    gittargets,
     here,
     janitor,
     knitr,
@@ -43,10 +44,11 @@ Suggests:
 VignetteBuilder: 
     knitr
 Remotes:
+    epiforecasts/epinowcast
     lorenzwalthert/precommit,
     ropensci/piggyback,
     stan-dev/cmdstanr,
-    epiforecasts/epinowcast
+    wlandau/gittargets
 Encoding: UTF-8
 Language: en-GB
 LazyData: true
