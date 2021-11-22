@@ -1,12 +1,12 @@
 ---
-title: "Supplementary information"
+title: "Analysis pipeline: Evaluating Semi-Parametric Nowcasts of COVID-19 Hospital Admissions in Germany"
+author: "Sam Abbott"
 output: github_document
 ---
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 ```
-
 
 # Pipeline
 
@@ -28,14 +28,12 @@ The complete pipeline can be visualised using,
 tar_visnetwork()
 ```
 
-The pipeline can be regenerated and run using the following single step
+Alternatively the pipeline can be explored interactively using this notebook or updated programmatically using the scripts in `bin`. We also provide an archived version of our `targets` workflow if only wanting to reproduce sections of our analysis. This can be downloaded using the following,
 
-```{bash, eval = FALSE}
-bash bin/update-targets.sh
+```{r, eval = FALSE}
+source(here::here("R", "targets-archive.R"))
+get_targets_archive()
 ```
-
-Alternatively the pipeline can be explored interactively using this notebook.
-
 
 # Setup
 
@@ -55,7 +53,6 @@ tar_unscript()
 ```
 
 We now define shared global options across our workflow and load R functions from the `R` folder.
-
 
 ```{targets globals, tar_globals = TRUE}
 library(targets)
@@ -99,7 +96,7 @@ get_germany_hospitalisations(today)
 * Define date to start nowcasting
 
 ```{targets start_date, tar_simple = TRUE}
-as.Date("2021-11-22")
+as.Date("2021-11-01")
 ```
 
 * Define dates to nowcast.
@@ -183,10 +180,10 @@ latest_7day_hospitalisations[reference_date < (max(reference_date) - 28)]
 * Compile the model for multithread use.
 
 ```{targets, epinowcast_model}
-tar_target(
+tar_file(
   epinowcast_model,
   compile_model(),
-  format = "file", deployment = "main",
+  deployment = "main",
 )
 ```
 * Define stan settings shared across models and used for fitting
@@ -412,30 +409,28 @@ combined_nowcasts |>
 * Save daily nowcasts stratified by nowcasting date.
 
 ```{targets save_daily_nowcasts}
-tar_target(
+tar_file(
   save_daily_nowcasts,
   summarised_nowcast[nowcast_date == nowcast_dates] |>
     save_csv(
       filename = paste0(nowcast_dates, ".csv"),
       path = here("data/nowcasts/daily")
     ),
-  map(nowcast_dates),
-  format = "file"
+  map(nowcast_dates)
 )
 ```
 
 * Save 7 day nowcasts stratified by nowcasting date
 
 ```{targets save_7day_nowcasts}
-tar_target(
+tar_file(
   save_7day_nowcasts,
   summarised_7day_nowcast[nowcast_date == nowcast_dates] |>
     save_csv(
       filename = paste0(nowcast_dates, ".csv"),
       path = here("data/nowcasts/seven_day")
     ),
-  map(nowcast_dates),
-  format = "file"
+  map(nowcast_dates)
 )
 ```
 
@@ -462,15 +457,14 @@ tar_target(
 * Format and save 7 day hierarchical nowcasts for hub submission. 
 
 ```{targets save_hierarchical_submission}
-tar_target(
+tar_file(
   save_hierarchical_submission,
   save_csv(
     hierarchical_submission_nowcast,
       filename = paste0(nowcast_dates, ".csv"),
       path = here("data/nowcasts/submission/hierarchical")
   ),
-  map(hierarchical_submission_nowcast, nowcast_dates),
-  format = "file"
+  map(hierarchical_submission_nowcast, nowcast_dates)
 )
 ```
 
@@ -500,43 +494,40 @@ tar_target(
 * Format and save 7 day independent nowcasts for hub submission.
 
 ```{targets save_independent_submission}
-tar_target(
+tar_file(
   save_independent_submission,
   save_csv(
     independent_submission_nowcast,
     filename = paste0(nowcast_dates, ".csv"),
     path = here("data/nowcasts/submission/independent")
   ),
-  map(independent_submission_nowcast, nowcast_dates),
-  format = "file"
+  map(independent_submission_nowcast, nowcast_dates)
 )
 ```
 
 * Save latest hospitalisation data 
 
 ```{targets save_latest_daily_hospitalisations}
-tar_target(
+tar_file(
   save_latest_daily_hospitalisations,
   save_csv(
     latest_hospitalisations,
     filename = paste0("daily.csv"),
     path = here("data/observations")
-  ),
-  format = "file"
+  )
 )
 ```
 
 * Save 7 day hospitalisation data
 
 ```{targets save_latest_7day_hospitalisations}
-tar_target(
+tar_file(
   save_latest_7day_hospitalisations,
   save_csv(
     latest_7day_hospitalisations,
     filename = paste0("seven_day.csv"),
     path = here("data/observations")
-  ),
-  format = "file"
+  )
 )
 ```
 
@@ -550,32 +541,29 @@ combined_nowcasts[, c("daily", "seven_day") := NULL]
 
 ```{targets save_diagnostics}
 list(
-  tar_target(
+  tar_file(
     save_all_diagnostics,
       save_csv(
         diagnostics,
         filename = "all.csv",
         path = here("data/diagnostics")
-      ),
-      format = "file"
+      )
   ),
-  tar_target(
+  tar_file(
     save_high_rhat_diagnostics,
       save_csv(
         diagnostics[max_rhat > 1.05],
         filename = "high-rhat.csv",
         path = here("data/diagnostics")
-      ),
-      format = "file"
+      )
   ),
-  tar_target(
+  tar_file(
     save_high_divergent_transitions,
       save_csv(
         diagnostics[per_divergent_transitions > 0.1],
         filename = "high-divergent-transitions.csv",
         path = here("data/diagnostics")
-      ),
-      format = "file"
+      )
   )
 )
 ```
@@ -591,11 +579,13 @@ summarised_nowcast[location == locations][
 ]
 ```
 
-* Score daily nowcasts overall, by age group, and by horizon on both the natural and log scales (corresponding to absolute and relative scoring). These summarised scores are then saved to `data/scores`.
+* Score daily nowcasts overall, by age group, by horizon, by nowcast date, and by reference date on both the natural and log scales (corresponding to absolute and relative scoring). These summarised scores are then saved to `data/scores`.
 
 ```{targets, score}
 tar_map(
-  list(score_by = c("overall", "age_group", "horizon")),
+  list(score_by = list(
+    "overall", "age_group", "horizon", "reference_date", "nowcast_date"
+  )),
   tar_target(
     scores,
     enw_score_nowcast(
@@ -612,23 +602,24 @@ tar_map(
       log = TRUE
     )
   ),
-  tar_target(
+  tar_file(
     save_scores,
     save_csv(
       rbind(scores[, scale := "natural"], log_scores[, scale := "log"]),
-      filename = paste0(score_by, ".csv"),
+      filename = paste0(paste(score_by, sep = "-"), ".csv"),
       path = here("data/scores")
-    ),
-    format = "file"
+    )
   )
 )
 ```
 
 # Visualise
 
+**Currently these are not produced. See the real time report instead**
+
 * Plot most recent daily nowcast by location, age group, and model.
 
-```{targets plot-latest-nowcast}
+```{r plot-latest-nowcast, eval = FALSE}
 tar_target(
   plot_latest_nowcast,
   enw_plot_nowcast_quantiles(
@@ -644,7 +635,7 @@ tar_target(
 
 * Plot most recent seven day nowcast by location, age group, and model.
 
-```{targets plot-latest-7day-nowcast}
+```{r plot-latest-7day-nowcast, eval = FALSE}
 tar_target(
   plot_latest_7day_nowcast,
   enw_plot_nowcast_quantiles(
@@ -660,7 +651,7 @@ tar_target(
 
 * Plot daily nowcasts at each horizon from the date of the nowcast to 7 days previously by location, age group and model.
 
-```{targets plot_nowcast_horizon}
+```{r plot_nowcast_horizon, eval = FALSE}
 tar_map(
   list(horizons = 0:7),
   tar_target(
@@ -684,7 +675,7 @@ tar_map(
 
 * Plot 7 day nowcasts at each horizon from the date of the nowcast to 7 days previously by location, age group and model.
 
-```{targets plot_7day_nowcast_horizon}
+```{r plot_7day_nowcast_horizon, eval = FALSE}
 tar_map(
   list(horizons = 0:7),
   tar_target(
@@ -716,7 +707,3 @@ tar_map(
 * Plot 7 day nowcasts for locations without age group stratified nowcasts.
 
 * Plot scores relative to the baseline by location and age group on both the natural and log scale.
-
-# Reporting
-
-* Render nowcast report.

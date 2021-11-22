@@ -1,5 +1,5 @@
-tar_target(
+tar_file(
   epinowcast_model,
   compile_model(),
-  format = "file", deployment = "main",
+  deployment = "main",
 )
