@@ -1,7 +1,6 @@
 ---
 title: "Evaluating Semi-Parametric Nowcasts of COVID-19 Hospital Admissions in Germany"
 output: 
-  rmarkdown::html_vignette: default
   pdf_document: default
   html_document:
     keep_md: true

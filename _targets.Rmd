@@ -1,5 +1,6 @@
 ---
-title: "Supplementary information"
+title: "Analysis pipeline: Evaluating Semi-Parametric Nowcasts of COVID-19 Hospital Admissions in Germany"
+author: "Sam Abbott"
 output: github_document
 ---
 
@@ -27,7 +28,12 @@ The complete pipeline can be visualised using,
 tar_visnetwork()
 ```
 
-Alternatively the pipeline can be explored interactively using this notebook or updated programmatically using the scripts in `bin`.
+Alternatively the pipeline can be explored interactively using this notebook or updated programmatically using the scripts in `bin`. We also provide an archived version of our `targets` workflow if only wanting to reproduce sections of our analysis. This can be downloaded using the following,
+
+```{r, eval = FALSE}
+source(here::here("R", "targets-archive.R"))
+get_targets_archive()
+```
 
 # Setup
 
@@ -90,7 +96,7 @@ get_germany_hospitalisations(today)
 * Define date to start nowcasting
 
 ```{targets start_date, tar_simple = TRUE}
-as.Date("2021-11-11")
+as.Date("2021-11-01")
 ```
 
 * Define dates to nowcast.
