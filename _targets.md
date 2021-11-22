@@ -1,5 +1,7 @@
-Supplementary information
+Analysis pipeline: Evaluating Semi-Parametric Nowcasts of COVID-19
+Hospital Admissions in Germany
 ================
+Sam Abbott
 
 # Pipeline
 
@@ -23,7 +25,15 @@ tar_visnetwork()
 ```
 
 Alternatively the pipeline can be explored interactively using this
-notebook or updated programmatically using the scripts in `bin`.
+notebook or updated programmatically using the scripts in `bin`. We also
+provide an archived version of our `targets` workflow if only wanting to
+reproduce sections of our analysis. This can be downloaded using the
+following,
+
+``` r
+source(here::here("R", "targets-archive.R"))
+get_targets_archive()
+```
 
 # Setup
 
@@ -108,7 +118,7 @@ tar_target(hospitalisations, {
 
 ``` r
 tar_target(start_date, {
-  as.Date("2021-11-11")
+  as.Date("2021-11-01")
 })
 #> Define target start_date from chunk code.
 #> Establish _targets.R and _targets_r/targets/start_date.R.
