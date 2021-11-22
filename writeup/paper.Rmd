@@ -29,7 +29,7 @@ library(forecast.vocs)
 
 # Authors
 
-S. Abbott (1)
+S. Abbott (1), S. Funk (1)
 
 Correspondence to: sam.abbott@lshtm.ac.uk
 
@@ -136,34 +136,16 @@ Expected notifications by time of occurrence ($t$) and reporting delay can now b
   N_{gt} &= \sum_{d=0}^{D} n_{gtd}
 \end{align}
 
-### Implementation
+## Implementation
 
-The model is implemented in `stan` using `cmdstanr`[@stan; @cmdstanr]. Optional within chain parallelisation is available across dates of occurrence to reduce runtimes. Sparse design matrices have been used for all covariates to limit the number of probability mass functions that need to be calculated. `epinowcast` incorporates additional functionality written in R[@R] to enable plotting nowcasts and posterior predictions, summarising nowcasts, and scoring them using `scoringutils`[@scoringutils]. All functionality is modular allowing users to extend and alter the underlying model whilst continuing to use the package framework.
+The model is implemented in `stan` using `cmdstanr`[@stan; @cmdstanr]. Sparse design matrices have been used for all covariates to limit the number of probability mass functions that need to be calculated. `epinowcast` incorporates additional functionality written in R[@R] to enable plotting nowcasts and posterior predictions, summarising nowcasts, and scoring them using `scoringutils`[@scoringutils]. All functionality is modular allowing users to extend and alter the underlying model whilst continuing to use the package framework.
+
+### Evaluation
 
 ### Reproducibility
 
 All analysis was carried out using R version 4.1.2 [@R]. The analysis pipeline described here is available as a `targets` workflow [@targets] along with an archive of all interim results generated using `gittargets` [@gittargets] and stored using `piggyback` [@piggyback]. A Dockerfile, and prebuilt archived image, has been made available with the code to enhance reproducibility [@Boettiger:2015dw].
 
-
-### Evaluation
-
-## Results
-
-## Discussion
-
-**Summary**
-
-**Strengths and weaknesses**
-
-- **Strengths:**
-
-- **Weaknesses:**
-
-**Literature comparison**
-
-**Further work**
-
-**Conclusions**
 
 **Data availability**
 
@@ -171,14 +153,19 @@ Zenodo:
 
 This project contains the following underlying data:
 
-
 License: MIT
 
 **Software availability**
 
 Source code is available from: 
 
-Archived source code at time of publication: 
+License: MIT
+
+**Data availability**
+
+Input data and summarised results are available from: https://github.com/epiforecasts/eval-germany-sp-nowcasting/tree/main/data
+
+Data from all interim stages of the analysis is from: https://github.com/epiforecasts/eval-germany-sp-nowcasting/releases/tag/latest
 
 License: MIT
 
