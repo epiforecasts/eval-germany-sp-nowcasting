@@ -792,7 +792,9 @@ tar_target(scored_nowcasts, {
 
 ``` r
 tar_map(
-  list(score_by = c("overall", "age_group", "horizon")),
+  list(score_by = list(
+    "overall", "age_group", "horizon", "reference_date", "nowcast_date", "id"
+  )),
   tar_target(
     scores,
     enw_score_nowcast(
@@ -813,7 +815,7 @@ tar_map(
     save_scores,
     save_csv(
       rbind(scores[, scale := "natural"], log_scores[, scale := "log"]),
-      filename = paste0(score_by, ".csv"),
+      filename = paste0(paste(score_by, sep = "-"), ".csv"),
       path = here("data/scores")
     )
   )
@@ -822,6 +824,8 @@ tar_map(
 ```
 
 # Visualise
+
+**Currently these are not produced. See the real time report instead**
 
   - Plot most recent daily nowcast by location, age group, and model.
 
@@ -839,7 +843,6 @@ tar_target(
   map(locations),
   iteration = "list"
 )
-#> Establish _targets.R and _targets_r/targets/plot-latest-nowcast.R.
 ```
 
   - Plot most recent seven day nowcast by location, age group, and
@@ -859,7 +862,6 @@ tar_target(
   map(locations),
   iteration = "list"
 )
-#> Establish _targets.R and _targets_r/targets/plot-latest-7day-nowcast.R.
 ```
 
   - Plot daily nowcasts at each horizon from the date of the nowcast to
@@ -887,7 +889,6 @@ tar_map(
     iteration = "list"
   )
 )
-#> Establish _targets.R and _targets_r/targets/plot_nowcast_horizon.R.
 ```
 
   - Plot 7 day nowcasts at each horizon from the date of the nowcast to
@@ -920,7 +921,6 @@ tar_map(
     iteration = "list"
   )
 )
-#> Establish _targets.R and _targets_r/targets/plot_7day_nowcast_horizon.R.
 ```
 
   - Plot daily nowcasts for locations without age groups stratified
@@ -931,7 +931,3 @@ tar_map(
 
   - Plot scores relative to the baseline by location and age group on
     both the natural and log scale.
-
-# Reporting
-
-  - Render nowcast report.

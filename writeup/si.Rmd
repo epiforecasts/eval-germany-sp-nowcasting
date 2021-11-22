@@ -24,13 +24,14 @@ knitr::opts_chunk$set(
 
 ## Authors
 
-S. Abbott (1)
+S. Abbott (1), S. Funk (1)
 
 Correspondence to: sam.abbott@lshtm.ac.uk
 
 ## Affiliations
 
 1. Center for the Mathematical Modelling of Infectious Diseases, London School of Hygiene & Tropical Medicine, London WC1E 7HT, United Kingdom
+
 ## Overview
 
 This analysis uses the `targets` package for reproducibility. The full analysis structure can be seen below:
@@ -39,15 +40,6 @@ This analysis uses the `targets` package for reproducibility. The full analysis 
 library(targets)
 tar_glimpse()
 ```
-
-## Data
-
-## Models
-
-## Model evaluation
-
-
-## Real-world evaluation
 
 ## References
 
