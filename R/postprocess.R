@@ -84,8 +84,16 @@ format_for_submission <- function(nowcast, horizon = -28,
   long <- long[, .(location, age_group,
     forecast_date = nowcast_date,
     target_end_date = reference_date, target, type, quantile,
-    value = prediction, pathogen = pathogen
+    value = prediction, pathogen = pathogen, mean
   )]
+
+  long <- rbind(
+    data.table::copy(long),
+    unique(long[, value := NULL][,
+                 `:=`(value = mean, type = "mean", quantile = NA)
+              ]
+    )
+  )
   long[order(location, age_group, forecast_date, target_end_date)]
   return(long)
 }
