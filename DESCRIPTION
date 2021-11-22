@@ -49,7 +49,7 @@ Suggests:
 VignetteBuilder: 
     knitr
 Remotes:
-    epiforecasts/epinowcast
+    epiforecasts/epinowcast,
     lorenzwalthert/precommit,
     ropensci/piggyback,
     stan-dev/cmdstanr,
