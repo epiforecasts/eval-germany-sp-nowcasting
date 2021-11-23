@@ -573,6 +573,20 @@ list(
 )
 ```
 
+* Extract and save model run-time at the national level aggregated across age-group.
+
+```{targets save-run-time}
+tar_file(
+  save_run_time,
+  combined_nowcasts |>
+    summarise_runtimes() |>
+    save_csv(
+      filename = "run-times.csv",
+      path = here("data/diagnostics")
+    )
+)
+```
+
 * Filter nowcasts to only include those with "complete" (more than 28 days of reports) data for all age groupsand with horizons between 0 days and -7 days from the nowcast date.
 
 ```{targets scored_nowcasts, tar_simple = TRUE}

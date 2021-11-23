@@ -195,11 +195,31 @@ fancy_datatable(dts)
 
 ## Run time
 
-In the this section, we summarise the run time of each nowcasting model using 2 cores each on a standard Azure virtual machine. These run-times are indicative only but the relative difference between models should hold across machines. To make the independent model run times comparable with other models we have combined the run time across all age groups. However, this model is naively parallel and so could in theory be run on separate compute nodes per age group (so as we have 7 age groups this would result in a 7 times speed up). As all models make use of the support in `stan` for within chain parallisation all models could also be estimated with significantly reduced run time with the allocation of increased compute resources.
-s 
+In the this section, we summarise the run time of each nowcasting model using 2 cores each on a standard Azure virtual machine. These run-times are indicative only but the relative difference between models should hold across machines. To make the independent model run times comparable with other models we have combined the run time across all age groups. However, this model is naively parallel and so could in theory be run on separate compute nodes per age group (so as we have 7 age groups this would result in a 7 times speed up). As all models make use of the support in `stan` for within chain parallisation all models could also be estimated with significantly reduced run time with the allocation of increased compute resources. Run times are shown in minutes.
+
 ```{r run-time}
-run_time <- fread(here("data/diagnostics/all.csv"))
-run_time <- run_time
+run_times <- fread(here("data/diagnostics/run_times.csv"))
+fancy_datatable(run_times)
 ```
+
+### Summary table
+
+```{r run-time-summary}
+summary_run_times <- run_time[,
+  .(mean = mean(run_time_mins),
+    median = median(run_time_mins),
+    sd = sd(run_time_mins),
+    max = max(run_time_mins),
+    min = min(run_time_mins)
+  ), by = c("model")
+]
+cols <- c("mean", "median", "sd", "max", "min")
+summary_run_times <- summary_run_times[,
+ (cols) := lapply(.SD, round, digits = 1), .SDcols = cols
+]
+fancy_datatable(summary_run_times)
+```
+
+### By model and nowcast date
 
 # References
