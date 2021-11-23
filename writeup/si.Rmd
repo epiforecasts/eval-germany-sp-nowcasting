@@ -1,5 +1,6 @@
 ---
-title: "Supplementary information: Evaluating Semi-Parametric Nowcasts of COVID-19 Hospital Admissions in Germany"
+title: "Evaluating Semi-Parametric Nowcasts of COVID-19 Hospital Admissions in Germany"
+subtitle: "Supplementary Information"
 output:
   html_document:
     theme: cosmo
@@ -7,8 +8,8 @@ output:
     toc_float: true
     toc_depth: 4
     includes:
-      before_body: ../reports/header.html
-      after_body: ../reports/footer.html
+      before_body: ../docs/header.html
+      after_body: ../docs/footer.html
 date: "`r format(Sys.Date(), format = '%B %d, %Y')`"
 bibliography: library.bib
 csl: https://raw.githubusercontent.com/citation-style-language/styles/master/apa-numeric-superscript-brackets.csl
@@ -39,10 +40,12 @@ Correspondence to: sam.abbott@lshtm.ac.uk
 
 This analysis uses the `targets` package for reproducibility. The full analysis structure can be seen below:
 
-```{r, message = FALSE}
+```{r, message = FALSE, eval = FALSE}
 library(targets)
 tar_glimpse()
 ```
+
+![](../figures/targets-graph.png)
 
 ## References
 
