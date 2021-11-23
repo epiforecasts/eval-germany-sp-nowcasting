@@ -118,7 +118,7 @@ tar_target(hospitalisations, {
 
 ``` r
 tar_target(start_date, {
-  as.Date("2021-11-23")
+  as.Date("2021-11-01")
 })
 #> Define target start_date from chunk code.
 #> Establish _targets.R and _targets_r/targets/start_date.R.
@@ -188,11 +188,11 @@ tar_target(max_report_delay, {
 #> Establish _targets.R and _targets_r/targets/max_report_delay.R.
 ```
 
-  - Define hospitalisations by date of report. Note that here the
-    targets is defined to never update if a data exists for a previous
-    date. This is because the truth date for previous days can change
-    slightly over time as negative cases are adjusted for leading to
-    spurious refits.
+  - Define hospitalisations by date of report. Note that here the target
+    is defined to never update if data exists for that nowcast date.
+    This is because the truth date for previous days can change slightly
+    over time as negative cases are adjusted for leading to spurious
+    refits.
 
 <!-- end list -->
 

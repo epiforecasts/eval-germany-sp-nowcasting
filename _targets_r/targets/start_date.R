@@ -1,3 +1,3 @@
 tar_target(start_date, {
-  as.Date("2021-11-23")
+  as.Date("2021-11-01")
 })
