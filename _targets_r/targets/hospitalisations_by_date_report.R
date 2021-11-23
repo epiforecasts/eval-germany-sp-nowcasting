@@ -6,4 +6,5 @@ tar_target(
   )[, nowcast_date := nowcast_dates],
   map(nowcast_dates),
   iteration = "list"
+  cue = tar_cue(mode = "never")
 )

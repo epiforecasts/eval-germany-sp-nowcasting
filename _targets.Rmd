@@ -96,7 +96,7 @@ get_germany_hospitalisations(today)
 * Define date to start nowcasting
 
 ```{targets start_date, tar_simple = TRUE}
-as.Date("2021-11-01")
+as.Date("2021-11-23")
 ```
 
 * Define dates to nowcast.
@@ -131,7 +131,7 @@ setdiff(unique(hospitalisations$location), locations)
 40
 ```
 
-* Define hospitalisations by date of report
+* Define hospitalisations by date of report. Note that here the targets is defined to never update if a data exists for a previous date. This is because the truth date for previous days can change slightly over time as negative cases are adjusted for leading to spurious refits.
 
 ```{targets hospitalisations_by_date_report}
 tar_target(
@@ -142,6 +142,7 @@ tar_target(
   )[, nowcast_date := nowcast_dates],
   map(nowcast_dates),
   iteration = "list"
+  cue = tar_cue(mode = "never")
 )
 ```
 
@@ -214,10 +215,14 @@ enw_priors()
 
 * Define a set of observations to use as a source for informed priors. Here we use overall national hospitalisations and data from the 1st of July 2021.
 
-```{targets prior_obs, tar_simple = TRUE}
-enw_retrospective_data(
-  hospitalisations[location == "DE"][age_group == "00+"],
-  rep_date = as.Date("2021-07-01"), ref_days = max_report_delay
+```{targets prior_obs}
+tar_target(
+  prior_obs,
+  enw_retrospective_data(
+    hospitalisations[location == "DE"][age_group == "00+"],
+    rep_date = as.Date("2021-07-01"), ref_days = max_report_delay
+  ),
+  cue = tar_cue(mode = "never")
 )
 ```
 
