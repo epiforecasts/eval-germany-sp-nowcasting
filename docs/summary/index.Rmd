@@ -28,4 +28,8 @@ knitr::opts_chunk$set(echo = FALSE, message = FALSE, dpi = 330, warning = FALSE)
 
 # Resources
 
+```{r, child = "../chunks/documentation.Rmd"}
+```
+
 # References
+
