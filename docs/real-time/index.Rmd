@@ -243,7 +243,7 @@ run_times <- fread(here("data/diagnostics/run-times.csv"))
 ### Summary table
 
 ```{r run-time-summary}
-summary_run_times <- run_time[,
+summary_run_times <- run_times[,
   .(mean = mean(run_time_mins),
     median = median(run_time_mins),
     sd = sd(run_time_mins),
