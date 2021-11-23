@@ -6,7 +6,8 @@ _targets
 *.html
 .DS_Store
 data/epinowcast
-*png
+*.png
+*.pdf
 nohup.out
 !docs/footer.html
 !docs/header.html
