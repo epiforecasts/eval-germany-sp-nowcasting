@@ -6,12 +6,13 @@ This repository contains the documentation, results, and code of a project evalu
 
 If making use of the results of this analysis or reusing the analysis pipeline please cite:
 
-To cite `epinowcast` in publications use:
 
-  Sam Abbott (2021). epinowcast: Hierarchical nowcasting of right censored
-  epidemological counts, DOI: 10.5281/zenodo.5637165
+If making using of the models evaluated in this analysis please also cite [`epinowcast`](https://epiforecasts.io/epinowcast):
 
-A BibTeX entry for LaTeX users is
+> Sam Abbott (2021). epinowcast: Hierarchical nowcasting of right censored
+> epidemological counts, DOI: 10.5281/zenodo.5637165
+
+A BibTeX entry for LaTeX users is also available:
 
 ```
   @Article{,
