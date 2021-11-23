@@ -1,12 +1,15 @@
 ---
 title: "Supplementary information: Evaluating Semi-Parametric Nowcasts of COVID-19 Hospital Admissions in Germany"
-output: 
+output:
   html_document:
-    keep_md: false
+    theme: cosmo
     toc: true
     toc_float: true
-    code_folding: hide
-    theme: united
+    toc_depth: 4
+    includes:
+      before_body: ../reports/header.html
+      after_body: ../reports/footer.html
+date: "`r format(Sys.Date(), format = '%B %d, %Y')`"
 bibliography: library.bib
 csl: https://raw.githubusercontent.com/citation-style-language/styles/master/apa-numeric-superscript-brackets.csl
 header-includes:

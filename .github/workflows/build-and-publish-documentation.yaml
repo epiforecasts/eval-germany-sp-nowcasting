@@ -23,19 +23,24 @@ jobs:
       - uses: r-lib/actions/setup-r@v1
       - uses: r-lib/actions/setup-r-dependencies@v1
 
+      - name: Render project summary
+        run: |
+          rmarkdown::render("docs/summary/index.Rmd", output_dir = "docs")
+        shell: Rscript {0}
+
       - name: Render evaluation report
         run: |
-          rmarkdown::render("reports/real-time/index.Rmd")
+          rmarkdown::render("docs/real-time/index.Rmd")
         shell: Rscript {0}
 
       - name: Render paper
         run: |
-          rmarkdown::render("writeup/paper.Rmd", output_dir = "reports")
+          rmarkdown::render("writeup/paper.Rmd", output_dir = "docs")
         shell: Rscript {0}
 
       - name: Render SI
         run: |
-          rmarkdown::render("writeup/si.Rmd", output_dir = "reports")
+          rmarkdown::render("writeup/si.Rmd", output_dir = "docs")
         shell: Rscript {0}
 
       - name: Upload documentation
@@ -43,9 +48,9 @@ jobs:
         with:
           name: documentation
           retention-days: 5
-          path: reports
+          path: docs
 
-  publish-reports:
+  publish-documentation:
     if: github.ref == 'refs/heads/main' && github.repository == 'epiforecasts/eval-germany-sp-nowcasting'
     needs: render-documentation
     runs-on: macOS-latest
