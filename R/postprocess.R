@@ -95,5 +95,30 @@ format_for_submission <- function(nowcast, horizon = -28,
     )
   )
   long[order(location, age_group, forecast_date, target_end_date)]
-  return(long)
+  return(long[])
+}
+
+summarise_runtime <- function(nowcast) {
+  run_time <- data.table::copy(nowcast)
+  data.table::setcolorder(
+    run_time, neworder = c("model", "nowcast_date", "run_time")
+  )
+  run_time_hier <- run_time[
+    purrr::map_lgl(daily, ~ length(unique(.$age_group)) > 1)
+  ][, .(model, nowcast_date, run_time)]
+
+  run_time_ind <- run_time[
+    purrr::map_lgl(
+      daily, ~ length(unique(.$age_group)) == 1 & unique(.$location) == "DE"
+    )
+  ][,
+    .(run_time = sum(run_time)), by = c("model", "nowcast_date")
+  ]
+  run_time_hier <- run_time_hier[, .(model, nowcast_date, run_time)]
+  run_time <- rbind(run_time_hier, run_time_ind, use.names = TRUE, fill = TRUE)
+  run_time <- run_time[,
+    run_time_mins := run_time / 60][,
+    run_time_hrs := run_time_mins / 60
+  ]
+  return(run_time[])
 }
