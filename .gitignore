@@ -8,6 +8,7 @@ _targets
 data/epinowcast
 *.png
 *.pdf
+*.zip
 nohup.out
 !docs/footer.html
 !docs/header.html
