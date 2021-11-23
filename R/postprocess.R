@@ -88,10 +88,10 @@ format_for_submission <- function(nowcast, horizon = -28,
   )]
 
   long <- rbind(
-    data.table::copy(long),
+    data.table::copy(long)[, mean := NULL],
     unique(long[, value := NULL][,
-                 `:=`(value = mean, type = "mean", quantile = NA)
-              ]
+                 `:=`(value = mean, type = "mean", quantile = NA)][,
+                  mean := NULL]
     )
   )
   long[order(location, age_group, forecast_date, target_end_date)]

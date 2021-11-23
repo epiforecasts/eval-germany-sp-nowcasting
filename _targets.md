@@ -204,7 +204,7 @@ tar_target(
     ref_days = max_report_delay
   )[, nowcast_date := nowcast_dates],
   map(nowcast_dates),
-  iteration = "list"
+  iteration = "list",
   cue = tar_cue(mode = "never")
 )
 #> Establish _targets.R and _targets_r/targets/hospitalisations_by_date_report.R.
