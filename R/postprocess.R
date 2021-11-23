@@ -98,7 +98,7 @@ format_for_submission <- function(nowcast, horizon = -28,
   return(long[])
 }
 
-summarise_runtime <- function(nowcast) {
+summarise_runtimes <- function(nowcast) {
   run_time <- data.table::copy(nowcast)
   data.table::setcolorder(
     run_time, neworder = c("model", "nowcast_date", "run_time")

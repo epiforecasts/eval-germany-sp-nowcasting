@@ -1,0 +1,7 @@
+model,nowcast_date,run_time,run_time_mins,run_time_hrs
+"Reference: Fixed, Report: Fixed",2021-11-23,1400,23.3333333333333,0.388888888888889
+"Reference: Fixed, Report: Day of week",2021-11-23,1772.9,29.5483333333333,0.492472222222222
+"Reference: Age, Report: Day of week",2021-11-23,1911.2,31.8533333333333,0.530888888888889
+"Reference: Age and week, Report: Day of week",2021-11-23,2612.3,43.5383333333333,0.725638888888889
+"Reference: Age and week by age, Report: Day of week",2021-11-23,3418,56.9666666666667,0.949444444444444
+"Independent by age, Reference: Week, Report: Day of week",2021-11-23,1936.8,32.28,0.538
