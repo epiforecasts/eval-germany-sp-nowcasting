@@ -237,7 +237,7 @@ fancy_datatable(dts)
 In this section, we summarise the run time of each nowcasting model using 2 cores each on a standard Azure virtual machine. These run-times are indicative only but the relative difference between models should hold across machines. To make the independent model run times comparable with other models we have combined the run time across all age groups. However, this model is naively parallel and so could in theory be run on separate compute nodes per age group (so as we have 7 age groups this would result in a 7 times speed up). As all models make use of the support in `stan` for within chain parallisation all models could also be estimated with significantly reduced run time with the allocation of increased compute resources. Run times are shown in minutes.
 
 ```{r run-time}
-run_times <- fread(here("data/diagnostics/run_times.csv"))
+run_times <- fread(here("data/diagnostics/run-ß®˚times.csv"))
 ```
 
 ### Summary table
