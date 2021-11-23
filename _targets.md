@@ -118,7 +118,7 @@ tar_target(hospitalisations, {
 
 ``` r
 tar_target(start_date, {
-  as.Date("2021-11-01")
+  as.Date("2021-11-23")
 })
 #> Define target start_date from chunk code.
 #> Establish _targets.R and _targets_r/targets/start_date.R.
@@ -188,7 +188,11 @@ tar_target(max_report_delay, {
 #> Establish _targets.R and _targets_r/targets/max_report_delay.R.
 ```
 
-  - Define hospitalisations by date of report
+  - Define hospitalisations by date of report. Note that here the
+    targets is defined to never update if a data exists for a previous
+    date. This is because the truth date for previous days can change
+    slightly over time as negative cases are adjusted for leading to
+    spurious refits.
 
 <!-- end list -->
 
@@ -201,6 +205,7 @@ tar_target(
   )[, nowcast_date := nowcast_dates],
   map(nowcast_dates),
   iteration = "list"
+  cue = tar_cue(mode = "never")
 )
 #> Establish _targets.R and _targets_r/targets/hospitalisations_by_date_report.R.
 ```
@@ -321,13 +326,14 @@ tar_target(uninformed_priors, {
 <!-- end list -->
 
 ``` r
-tar_target(prior_obs, {
+tar_target(
+  prior_obs,
   enw_retrospective_data(
     hospitalisations[location == "DE"][age_group == "00+"],
     rep_date = as.Date("2021-07-01"), ref_days = max_report_delay
-  )
-})
-#> Define target prior_obs from chunk code.
+  ),
+  cue = tar_cue(mode = "never")
+)
 #> Establish _targets.R and _targets_r/targets/prior_obs.R.
 ```
 
