@@ -2,7 +2,7 @@
 title: "Evaluating Semi-Parametric Nowcasts of COVID-19 Hospital Admissions in Germany"
 subtitle: "Real-time evaluation and current nowcasts"
 author: Sam Abbott 
-bibliography: library.bib
+bibliography: ../../writeup/library.bib
 csl: https://raw.githubusercontent.com/citation-style-language/styles/master/apa-numeric-superscript-brackets.csl
 date: "`r format(Sys.Date(), format = '%B %d, %Y')`"
 output:
@@ -11,6 +11,9 @@ output:
     toc: true
     toc_float: true
     toc_depth: 4
+    includes:
+      before_body: ../header.html
+      after_body: ../footer.html
 ---
 
 ```{r setup, echo = FALSE, cache = FALSE, include = FALSE}
@@ -28,19 +31,24 @@ source(here("R", "utils.R"))
 source(here("R", "plot.R"))
 ```
 
-# Summary
+# Introduction
 
-- Outline the aim.
-- Discuss and link out to the hub ensemble.
-- Discuss the general method and link out to more details in `epinowcast`.
-- Discuss the specifics of the models deployed here for each target.
-- Outline the sections of this report (visualisation, evaluation and diagnostics).
+In this real time evaluation report we provide preliminary visualisations, evaluation, and exploration of our nowcasting methodology [@epinowcast] for COVID-19 hospitalisations in Germany by date of postive test. For more details of our methodology and the specifics of the models shown in this report please see our [project summary]() and our accompanying [paper]() for full method details. This report is updated each day (at roughly 9:00 GMT) as new data and nowcasts become available and may evolve over time. See our [news section](https://github.com/epiforecasts/eval-germany-sp-nowcasting/blob/main/NEWS.md) for a list of dated changes.
+
+We first visualise current nowcasts across models and age groups at the national level as well as overall at the subnational level. We also plot nowcasts at the date of estimation across sequential nowcasts allowing us to summarise the performance of multiple nowcasts on a single plot, again for age groups at the national level and overall at the subnational level. 
+
+To quantify comparative performance we make use of proper scoring rules [@scoringutils] on both the natural and log scales (corresponding to absolute and relative performance) aggregating scores first across all targets and then stratifying in turn by age group, nowcast horizon, date of postive test, and date of report.
+
+To explore other aspects of our models performance we 
+Note that for national data stratified by age we considered a range of models that are summarised [here]() and fully defined [here]().
 
 # Visualisation
 
-In the following sections nowcasts are visualised by forecast date and then by horizon for all models considered. Visualising by nowcast date corresponds to plotting a real-time nowcast whilst plotting by horizon is useful for understanding the performance of nowcasting models across a number of forecasts in a concise way.
+In the following sections nowcasts are visualised for the latest estimation date and then by estimation date for all models considered. Visualising a nowcast from a single estimation date corresponds to plotting a real-time nowcast whilst plotting across estimation dates for that date is useful for understanding the performance of nowcasting models across a number of nowcasts in a concise way. 
 
 ## Nowcast
+
+Nowcasts for the latest available data by age group on the national level and overall on the subnational level.
 
 ```{r load-nowcasts}
 daily_nowcasts <- load_nowcasts(here("data", "nowcasts", "daily"))
@@ -51,8 +59,6 @@ seven_day_nowcasts <- load_nowcasts(here("data", "nowcasts", "seven_day"))
 latest_hosp <- load_obs(here("data", "observations", "daily.csv"))
 latest_seven_day_hosp <- load_obs(here("data", "observations", "seven_day.csv"))
 ```
-
-Plot latest nowcasts by location, age group and model.
 
 ### National
 
@@ -80,9 +86,9 @@ plot_nowcast(
   facet_wrap(vars(location), scales = "free_y")
 ```
 
-## Nowcast by horizon
+## Nowcast at estimation date
 
-Plot nowcasts at the date of forecast by location, age group and model.
+Nowcast estimates at the day of estimation across sequential nowcasts by age group at the national level and overall at the subnational level.
 
 ### National
 
@@ -110,7 +116,7 @@ plot_nowcast(
 
 # Evaluation
 
-In this section we evaluate and compare the peformance of each nowcasting model using proper scoring rules on both the natural and the log scale. This corresponds to evaluating absolute and relative error. Only nowcasts from the national level are considered as sub-national nowcasts are not available for all models. For evaluation we consider only forecast targets for which the data is minimally informative which we defined as the 7 days prior to the date of the nowcast. We explore overall scores as well as scores stratified by age group and by nowcast horizon.
+In this section we evaluate and compare the peformance of each nowcasting model using proper scoring rules [@scoringutls] on both the natural and the log scale. This corresponds to evaluating absolute and relative error. Only nowcasts from the national level are considered as sub-national nowcasts are not available for all models. For evaluation we consider only forecast targets for which the data is minimally informative which we defined as the 7 days prior to the date of the nowcast. We explore overall scores as well as scores stratified by age group, by nowcast horizon, by date of postive test, and by report date.
 
 ## Overall nowcast model scores
 
@@ -173,7 +179,6 @@ fancy_datatable(age_group_scores[Scale == "log"][, Scale := NULL])
 
 This section summarises model fitting diagnostics. Whilst most model fits successfully a small subset have issues for as yet unidentified reasons. These issues can be split into issues with convergence and issues with exploring the posterior distribution (often leading to unreliable posterior samples). Resolving these issues is an area of [active research](https://github.com/epiforecasts/epinowcast/issues/22). Finally, model run-time is also summarised for national level nowcasts.
 
-
 ## Convergence issues
 
 ```{r rhat}
@@ -183,7 +188,6 @@ fancy_datatable(rhat)
 
 ## Divergent transitions
 
-
 ```{r dts}
 dts <- fread(here("data/diagnostics/high-divergent-transitions.csv"))
 fancy_datatable(dts)
@@ -191,6 +195,8 @@ fancy_datatable(dts)
 
 ## Run time
 
+In the this section, we summarise the run time of each nowcasting model using 2 cores each on a standard Azure virtual machine. These run-times are indicative only but the relative difference between models should hold across machines. To make the independent model run times comparable with other models we have combined the run time across all age groups. However, this model is naively parallel and so could in theory be run on separate compute nodes per age group (so as we have 7 age groups this would result in a 7 times speed up). As all models make use of the support in `stan` for within chain parallisation all models could also be estimated with significantly reduced run time with the allocation of increased compute resources.
+s 
 ```{r run-time}
 run_time <- fread(here("data/diagnostics/all.csv"))
 run_time <- run_time

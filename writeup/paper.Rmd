@@ -39,11 +39,6 @@ Correspondence to: sam.abbott@lshtm.ac.uk
 **Methods:** 
 
 
-**Results:** 
-
-
-**Conclusions:** 
-
 # Introduction
 
 ## Why
@@ -135,12 +130,21 @@ Expected notifications by time of occurrence ($t$) and reporting delay can now b
 
 The model is implemented in `stan` using `cmdstanr`[@stan; @cmdstanr]. Sparse design matrices have been used for all covariates to limit the number of probability mass functions that need to be calculated. `epinowcast` incorporates additional functionality written in R[@R] to enable plotting nowcasts and posterior predictions, summarising nowcasts, and scoring them using `scoringutils`[@scoringutils]. All functionality is modular allowing users to extend and alter the underlying model whilst continuing to use the package framework.
 
-### Evaluation
+## Evaluation
 
-### Reproducibility
+
+
+## Reproducibility
 
 All analysis was carried out using R version 4.1.2 [@R]. The analysis pipeline described here is available as a `targets` workflow [@targets] along with an archive of all interim results generated using `gittargets` [@gittargets] and stored using `piggyback` [@piggyback]. A Dockerfile, and prebuilt archived image, has been made available with the code to enhance reproducibility [@Boettiger:2015dw].
 
+# Resullts 
+
+*This project is still underway and so results are not finalised. Please see our [real-time evaluation report](https://epiforecasts.io/eval-germany-sp-nowcasting/real-time/#Summary) for our initial findings.
+
+# Dicussion
+
+tbc
 
 **Data availability**
 
