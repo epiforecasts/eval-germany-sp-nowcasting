@@ -38,7 +38,9 @@ Correspondence to: sam.abbott@lshtm.ac.uk
 
 # Introduction
 
-COVID-19 hospitalisations in Germany are released by date of positive test rather than by date of admission as done in many other countries. This has some advantages when they are used as a tool for surveillance as these data are closer to the date of infection and so easier to link to underlying transmission dynamics and public health interventions. Unfortunately, however, when released in this way the latest data are right-censored meaning that final hospitalisations for a given day are initially underreported. This isssue is often found in data sets used for the surveillance of infectious diseases and can lead to delayed or biased decision making. Fortunately, when data from a series of days is available we can estimate the level of censoring and provide estimates for the truncated hospitalisations adjusted for truncation with appropriate uncertainty. This is usually known as a nowcast.
+```{r, child = "../docs/chunks/introduction.Rmd"}
+```
+
 
 **TODO: What else has been done for nowcasting**
 
@@ -130,6 +132,14 @@ Expected notifications by time of occurrence ($t$) and reporting delay can now b
 **TODO: Detail specific model formulations**
 
 We explore two primary models and submit nowcasts from these models to the nowcasting hub. The first of these is fit independently to each data set by age and location. Hospitalisations are modelled using a random walk on the log scale. Reporting delays are then modelled parametrically using a lognormal distribution with the log mean and log standard deviation each modelled using a weekly random walk with a pooled standard deviation. Report date effects are modelling using a random effect for day of the week with public holidays assumed to be reported like Sundays. The second model is fit jointly to age groups but is otherwise structured in the same way as the unpooled model except that report day of the week effects and the observation overdispersion are assumed to be joint across age groups and age groups are assumed to have a random intercept for both the log mean and the log standard deviation of the reporting delay distribution. We also consider a series of pooled models which sequentially include the features of our most complex model. These are: age groups are fit jointly, day of the week reporting effects, a random intercept for each age group, and a random walk by positive test week shared across age groups.
+
+Model | Formula
+Reference: Fixed, Report: Fixed | 
+Reference: Fixed, Report: Day of week |
+Reference: Age, Report: Day of week |
+Reference: Age and week, Report: Day of week |
+Reference: Age and week by age, Report: Day of week | 
+Independent by age, Reference: Week, Report: Day of week |
 
 ## Implementation
 
