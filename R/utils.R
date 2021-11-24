@@ -23,6 +23,30 @@ select_var <- function(dt, var) {
   dt[[var]]
 }
 
+format_from_csv <- function(dt) {
+  if (!is.null(dt$age_group)) {
+      dt[
+      ,
+        age_group := factor(
+          age_group,
+          levels = c("00+", "00-04", "05-14", "15-34", "35-59", "60-79", "80+")
+        )
+    ]
+    }
+    dt[,
+    model := factor(
+      model,
+      levels = c("Reference: Fixed, Report: Fixed",
+                "Reference: Fixed, Report: Day of week",
+                "Reference: Age, Report: Day of week",
+                "Reference: Age and week, Report: Day of week",
+                "Reference: Age and week by age, Report: Day of week",
+                "Independent by age, Reference: Week, Report: Day of week")
+    )
+    ]
+  return(dt[])
+}
+
 load_nowcasts <- function(path) {
   nowcasts <- fs::dir_ls(
     path,
@@ -33,26 +57,7 @@ load_nowcasts <- function(path) {
   nowcasts[, horizon := as.numeric(
     as.Date(reference_date) - as.Date(nowcast_date)
   )]
-  if (!is.null(nowcasts$age_group)) {
-    nowcasts[
-    ,
-      age_group := factor(
-        age_group,
-        levels = c("00+", "00-04", "05-14", "15-34", "35-59", "60-79", "80+")
-      )
-  ]
-  }
-  nowcasts[,
-   model := factor(
-    model,
-    levels = c("Reference: Fixed, Report: Fixed",
-               "Reference: Fixed, Report: Day of week",
-               "Reference: Age, Report: Day of week",
-               "Reference: Age and week, Report: Day of week",
-               "Reference: Age and week by age, Report: Day of week",
-               "Independent by age, Reference: Week, Report: Day of week")
-   )
-  ]
+  nowcasts <- format_from_csv(nowcasts)
   return(nowcasts[])
 }
 
@@ -66,6 +71,12 @@ load_obs <- function(path) {
     )
   ]
   return(obs[])
+}
+
+load_diagnostics <- function(path) {
+  diagnostics <- fread(path)
+  diagnostics <- format_from_csv(diagnostics)
+  return(diagnostics[])
 }
 
 fancy_datatable <- function(dt) {
