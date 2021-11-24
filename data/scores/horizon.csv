@@ -1,1 +1,13 @@
-reference_date,age_group,location,model,nowcast_date,confirm,group,mean,median,sd,mad,rhat,ess_bulk,ess_tail,report_date,horizon,quantile,prediction,true_value,holiday,scale
+horizon,model,interval_score,sharpness,underprediction,overprediction,coverage_deviation,bias,aem,scale
+-7,"Reference: Fixed, Report: Fixed",5.41,1.64,0,3.76,-0.243,0.829,10.7,natural
+-7,"Reference: Fixed, Report: Day of week",8.28,1.31,0,6.97,-0.433,0.914,13.3,natural
+-7,"Reference: Age, Report: Day of week",9.19,1.4,0,7.79,-0.465,0.957,14.7,natural
+-7,"Reference: Age and week, Report: Day of week",8.98,1.38,0,7.6,-0.465,0.957,14.4,natural
+-7,"Reference: Age and week by age, Report: Day of week",6.81,1.41,0,5.4,-0.37,0.893,12,natural
+-7,"Independent by age, Reference: Week, Report: Day of week",9.1,1.48,0,7.62,-0.338,0.843,14.3,natural
+-7,"Reference: Fixed, Report: Fixed",0.334,0.0773,0,0.257,-0.243,0.829,0.783,log
+-7,"Reference: Fixed, Report: Day of week",0.498,0.05,0,0.448,-0.433,0.914,0.927,log
+-7,"Reference: Age, Report: Day of week",0.511,0.0497,0,0.462,-0.465,0.957,0.938,log
+-7,"Reference: Age and week, Report: Day of week",0.509,0.05,0,0.459,-0.465,0.957,0.934,log
+-7,"Reference: Age and week by age, Report: Day of week",0.48,0.0522,0,0.428,-0.37,0.893,0.916,log
+-7,"Independent by age, Reference: Week, Report: Day of week",0.247,0.11,0,0.137,-0.338,0.843,0.808,log
