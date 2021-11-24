@@ -15,15 +15,16 @@ plot_nowcast <- function(summarised_nowcast, latest_obs,
 }
 
 plot_scores <- function(scores, ...) {
-  plot <- ggplot(score) +
-    aes(...) +
-    geom_line(size = 1.1, alpha = 0.6) +
-    geom_point(size = 1.2) +
-    facet_wrap(vars(age_group)) +
-    scale_color_brewer(palette = "Dark2") +
-    scale_fill_brewer(palette = "Dark2")
+  ggplot2::ggplot(scores) +
+    ggplot2::aes(...) +
+    ggplot2::geom_point(size = 1.2) +
+    ggplot2::geom_line(size = 1.1, alpha = 0.) +
+    ggplot2::scale_fill_brewer(palette = "Dark2") +
+    ggplot2::scale_color_brewer(palette = "Dark2") +
+    labs(y = "Weighted interval score") +
+    theme_bw() +
+    theme(legend.position = "bottom")
 }
-
 
 plot_relative_scores <- function(score, baseline) {
   score <- data.table::as.data.table(score)

@@ -121,7 +121,7 @@ In this section we evaluate and compare the performance of each nowcasting model
 ## Overall nowcast model scores
 
 ```{r load-overall-scores}
-scores <- fread(here("data/scores/overall.csv"))
+scores <- load_diagnostics(here("data/scores/overall.csv"))
 scores <- clean_names(scores, case = "sentence")
 ```
 
@@ -140,77 +140,110 @@ fancy_datatable(scores[Scale == "log"][, Scale := NULL])
 ## Nowcast model scores by horizon
 
 ```{r load-horizon-scores}
-horizon_scores <- fread(here("data/scores/horizon.csv"))
-horizon_scores <- clean_names(horizon_scores, case = "sentence")
+horizon_scores <- load_diagnostics(here("data/scores/horizon.csv"))
+```
+
+```{r plot-horizon, fig.height = 8, fig.width = 8}
+plot_scores(
+  horizon_scores, y = interval_score, x = horizon, col = model, fill = model
+) +
+  facet_wrap(vars(scale), scales = "free_y") +
+  labs(x = "Nowcast horizon (with 0 being the date of nowcast)")
 ```
 
 ### Natural scale scores (absolute)
 
 ```{r horizon-scores}
-fancy_datatable(horizon_scores[Scale == "natural"][, Scale := NULL])
+fancy_datatable(horizon_scores[scale == "natural"][, scale := NULL])
 ```
 
 ### Log scale scores (relative)
 
 ```{r relative-horizon-scores}
-fancy_datatable(horizon_scores[Scale == "log"][, Scale := NULL])
+fancy_datatable(horizon_scores[scale == "log"][, scale := NULL])
 ```
 
 ## Nowcast model scores by age group
 
 ```{r load-age-group-scores}
-age_group_scores <- fread(here("data/scores/age_group.csv"))
-age_group_scores <- clean_names(age_group_scores, case = "sentence")
+age_group_scores <- load_diagnostics(here("data/scores/age_group.csv"))
+```
+
+```{r plot-age-group, fig.height = 8, fig.width = 8}
+plot_scores(
+  age_group_scores, y = interval_score, x = age_group, col = model,
+  fill = model, group = model
+) +
+  facet_wrap(vars(scale), scales = "free_y") +
+  labs(x = "Age group")
 ```
 
 ### Natural scale scores (absolute)
 
 ```{r age-group-scores}
-fancy_datatable(age_group_scores[Scale == "natural"][, Scale := NULL])
+fancy_datatable(age_group_scores[scale == "natural"][, scale := NULL])
 ```
 
 ### Log scale scores (relative)
 
 ```{r relative-age-group-scores}
-fancy_datatable(age_group_scores[Scale == "log"][, Scale := NULL])
+fancy_datatable(age_group_scores[scale == "log"][, scale := NULL])
 ```
 
 ## Nowcast model scores by date of positive test
 
 ```{r load-ref-date-scores}
-reference_date_scores <- fread(here("data/scores/reference_date.csv"))
-reference_date_scores <- clean_names(reference_date_scores, case = "sentence")
+reference_date_scores <- load_diagnostics(here("data/scores/reference_date.csv"))
+```
+
+```{r plot-ref-date, fig.height = 8, fig.width = 8}
+plot_scores(
+  reference_date_scores, y = interval_score, x = reference_date, col = model,
+  fill = model, group = model
+) +
+  facet_wrap(vars(scale), scales = "free_y") +
+  labs(x = "Reference date")
 ```
 
 ### Natural scale scores (absolute)
 
 ```{r ref-date-scores}
-fancy_datatable(reference_date_scores[Scale == "natural"][, Scale := NULL])
+fancy_datatable(reference_date_scores[scale == "natural"][, scale := NULL])
 ```
 
 ### Log scale scores (relative)
 
 ```{r relative-ref-date-scores}
-fancy_datatable(reference_date_scores[Scale == "log"][, Scale := NULL])
+fancy_datatable(reference_date_scores[scale == "log"][, scale := NULL])
 ```
 
 ## Nowcast model scores by report date
 
 ```{r load-rep-date-scores}
-report_date_scores <- fread(here("data/scores/nowcast_date.csv"))
-report_date_scores <- clean_names(report_date_scores, case = "sentence")
+report_date_scores <- load_diagnostics(here("data/scores/nowcast_date.csv"))
 ```
+
+
+```{r plot-rep-date, fig.height = 8, fig.width = 8}
+plot_scores(
+  report_date_scores, y = interval_score, x = nowcast_date, col = model,
+  fill = model, group = model
+) +
+  facet_wrap(vars(scale), scales = "free_y") +
+  labs(x = "Report date")
+```
+
 
 ### Natural scale scores (absolute)
 
 ```{r rep-date-scores}
-fancy_datatable(report_date_scores[Scale == "natural"][, Scale := NULL])
+fancy_datatable(report_date_scores[scale == "natural"][, scale := NULL])
 ```
 
 ### Log scale scores (relative)
 
 ```{r relative-rep-date-scores}
-fancy_datatable(report_date_scores[Scale == "log"][, Scale := NULL])
+fancy_datatable(report_date_scores[scale == "log"][, scale := NULL])
 ```
 
 
@@ -221,14 +254,14 @@ This section summarises model fitting diagnostics. Whilst most model fits succes
 ## Convergence issues
 
 ```{r rhat}
-rhat <- fread(here("data/diagnostics/high-rhat.csv"))
+rhat <- load_diagnostics(here("data/diagnostics/high-rhat.csv"))
 fancy_datatable(rhat)
 ```
 
 ## Divergent transitions
 
 ```{r dts}
-dts <- fread(here("data/diagnostics/high-divergent-transitions.csv"))
+dts <- load_diagnostics(here("data/diagnostics/high-divergent-transitions.csv"))
 fancy_datatable(dts)
 ```
 
@@ -237,7 +270,7 @@ fancy_datatable(dts)
 In this section, we summarise the run time of each nowcasting model using 2 cores each on a standard Azure virtual machine. These run-times are indicative only but the relative difference between models should hold across machines. To make the independent model run times comparable with other models we have combined the run time across all age groups. However, this model is naively parallel and so could in theory be run on separate compute nodes per age group (so as we have 7 age groups this would result in a 7 times speed up). As all models make use of the support in `stan` for within chain parallisation all models could also be estimated with significantly reduced run time with the allocation of increased compute resources. Run times are shown in minutes.
 
 ```{r run-time}
-run_times <- fread(here("data/diagnostics/run-times.csv"))
+run_times <- load_diagnostics(here("data/diagnostics/run-times.csv"))
 ```
 
 ### Summary table
@@ -259,5 +292,17 @@ fancy_datatable(summary_run_times)
 ```
 
 ### By model and nowcast date
+
+```{r}
+ggplot(run_times) +
+  aes(x = model, y = run_time_mins, col = model, fill = model) + 
+  geom_violin(alpha = 0.4) +
+  geom_jitter(alpha = 0.4) +
+  scale_y_log10() +
+  theme_bw() +
+  theme(legend.position = "none") +
+  labs(y = "Estimation time (minutes)", x = "") +
+  coord_flip()
+```
 
 # References
