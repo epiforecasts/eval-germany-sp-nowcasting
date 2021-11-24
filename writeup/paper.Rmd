@@ -38,7 +38,7 @@ Correspondence to: sam.abbott@lshtm.ac.uk
 
 # Introduction
 
-COVID-19 hospitalisations in Germany are released by date of positive test rather than by date of admission as done in many other countries. This has some advantages when they are used as a tool for surveillance as these data have less time lag than if they by date of admission and are closer to the date of infection and so easier to link to underlying transmission dynamics and public health interventions. Unfortunately, however, when released in this way the latest data are right-censored meaning that final hospitalisations for a given day are initially underreported. This can lead to delayed or biased decision making. Fortunately, when data from a series of days is available we can estimate the level of censoring and provide estimates for the truncated hospitalisations adjusted for truncation with appropriate uncertainty. This is usually defined as a nowcast.
+COVID-19 hospitalisations in Germany are released by date of positive test rather than by date of admission as done in many other countries. This has some advantages when they are used as a tool for surveillance as these data are closer to the date of infection and so easier to link to underlying transmission dynamics and public health interventions. Unfortunately, however, when released in this way the latest data are right-censored meaning that final hospitalisations for a given day are initially underreported. This isssue is often found in data sets used for the surveillance of infectious diseases and can lead to delayed or biased decision making. Fortunately, when data from a series of days is available we can estimate the level of censoring and provide estimates for the truncated hospitalisations adjusted for truncation with appropriate uncertainty. This is usually known as a nowcast.
 
 **TODO: What else has been done for nowcasting**
 
@@ -136,7 +136,6 @@ The model is implemented as part of the `epinowcast` R package [@epinowcast] usi
 ## Evaluation
 
 **TODO: Model evaluation. What targets. What scoring measures. What aggregation*
-
 
 ## Reproducibility
 
