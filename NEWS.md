@@ -1,3 +1,8 @@
+# 2021-11-24
+
+- Added README's for the data and bash script folders. 
+
+
 # 2021-11-23
 
 - Added an introduction and methods write up. 
