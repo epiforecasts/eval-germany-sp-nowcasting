@@ -18,12 +18,14 @@ plot_scores <- function(scores, ...) {
   ggplot2::ggplot(scores) +
     ggplot2::aes(...) +
     ggplot2::geom_point(size = 1.2) +
-    ggplot2::geom_line(size = 1.1, alpha = 0.) +
+    ggplot2::geom_line(size = 1.1, alpha = 0.4) +
     ggplot2::scale_fill_brewer(palette = "Dark2") +
     ggplot2::scale_color_brewer(palette = "Dark2") +
     labs(y = "Weighted interval score") +
     theme_bw() +
-    theme(legend.position = "bottom")
+    theme(legend.position = "bottom") +
+    guides(fill = guide_legend(title = "Model", nrow = 3),
+           col = guide_legend(title = "Model", nrow = 3))
 }
 
 plot_relative_scores <- function(score, baseline) {
