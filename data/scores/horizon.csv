@@ -1,13 +1,25 @@
 horizon,model,interval_score,sharpness,underprediction,overprediction,coverage_deviation,bias,aem,scale
--7,"Reference: Fixed, Report: Fixed",5.41,1.64,0,3.76,-0.243,0.829,10.7,natural
--7,"Reference: Fixed, Report: Day of week",8.28,1.31,0,6.97,-0.433,0.914,13.3,natural
--7,"Reference: Age, Report: Day of week",9.19,1.4,0,7.79,-0.465,0.957,14.7,natural
--7,"Reference: Age and week, Report: Day of week",8.98,1.38,0,7.6,-0.465,0.957,14.4,natural
--7,"Reference: Age and week by age, Report: Day of week",6.81,1.41,0,5.4,-0.37,0.893,12,natural
--7,"Independent by age, Reference: Week, Report: Day of week",9.1,1.48,0,7.62,-0.338,0.843,14.3,natural
--7,"Reference: Fixed, Report: Fixed",0.334,0.0773,0,0.257,-0.243,0.829,0.783,log
--7,"Reference: Fixed, Report: Day of week",0.498,0.05,0,0.448,-0.433,0.914,0.927,log
--7,"Reference: Age, Report: Day of week",0.511,0.0497,0,0.462,-0.465,0.957,0.938,log
--7,"Reference: Age and week, Report: Day of week",0.509,0.05,0,0.459,-0.465,0.957,0.934,log
--7,"Reference: Age and week by age, Report: Day of week",0.48,0.0522,0,0.428,-0.37,0.893,0.916,log
--7,"Independent by age, Reference: Week, Report: Day of week",0.247,0.11,0,0.137,-0.338,0.843,0.808,log
+-7,"Reference: Fixed, Report: Fixed",4.08,1.79,0.286,1.97,-0.0603,0.271,8,natural
+-7,"Reference: Fixed, Report: Day of week",5.26,1.43,0.193,3.62,-0.156,0.386,8.36,natural
+-7,"Reference: Age, Report: Day of week",7.39,1.42,2,3.91,-0.295,0.211,13.1,natural
+-7,"Reference: Age and week, Report: Day of week",9.53,1.37,4.32,3.8,-0.368,0.136,15.4,natural
+-7,"Reference: Age and week by age, Report: Day of week",8.98,1.35,4.88,2.7,-0.36,0.0607,14.6,natural
+-7,"Independent by age, Reference: Week, Report: Day of week",5.74,1.57,0.25,3.89,-0.108,0.35,9.21,natural
+-6,"Reference: Fixed, Report: Fixed",3.08,2.34,0.379,0.317,0.0746,-0.0857,4.36,natural
+-6,"Reference: Fixed, Report: Day of week",3.69,1.9,0.0857,1.7,-0.0206,0.35,7.86,natural
+-6,"Reference: Age, Report: Day of week",5.07,2.09,0.0286,2.95,-0.0683,0.529,10,natural
+-6,"Reference: Age and week, Report: Day of week",4.21,2.05,0.0571,2.1,-0.0524,0.414,8.86,natural
+-6,"Reference: Age and week by age, Report: Day of week",3.05,2.11,0.186,0.73,0.106,0.214,5.29,natural
+-6,"Independent by age, Reference: Week, Report: Day of week",5.72,2.26,0.171,3.29,-0.0641,0.386,11.4,natural
+-7,"Reference: Fixed, Report: Fixed",0.178,0.0468,0.0014,0.13,-0.0603,0.271,0.407,log
+-7,"Reference: Fixed, Report: Day of week",0.26,0.0327,0.00117,0.226,-0.156,0.386,0.477,log
+-7,"Reference: Age, Report: Day of week",0.27,0.0322,0.00634,0.231,-0.295,0.211,0.492,log
+-7,"Reference: Age and week, Report: Day of week",0.276,0.0316,0.0152,0.229,-0.368,0.136,0.5,log
+-7,"Reference: Age and week by age, Report: Day of week",0.265,0.0324,0.0184,0.214,-0.36,0.0607,0.494,log
+-7,"Independent by age, Reference: Week, Report: Day of week",0.134,0.0612,0.00272,0.0694,-0.108,0.35,0.432,log
+-6,"Reference: Fixed, Report: Fixed",0.0316,0.0181,0.00656,0.00627,0.0746,-0.0857,0.0716,log
+-6,"Reference: Fixed, Report: Day of week",0.0332,0.0165,0.00328,0.013,-0.0206,0.35,0.0745,log
+-6,"Reference: Age, Report: Day of week",0.0376,0.0182,0.00159,0.0177,-0.0683,0.529,0.0814,log
+-6,"Reference: Age and week, Report: Day of week",0.0342,0.0175,0.00174,0.0148,-0.0524,0.414,0.0785,log
+-6,"Reference: Age and week by age, Report: Day of week",0.0317,0.0171,0.00521,0.00882,0.106,0.214,0.0686,log
+-6,"Independent by age, Reference: Week, Report: Day of week",0.0408,0.0178,0.00958,0.0133,-0.0641,0.386,0.0674,log

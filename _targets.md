@@ -95,7 +95,7 @@ tar_option_set(
 <!-- end list -->
 
 ``` r
-today <- Sys.Date()
+today <- Sys.Date() + 1
 #> Establish _targets.R and _targets_r/globals/today.R.
 ```
 

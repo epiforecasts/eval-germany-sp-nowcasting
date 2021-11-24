@@ -81,16 +81,19 @@ tar_option_set(
 
 # Ingest data and stratify by location and report date
 
-* Specify todays date to trigger downloading new data.
+* Watch the URL at which hospitalisation data is hosted in order to trigger an update to the workflow when new data is uploaded
 
-```{targets today, tar_globals = TRUE}
-today <- Sys.Date()
+```{targets hospitalisation_url}
+tar_url(
+  hospitalisation_url,
+  "https://raw.githubusercontent.com/KITmetricslab/hospitalization-nowcast-hub/main/data-truth/COVID-19/COVID-19_hospitalizations_preprocessed.csv" # nolint
+)
 ```
 
 * Download and process hospitalisation data. Also download and combined data on public holidays in Germany.
 
 ```{targets hospitalisations, tar_simple = TRUE}
-get_germany_hospitalisations(today)
+get_germany_hospitalisations(url = hospitalisation_url)
 ```
 
 * Define date to start nowcasting
