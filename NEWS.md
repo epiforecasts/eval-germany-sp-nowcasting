@@ -1,7 +1,7 @@
 # 2021-11-24
 
 - Added README's for the data and bash script folders. 
-
+- Added retrospective nowcasts back to the 15th of October 2021.
 
 # 2021-11-23
 
