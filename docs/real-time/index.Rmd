@@ -143,9 +143,10 @@ fancy_datatable(scores[Scale == "log"][, Scale := NULL])
 horizon_scores <- load_diagnostics(here("data/scores/horizon.csv"))
 ```
 
-```{r plot-horizon, fig.height = 8, fig.width = 8}
+```{r plot-horizon, fig.height = 4, fig.width = 8}
 plot_scores(
-  horizon_scores, y = interval_score, x = horizon, col = model, fill = model
+  horizon_scores, y = interval_score, x = horizon, col = model, fill = model,
+  group = model
 ) +
   facet_wrap(vars(scale), scales = "free_y") +
   labs(x = "Nowcast horizon (with 0 being the date of nowcast)")
@@ -169,7 +170,7 @@ fancy_datatable(horizon_scores[scale == "log"][, scale := NULL])
 age_group_scores <- load_diagnostics(here("data/scores/age_group.csv"))
 ```
 
-```{r plot-age-group, fig.height = 8, fig.width = 8}
+```{r plot-age-group, fig.height = 4, fig.width = 8}
 plot_scores(
   age_group_scores, y = interval_score, x = age_group, col = model,
   fill = model, group = model
@@ -193,7 +194,9 @@ fancy_datatable(age_group_scores[scale == "log"][, scale := NULL])
 ## Nowcast model scores by date of positive test
 
 ```{r load-ref-date-scores}
-reference_date_scores <- load_diagnostics(here("data/scores/reference_date.csv"))
+reference_date_scores <- load_diagnostics(
+  here("data/scores/reference_date.csv")
+)
 ```
 
 ```{r plot-ref-date, fig.height = 8, fig.width = 8}
