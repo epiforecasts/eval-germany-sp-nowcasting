@@ -1,5 +1,5 @@
-get_public_holidays <- function(today,
-                                url = "https://raw.githubusercontent.com/jbracher/hospitalization-nowcast-hub/main/other_data/public_holidays.csv") { # nolint
+get_public_holidays <- function(today = Sys.Date(),
+                                url = "https://raw.githubusercontent.com/KITmetricslab/hospitalization-nowcast-hub/main/other_data/public_holidays.csv") { # nolint
   message("Downloading public holiday data available on the: ", today)
 
   holidays <- data.table::fread(url)
@@ -12,8 +12,8 @@ get_public_holidays <- function(today,
   return(holidays[])
 }
 
-get_germany_hospitalisations <- function(today,
-                                         url = "https://raw.githubusercontent.com/jbracher/hospitalization-nowcast-hub/main/data-truth/COVID-19/COVID-19_hospitalizations_preprocessed.csv") { # nolint
+get_germany_hospitalisations <- function(today = Sys.Date(),
+                                         url = "https://raw.githubusercontent.com/KITmetricslab/hospitalization-nowcast-hub/main/data-truth/COVID-19/COVID-19_hospitalizations_preprocessed.csv") { # nolint
   message("Downloading hospitalisation data available on the: ", today)
 
   germany_hosp <- data.table::fread(url)
