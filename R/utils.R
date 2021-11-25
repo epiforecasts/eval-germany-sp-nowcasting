@@ -83,8 +83,11 @@ fancy_datatable <- function(dt) {
   dt <- janitor::clean_names(dt, case = "sentence")
   DT::datatable(
     dt,
-    extensions = c("Buttons", "Responsive"), options = list(
-      dom = "Bfrtip", buttons = c("csv")
+    extensions = c("Buttons", "Responsive", "Scroller"),
+    options = list(
+      dom = "Bfrtip", buttons = c("csv"),
+      pageLength = 6, deferRender = TRUE,
+      scrollY = 200, scroller = TRUE
     )
   )
 }
