@@ -86,7 +86,7 @@ fancy_datatable <- function(dt) {
     extensions = c("Buttons", "Responsive", "Scroller"),
     options = list(
       dom = "Bfrtip", buttons = c("csv"),
-      pageLength = 6, deferRender = TRUE,
+      pageLength = 7, deferRender = TRUE,
       scrollY = 200, scroller = TRUE
     )
   )
