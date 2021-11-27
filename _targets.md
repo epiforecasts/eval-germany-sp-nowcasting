@@ -65,6 +65,7 @@ functions from the `R` folder.
 ``` r
 library(targets)
 library(tarchetypes)
+library(cmdstanr)
 library(data.table)
 library(epinowcast)
 library(ggplot2)
@@ -76,6 +77,7 @@ plan(callr)
 functions <- list.files(here("R"), full.names = TRUE)
 walk(functions, source)
 rm("functions")
+set_cmdstan_path()  
 tar_option_set(
   packages = c("data.table", "epinowcast", "scoringutils", "ggplot2", "purrr",
                "cmdstanr", "here"),
@@ -489,6 +491,27 @@ tar_target(
 #> Establish _targets.R and _targets_r/targets/independent_nowcast.R.
 ```
 
+  - Independent age group model with a weekly random walk and a day of
+    the week reporting model.
+
+<!-- end list -->
+
+``` r
+tar_target(
+  independent_ref_dow_nowcast,
+  nowcast(
+    obs = hospitalisations_by_date_report[age_group == age_groups],
+    tar_loc = locations,
+    model = independent_ref_dow_epinowcast,
+    priors = priors,
+    max_delay = max_report_delay,
+    settings = epinowcast_settings
+  ),
+  cross(hospitalisations_by_date_report, locations, age_groups)
+)
+#> Establish _targets.R and _targets_r/targets/independent_ref_dow_nowcast.R.
+```
+
   - Model for locations without age groups. As for the previous model
     this has a weekly random walk and a day of the week reporting model.
 
@@ -525,7 +548,8 @@ tar_target(combined_nowcasts, {
     week_nowcast,
     age_week_nowcast,
     independent_nowcast,
-    overall_only_nowcast
+    overall_only_nowcast,
+    independent_ref_dow_nowcast
   ))[,
      model := factor(
       model,
@@ -534,7 +558,8 @@ tar_target(combined_nowcasts, {
                  "Reference: Age, Report: Day of week",
                  "Reference: Age and week, Report: Day of week",
                  "Reference: Age and week by age, Report: Day of week",
-                 "Independent by age, Reference: Week, Report: Day of week")
+                 "Independent by age, Reference: Week, Report: Day of week",
+                 "Independent by age, Reference: Week and day of week, Report: Day of week")
      )
     ][, id := 1:.N]
 })

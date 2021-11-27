@@ -210,3 +210,36 @@ independent_epinowcast <- function(obs, max_delay = 40, ...) {
   )
   return(out[])
 }
+
+independent_ref_dow_epinowcast <- function(obs, max_delay = 40, ...) {
+  pobs <- enw_preprocess_data(obs,
+    max_delay = max_delay,
+    rep_holidays = "holiday"
+  )
+
+  metareference <- enw_add_cumulative_membership(
+    pobs$metareference[[1]],
+    feature = "week"
+  )
+
+  reference_effects <- enw_formula(
+    metareference, random = "day_of_week", custom_random = "cweek"
+  )
+  report_effects <- enw_formula(pobs$metareport, random = "day_of_week")
+
+  model <- load_model()
+
+  nowcast <- epinowcast(
+    pobs,
+    model = model,
+    reference_effects = reference_effects,
+    report_effects = report_effects,
+    ...
+  )
+
+  out <- summarise_nowcast(
+    nowcast,
+    model = "Independent by age, Reference: Week and day of week, Report: Day of week" # nolint
+  )
+  return(out[])
+}
