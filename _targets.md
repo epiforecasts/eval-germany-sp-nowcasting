@@ -65,6 +65,7 @@ functions from the `R` folder.
 ``` r
 library(targets)
 library(tarchetypes)
+library(cmdstanr)
 library(data.table)
 library(epinowcast)
 library(ggplot2)
@@ -76,6 +77,7 @@ plan(callr)
 functions <- list.files(here("R"), full.names = TRUE)
 walk(functions, source)
 rm("functions")
+set_cmdstan_path()  
 tar_option_set(
   packages = c("data.table", "epinowcast", "scoringutils", "ggplot2", "purrr",
                "cmdstanr", "here"),
