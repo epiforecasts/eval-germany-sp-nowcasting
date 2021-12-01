@@ -131,7 +131,7 @@ In this section we evaluate and compare the performance of each nowcasting metho
 scores <- score_nowcast(hub_nowcasts, complete_seven_day_hosp)
 ```
 
-```{r plot-overall-scores, fig.height = 8, fig.width = 8}
+```{r plot-overall-scores, fig.height = 4, fig.width = 8}
 plot_scores(
   scores, y = interval_score, x = model, col = model,
   fill = model, group = model
