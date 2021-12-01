@@ -122,19 +122,29 @@ In this section we evaluate and compare the performance of each nowcasting model
 
 ```{r load-overall-scores}
 scores <- load_diagnostics(here("data/scores/overall.csv"))
-scores <- clean_names(scores, case = "sentence")
+```
+
+```{r plot-overall-scores, fig.height = 8, fig.width = 8}
+plot_scores(
+  scores, y = interval_score, x = model, col = model,
+  fill = model, group = model
+) +
+  facet_wrap(vars(scale), scales = "free_x") +
+  labs(x = "Model") +
+  theme(legend.position = "none") +
+  coord_flip()
 ```
 
 ### Natural scale scores (absolute)
 
 ```{r overall-scores}
-fancy_datatable(scores[Scale == "natural"][, Scale := NULL])
+fancy_datatable(scores[scale == "natural"][, scale := NULL])
 ```
 
 ### Log scale scores (relative)
 
 ```{r relative-overall-scores}
-fancy_datatable(scores[Scale == "log"][, Scale := NULL])
+fancy_datatable(scores[scale == "log"][, scale := NULL])
 ```
 
 ## Nowcast model scores by horizon
