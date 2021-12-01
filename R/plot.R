@@ -1,8 +1,10 @@
 plot_nowcast <- function(summarised_nowcast, latest_obs,
                                      max_delay = Inf, ...) {
    summarised_nowcast <- summarised_nowcast[
-        reference_date >= (max(as.Date(nowcast_date)) - max_delay)][,
-        c("holiday") := NULL]
+        reference_date >= (max(as.Date(nowcast_date)) - max_delay)
+   ]
+
+   suppressWarnings(summarised_nowcast[, holiday := NULL])
 
    plot <- epinowcast::enw_plot_nowcast_quantiles(
       summarised_nowcast,
