@@ -116,7 +116,7 @@ plot_nowcast(
 
 # Evaluation
 
-In this section we evaluate and compare the performance of each nowcasting model using proper scoring rules [@scoringutls] on both the natural and the log scale. This corresponds to evaluating absolute and relative error. Only nowcasts from the national level are considered as sub-national nowcasts are not available for all models. For evaluation we consider only forecast targets for which the data is minimally informative which we defined as the 7 days prior to the date of the nowcast. We explore overall scores as well as scores stratified by age group, by nowcast horizon, and by date of postive test, and by report date.
+In this section we evaluate and compare the performance of each nowcasting model using proper scoring rules [@scoringutils] on both the natural and the log scale. This corresponds to evaluating absolute and relative error. Only nowcasts from the national level are considered as sub-national nowcasts are not available for all models. For evaluation we consider only forecast targets for which the data is minimally informative which we defined as the 7 days prior to the date of the nowcast. We explore overall scores as well as scores stratified by age group, by nowcast horizon, and by date of postive test, and by report date.
 
 ## Overall nowcast model scores
 
