@@ -124,7 +124,7 @@ In this section we evaluate and compare the performance of each nowcasting model
 scores <- load_diagnostics(here("data/scores/overall.csv"))
 ```
 
-```{r plot-overall-scores, fig.height = 8, fig.width = 8}
+```{r plot-overall-scores, fig.height = 4, fig.width = 8}
 plot_scores(
   scores, y = interval_score, x = model, col = model,
   fill = model, group = model
