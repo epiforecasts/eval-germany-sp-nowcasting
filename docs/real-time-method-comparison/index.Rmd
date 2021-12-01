@@ -1,6 +1,6 @@
 ---
 title: "Evaluating Semi-Parametric Nowcasts of COVID-19 Hospital Admissions in Germany"
-subtitle: "Real-time comparison to other nowcasting hub methods"
+subtitle: "Real-time comparison to other nowcasting methods"
 author: Sam Abbott 
 bibliography: ../../writeup/library.bib
 csl: https://raw.githubusercontent.com/citation-style-language/styles/master/apa-numeric-superscript-brackets.csl
@@ -29,19 +29,20 @@ library(ggplot2)
 source(here("R", "utils.R"))
 source(here("R", "plot.R"))
 source(here("R", "get-hub-forecasts.R"))
+source(here("R", "evaluation.R"))
 ```
+
+**This is a preliminary real-time comparison between the semi-parametric nowcasting method evaluated in this project and the other methods submitted to the [German nowcasting hub](https://covid19nowcasthub.de). It is not the official prespecified evaluation the protocol for which can be found [here](https://osf.io/mru75/).**
 
 # Introduction
 
-In this real time evaluation report we provide preliminary visualisations, evaluation, and exploration of our nowcasting methodology [@epinowcast] for COVID-19 hospitalisations in Germany by date of postive test. For more details of our methodology and the specifics of the models shown in this report please see our [project summary](https://epiforecasts.io/eval-germany-sp-nowcasting/) and our accompanying [paper](https://epiforecasts.io/eval-germany-sp-nowcasting/paper.pdf) for full method details. This report is updated each day (at roughly 9:00 GMT) as new data and nowcasts become available and may evolve over time. See our [news section](https://github.com/epiforecasts/eval-germany-sp-nowcasting/blob/main/NEWS.md) for a list of dated changes.
+In this real time evaluation report we provide preliminary visualisations, evaluation, and exploration of our nowcasting methodology [@epinowcast] for COVID-19 hospitalisations in Germany by date of postive test compared to the other nowcasting methods submitted to the [Germany nowcasting hub](https://covid19nowcasthub.de). For more details of our methodology and the specifics of the models shown in this report please see our [project summary](https://epiforecasts.io/eval-germany-sp-nowcasting/), our accompanying [paper](https://epiforecasts.io/eval-germany-sp-nowcasting/paper.pdf), and the [German nowcasting hub](https://covid19nowcasthub.de). This report complements our [real-time evaluation](https://epiforecasts.io/eval-germany-sp-nowcasting/real-time/) of models implemented using our methodology. It is updated each day (at roughly 8:00 GMT) as new data and nowcasts become available and may evolve over time. See our [news section](https://github.com/epiforecasts/eval-germany-sp-nowcasting/blob/main/NEWS.md) for a list of dated changes.
 
-We first visualise current nowcasts across models and age groups at the national level as well as overall at the subnational level. We also plot nowcasts at the date of estimation across sequential nowcasts allowing us to summarise the performance of multiple nowcasts on a single plot, again for age groups at the national level and overall at the subnational level. 
+We first visualise current nowcasts across methods and age groups at the national level as well as overall at the subnational level. We also plot nowcasts at the date of estimation across sequential nowcasts allowing us to summarise the performance of multiple nowcasts on a single plot, again for age groups at the national level and overall at the subnational level. 
 
-To quantify comparative performance we make use of proper scoring rules [@scoringutils] on both the natural and log scales (corresponding to absolute and relative performance) aggregating scores first across all targets and then stratifying in turn by age group, nowcast horizon, date of postive test, and date of report. See Bosse et al. [@scoringutils] for information on how to interpret these scores.
+To quantify comparative performance we make use of proper scoring rules [@scoringutils] on both the natural and log scales (corresponding to absolute and relative performance) aggregating scores first across all targets and then stratifying in turn by age group, nowcast horizon, date of postive test, date of report, and location. See Bosse et al. [@scoringutils] for information on how to interpret these scores. Unlike our [real-time evaluation of our models](https://epiforecasts.io/eval-germany-sp-nowcasting/real-time/) here we evaluate performance using 7 day incidence (as this is the target of interest for the [German nowcasting hub](https://covid19nowcasthub.de)) across the complete 28 days of the nowcast and for all locations and age groups available.
 
-To explore other aspects of our models performance we highlight models that have problematic fitting diagnostics and summarise the estimation time for each model. To learn more about the model fitting diagnostics we use here see [@stan] and [@cmdstanr].
-
-The code for this report can be found [here](https://github.com/epiforecasts/eval-germany-sp-nowcasting/blob/main/docs/real-time/index.Rmd) and the data that it uses can be found [here](https://github.com/epiforecasts/eval-germany-sp-nowcasting/tree/main/data).
+The code for this report can be found [here](https://github.com/epiforecasts/eval-germany-sp-nowcasting/blob/main/docs/real-time-method-comparison/index.Rmd) and the data that it uses can be found [here](https://github.com/KITmetricslab/hospitalization-nowcast-hub/tree/main/data-processed) (though you may find it easier to access using the [data accessing code](https://github.com/epiforecasts/eval-germany-sp-nowcasting/blob/main/R/get-hub-forecasts.R) that supports this report.
 
 # Visualisation
 
@@ -62,7 +63,7 @@ hub_nowcasts <- format_hub_nowcasts(hub_nowcasts)
 
 latest_seven_day_hosp <- load_obs(here("data", "observations", "seven_day.csv"))
 complete_seven_day_hosp <- latest_seven_day_hosp[
-  reference_date < (max(reference_date) - 14)
+  reference_date < (max(reference_date) - 28)
 ][]
 ```
 
@@ -81,7 +82,7 @@ plot_nowcast(
 
 ### Sub-national
 
-```{r latest-subnational-nowcast, fig.width = 16, fig.height = 16}
+```{r latest-subnational-nowcast, fig.width = 24, fig.height = 24}
 plot_nowcast(
   hub_nowcasts[!(location == "DE")][
                  nowcast_date == max(nowcast_date)] |>
@@ -89,7 +90,7 @@ plot_nowcast(
   latest_seven_day_hosp[!(location == "DE")][age_group == "00+"],
   max_delay = 28
 ) +
-  facet_wrap(vars(location), scales = "free_y")
+  facet_grid(vars(location), vars(model), scales = "free_y")
 ```
 
 ## Nowcasts at estimation date
@@ -103,31 +104,42 @@ plot_nowcast(
   hub_nowcasts[location == "DE"][
                horizon == 0] |>
   map_to_dummy_quantiles(),
-  latest_seven_day_hosp[location == "DE"],
+  latest_seven_day_hosp[location == "DE"]
 ) +
   facet_grid(vars(age_group), vars(model), scales = "free_y")
 ```
 
 ### Subnational
 
-```{r horizon-subnational-nowcast, fig.width = 16, fig.height = 16}
+```{r horizon-subnational-nowcast, fig.width = 24, fig.height = 24}
 plot_nowcast(
   hub_nowcasts[!(location == "DE")][
                horizon == 0] |>
   map_to_dummy_quantiles(),
   latest_seven_day_hosp[!(location == "DE")][age_group == "00+"]
 ) +
-  facet_wrap(vars(location), scales = "free_y")
+  facet_grid(vars(location), vars(model), scales = "free_y")
 ```
 
 # Evaluation
 
-In this section we evaluate and compare the performance of each nowcasting model using proper scoring rules [@scoringutils] on both the natural and the log scale. This corresponds to evaluating absolute and relative error. Only nowcasts from the national level are considered as sub-national nowcasts are not available for all models. For evaluation we consider only forecast targets for which the data is minimally informative which we defined as the 7 days prior to the date of the nowcast. We explore overall scores as well as scores stratified by age group, by nowcast horizon, and by date of postive test, and by report date.
+In this section we evaluate and compare the performance of each nowcasting method using proper scoring rules [@scoringutils] on both the natural and the log scale. This corresponds to evaluating absolute and relative error. Unlike our [real-time evaluation of our models](https://epiforecasts.io/eval-germany-sp-nowcasting/real-time/) here we evaluate performance using 7 day incidence (as this is the target of interest for the [German nowcasting hub](https://covid19nowcasthub.de)) across the complete 28 days of the nowcast and for all locations and age groups available. We explore overall scores as well as scores stratified by age group, by nowcast horizon, and by date of postive test, by report date, and by location.
 
 ## Overall nowcast model scores
 
-```{r load-overall-scores}
+```{r calc-overall-scores}
 scores <- score_nowcast(hub_nowcasts, complete_seven_day_hosp)
+```
+
+```{r plot-overall-scores, fig.height = 8, fig.width = 8}
+plot_scores(
+  scores, y = interval_score, x = model, col = model,
+  fill = model, group = model
+) +
+  facet_wrap(vars(scale), scales = "free_x") +
+  labs(x = "Model") +
+  theme(legend.position = "none") +
+  coord_flip()
 ```
 
 ### Natural scale scores (absolute)
@@ -144,7 +156,7 @@ fancy_datatable(scores[scale == "log"][, scale := NULL])
 
 ## Nowcast model scores by horizon
 
-```{r load-horizon-scores}
+```{r calc-horizon-scores}
 horizon_scores <- score_nowcast(
   hub_nowcasts, complete_seven_day_hosp, by = c("horizon", "model")
 )
@@ -173,7 +185,7 @@ fancy_datatable(horizon_scores[scale == "log"][, scale := NULL])
 
 ## Nowcast model scores by age group
 
-```{r load-age-group-scores}
+```{r calc-age-group-scores}
 age_group_scores <- score_nowcast(
   hub_nowcasts, complete_seven_day_hosp, by = c("age_group", "model")
 )
@@ -202,7 +214,7 @@ fancy_datatable(age_group_scores[scale == "log"][, scale := NULL])
 
 ## Nowcast model scores by date of positive test
 
-```{r load-ref-date-scores}
+```{r calc-ref-date-scores}
 reference_date_scores <- score_nowcast(
   hub_nowcasts, complete_seven_day_hosp, by = c("reference_date", "model")
 )
@@ -231,8 +243,8 @@ fancy_datatable(reference_date_scores[scale == "log"][, scale := NULL])
 
 ## Nowcast model scores by report date
 
-```{r load-rep-date-scores}
-report_date_scores <- age_group_scores <- score_nowcast(
+```{r calc-rep-date-scores}
+report_date_scores <- score_nowcast(
   hub_nowcasts, complete_seven_day_hosp, by = c("nowcast_date", "model")
 )
 ```
@@ -262,14 +274,13 @@ fancy_datatable(report_date_scores[scale == "log"][, scale := NULL])
 
 ## Nowcast model scores by location
 
-```{r load-location-scores}
+```{r calc-location-scores}
 location_scores <- score_nowcast(
   hub_nowcasts, complete_seven_day_hosp, by = c("location", "model")
 )
 ```
 
-
-```{r plot-location-scores, fig.height = 8, fig.width = 8}
+```{r plot-location-scores, fig.height = 8, fig.width = 16}
 plot_scores(
   location_scores, y = interval_score, x = location, col = model,
   fill = model, group = model
