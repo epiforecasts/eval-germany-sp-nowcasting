@@ -83,6 +83,16 @@ download_forecast <- function(repo, path, branch, ...) {
   return(forecast$result[])
 }
 
+extract_forecast_models <- function(paths) {
+  paths <- paths[,
+      path := purrr::map_chr(
+          path, ~ strsplit(gsub(".csv", "", .), "/")[[1]][2]
+        )
+    ]
+  data.table::setnames(paths, "path", "model")
+  return(paths[])
+}
+
 # Get hub forecasts for a set of models and dates
 get_hub_forecasts <- function(repo, branch = "main", folder = "data-processed",
                               models, dates, path_to_model = TRUE, ...) {
@@ -99,13 +109,7 @@ get_hub_forecasts <- function(repo, branch = "main", folder = "data-processed",
   )
 
   if (path_to_model) {
-    forecasts <- forecasts[,
-      model := purrr::map_chr(
-          path, ~ strsplit(gsub(".csv", "", .), "/")[[1]][2]
-        )
-    ]
-    data.table::setcolorder(forecasts, "model")
-    forecasts <- forecasts[, path := NULL]
+    forecasts <- extract_forecast_models(forecasts)
   }
   return(forecasts[])
 }
