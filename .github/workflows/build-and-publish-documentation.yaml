@@ -34,6 +34,11 @@ jobs:
           rmarkdown::render("docs/real-time/index.Rmd")
         shell: Rscript {0}
 
+      - name: Render method evaluation report
+        run: |
+          rmarkdown::render("docs/real-time-method-comparison/index.Rmd")
+        shell: Rscript {0}
+ 
       - name: Render paper
         run: |
           rmarkdown::render("writeup/paper.Rmd", output_dir = "docs")
