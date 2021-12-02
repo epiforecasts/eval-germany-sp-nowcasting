@@ -281,7 +281,7 @@ tar_target(complete_7day_hospitalisations, {
 tar_file(
   epinowcast_model,
   compile_model(),
-  deployment = "main",
+  deployment = "main"
 )
 #> Establish _targets.R and _targets_r/targets/epinowcast_model.R.
 ```
