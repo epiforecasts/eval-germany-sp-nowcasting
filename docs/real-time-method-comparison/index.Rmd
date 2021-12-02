@@ -40,7 +40,7 @@ In this real time evaluation report we provide preliminary visualisations, evalu
 
 We first visualise current nowcasts across methods and age groups at the national level as well as overall at the subnational level. We also plot nowcasts at the date of estimation across sequential nowcasts allowing us to summarise the performance of multiple nowcasts on a single plot, again for age groups at the national level and overall at the subnational level. 
 
-To quantify comparative performance we make use of proper scoring rules [@scoringutils] on both the natural and log scales (corresponding to absolute and relative performance) aggregating scores first across all targets and then stratifying in turn by age group, nowcast horizon, date of postive test, date of report, and location. See Bosse et al. [@scoringutils] for information on how to interpret these scores. Unlike our [real-time evaluation of our models](https://epiforecasts.io/eval-germany-sp-nowcasting/real-time/) here we evaluate performance using 7 day incidence (as this is the target of interest for the [German nowcasting hub](https://covid19nowcasthub.de)) across the complete 28 days of the nowcast and for all locations and age groups available.
+To quantify comparative performance we make use of proper scoring rules [@scoringutils] on both the natural and log scales (corresponding to absolute and relative performance)  to observed data reported at least 28 days ago aggregating scores first across all targets and then stratifying in turn by age group, nowcast horizon, date of postive test, date of report, and location. See Bosse et al. [@scoringutils] for information on how to interpret these scores. Unlike our [real-time evaluation of our models](https://epiforecasts.io/eval-germany-sp-nowcasting/real-time/) here we evaluate performance using 7 day incidence (as this is the target of interest for the [German nowcasting hub](https://covid19nowcasthub.de)) across the complete 28 days of the nowcast and for all locations and age groups available.
 
 The code for this report can be found [here](https://github.com/epiforecasts/eval-germany-sp-nowcasting/blob/main/docs/real-time-method-comparison/index.Rmd) and the data that it uses can be found [here](https://github.com/KITmetricslab/hospitalization-nowcast-hub/tree/main/data-processed) (though you may find it easier to access using the [data accessing code](https://github.com/epiforecasts/eval-germany-sp-nowcasting/blob/main/R/get-hub-forecasts.R) that supports this report.
 
@@ -123,7 +123,7 @@ plot_nowcast(
 
 # Evaluation
 
-In this section we evaluate and compare the performance of each nowcasting method using proper scoring rules [@scoringutils] on both the natural and the log scale. This corresponds to evaluating absolute and relative error. Unlike our [real-time evaluation of our models](https://epiforecasts.io/eval-germany-sp-nowcasting/real-time/) here we evaluate performance using 7 day incidence (as this is the target of interest for the [German nowcasting hub](https://covid19nowcasthub.de)) across the complete 28 days of the nowcast and for all locations and age groups available. We explore overall scores as well as scores stratified by age group, by nowcast horizon, and by date of postive test, by report date, and by location.
+In this section we evaluate and compare the performance of each nowcasting method using proper scoring rules [@scoringutils] on both the natural and the log scale to observed data reported at least 28 days ago. This corresponds to evaluating absolute and relative error. Unlike our [real-time evaluation of our models](https://epiforecasts.io/eval-germany-sp-nowcasting/real-time/) here we evaluate performance using 7 day incidence (as this is the target of interest for the [German nowcasting hub](https://covid19nowcasthub.de)) across the complete 28 days of the nowcast and for all locations and age groups available. We explore overall scores as well as scores stratified by age group, by nowcast horizon, and by date of postive test, by report date, and by location. 
 
 ## Overall nowcast model scores
 
@@ -220,7 +220,7 @@ reference_date_scores <- score_nowcast(
 )
 ```
 
-```{r plot-ref-date, fig.height = 8, fig.width = 8}
+```{r plot-ref-date, fig.height = 4, fig.width = 8}
 plot_scores(
   reference_date_scores, y = interval_score, x = reference_date, col = model,
   fill = model, group = model
@@ -250,7 +250,7 @@ report_date_scores <- score_nowcast(
 ```
 
 
-```{r plot-rep-date, fig.height = 8, fig.width = 8}
+```{r plot-rep-date, fig.height = 4, fig.width = 8}
 plot_scores(
   report_date_scores, y = interval_score, x = nowcast_date, col = model,
   fill = model, group = model
@@ -258,7 +258,6 @@ plot_scores(
   facet_wrap(vars(scale), scales = "free_y") +
   labs(x = "Report date")
 ```
-
 
 ### Natural scale scores (absolute)
 
@@ -280,13 +279,14 @@ location_scores <- score_nowcast(
 )
 ```
 
-```{r plot-location-scores, fig.height = 8, fig.width = 16}
+```{r plot-location-scores, fig.height = 8, fig.width = 8}
 plot_scores(
   location_scores, y = interval_score, x = location, col = model,
   fill = model, group = model
 ) +
-  facet_wrap(vars(scale), scales = "free_y") +
-  labs(x = "Location")
+  facet_wrap(vars(scale), scales = "free_x") +
+  labs(x = "Location") +
+  coord_flip()
 ```
 
 ### Natural scale scores (absolute)

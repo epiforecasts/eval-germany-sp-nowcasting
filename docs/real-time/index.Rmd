@@ -36,7 +36,7 @@ In this real time evaluation report we provide preliminary visualisations, evalu
 
 We first visualise current nowcasts across models and age groups at the national level as well as overall at the subnational level. We also plot nowcasts at the date of estimation across sequential nowcasts allowing us to summarise the performance of multiple nowcasts on a single plot, again for age groups at the national level and overall at the subnational level. 
 
-To quantify comparative performance we make use of proper scoring rules [@scoringutils] on both the natural and log scales (corresponding to absolute and relative performance) aggregating scores first across all targets and then stratifying in turn by age group, nowcast horizon, date of postive test, and date of report. See Bosse et al. [@scoringutils] for information on how to interpret these scores.
+To quantify comparative performance we make use of proper scoring rules [@scoringutils] on both the natural and log scales (corresponding to absolute and relative performance) to observed data reported at least 28 days ago aggregating scores first across all targets and then stratifying in turn by age group, nowcast horizon, date of postive test, and date of report. See Bosse et al. [@scoringutils] for information on how to interpret these scores.
 
 To explore other aspects of our models performance we highlight models that have problematic fitting diagnostics and summarise the estimation time for each model. To learn more about the model fitting diagnostics we use here see [@stan] and [@cmdstanr].
 
@@ -116,7 +116,7 @@ plot_nowcast(
 
 # Evaluation
 
-In this section we evaluate and compare the performance of each nowcasting model using proper scoring rules [@scoringutils] on both the natural and the log scale. This corresponds to evaluating absolute and relative error. Only nowcasts from the national level are considered as sub-national nowcasts are not available for all models. For evaluation we consider only forecast targets for which the data is minimally informative which we defined as the 7 days prior to the date of the nowcast. We explore overall scores as well as scores stratified by age group, by nowcast horizon, and by date of postive test, and by report date.
+In this section we evaluate and compare the performance of each nowcasting model using proper scoring rules [@scoringutils] on both the natural and the log scale to observed data reported at least 28 days ago. This corresponds to evaluating absolute and relative error. Only nowcasts from the national level are considered as sub-national nowcasts are not available for all models. For evaluation we consider only forecast targets for which the data is minimally informative which we defined as the 7 days prior to the date of the nowcast. We explore overall scores as well as scores stratified by age group, by nowcast horizon, and by date of postive test, and by report date.
 
 ## Overall nowcast model scores
 
