@@ -1,4 +1,6 @@
 on:
+  schedule:
+    - cron:  '6 12 * * *'
   push:
     branches:
       - main
