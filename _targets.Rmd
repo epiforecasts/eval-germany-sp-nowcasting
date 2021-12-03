@@ -189,7 +189,7 @@ latest_7day_hospitalisations[reference_date < (max(reference_date) - 28)]
 tar_file(
   epinowcast_model,
   compile_model(),
-  deployment = "main",
+  deployment = "main"
 )
 ```
 * Define stan settings shared across models and used for fitting

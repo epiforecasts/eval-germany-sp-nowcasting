@@ -1,3 +1,14 @@
+# 2021-12-3
+
+- Fix plotting in reports so that more than 7 models/methods can be shown.
+- Adds caching to documentation rendering to prevent all forecasts being downloaded each time documentation is built.
+
+# 2021-12-01
+
+- Added tools to access nowcasts submitted to the Germany nowcasting hub
+- Added tools to allow the evaluation approach used in this project to be applied to the nowcasts from the Germany nowcasting hub.
+- Added an overall score summary plot
+
 # 2021-11-24
 
 - Added README's for the data and bash script folders. 

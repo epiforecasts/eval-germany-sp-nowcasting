@@ -1,8 +1,10 @@
 plot_nowcast <- function(summarised_nowcast, latest_obs,
                                      max_delay = Inf, ...) {
    summarised_nowcast <- summarised_nowcast[
-        reference_date >= (max(as.Date(nowcast_date)) - max_delay)][,
-        c("holiday") := NULL]
+        reference_date >= (max(as.Date(nowcast_date)) - max_delay)
+   ]
+
+   suppressWarnings(summarised_nowcast[, holiday := NULL])
 
    plot <- epinowcast::enw_plot_nowcast_quantiles(
       summarised_nowcast,
@@ -19,8 +21,8 @@ plot_scores <- function(scores, ...) {
     ggplot2::aes(...) +
     ggplot2::geom_point(size = 1.2) +
     ggplot2::geom_line(size = 1.1, alpha = 0.4) +
-    ggplot2::scale_fill_brewer(palette = "Dark2") +
-    ggplot2::scale_color_brewer(palette = "Dark2") +
+    ggplot2::scale_fill_brewer(palette = "Paired") +
+    ggplot2::scale_color_brewer(palette = "Paired") +
     labs(y = "Weighted interval score") +
     theme_bw() +
     theme(legend.position = "bottom") +
@@ -44,7 +46,7 @@ plot_relative_scores <- function(score, baseline) {
     geom_line(size = 1.1, alpha = 0.6) +
     geom_point(size = 1.2) +
     facet_wrap(vars(age_group)) +
-    scale_color_brewer(palette = "Dark2") +
+    scale_color_brewer(palette = "Paired") +
     scale_y_log10(labels = scales::percent)
 
   plot <- enw_plot_theme(plot) +

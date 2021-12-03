@@ -1,4 +1,6 @@
 on:
+  schedule:
+    - cron:  '6 12 * * *'
   push:
     branches:
       - main
@@ -24,6 +26,12 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v1
       - uses: r-lib/actions/setup-tinytex@v1
 
+      - name: Cache across documentation builds
+        uses: actions/cache@v2
+        with:
+          path: '**/.cache'
+          key: caches
+
       - name: Render project summary
         run: |
           rmarkdown::render("docs/summary/index.Rmd", output_dir = "docs")
@@ -34,6 +42,11 @@ jobs:
           rmarkdown::render("docs/real-time/index.Rmd")
         shell: Rscript {0}
 
+      - name: Render method evaluation report
+        run: |
+          rmarkdown::render("docs/real-time-method-comparison/index.Rmd")
+        shell: Rscript {0}
+ 
       - name: Render paper
         run: |
           rmarkdown::render("writeup/paper.Rmd", output_dir = "docs")
