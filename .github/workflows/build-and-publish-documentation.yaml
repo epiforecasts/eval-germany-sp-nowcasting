@@ -30,6 +30,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: '**/.cache'
+          key: caches
 
       - name: Render project summary
         run: |
