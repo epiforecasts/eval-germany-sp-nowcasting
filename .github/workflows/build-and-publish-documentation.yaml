@@ -31,7 +31,7 @@ jobs:
       - name: Cache across documentation builds
         uses: action/cache@v2
         with:
-          path: **/.cache
+          path: '**/.cache'
 
       - name: Render project summary
         run: |
