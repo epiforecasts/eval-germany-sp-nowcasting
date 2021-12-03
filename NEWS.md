@@ -1,3 +1,8 @@
+# 2021-12-3
+
+- Fix plotting in reports so that more than 7 models/methods can be shown.
+- Adds caching to documentation rendering to prevent all forecasts being downloaded each time documentation is built.
+
 # 2021-12-01
 
 - Added tools to access nowcasts submitted to the Germany nowcasting hub

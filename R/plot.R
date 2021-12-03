@@ -21,8 +21,8 @@ plot_scores <- function(scores, ...) {
     ggplot2::aes(...) +
     ggplot2::geom_point(size = 1.2) +
     ggplot2::geom_line(size = 1.1, alpha = 0.4) +
-    ggplot2::scale_fill_brewer(palette = "Dark2") +
-    ggplot2::scale_color_brewer(palette = "Dark2") +
+    ggplot2::scale_fill_brewer(palette = "Paired") +
+    ggplot2::scale_color_brewer(palette = "Paired") +
     labs(y = "Weighted interval score") +
     theme_bw() +
     theme(legend.position = "bottom") +
@@ -46,7 +46,7 @@ plot_relative_scores <- function(score, baseline) {
     geom_line(size = 1.1, alpha = 0.6) +
     geom_point(size = 1.2) +
     facet_wrap(vars(age_group)) +
-    scale_color_brewer(palette = "Dark2") +
+    scale_color_brewer(palette = "Paired") +
     scale_y_log10(labels = scales::percent)
 
   plot <- enw_plot_theme(plot) +
