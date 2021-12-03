@@ -24,6 +24,11 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v1
       - uses: r-lib/actions/setup-tinytex@v1
 
+      - name: Cache across documentation builds
+        uses: action/cache@v2
+        with:
+          path: **/.cache
+
       - name: Render project summary
         run: |
           rmarkdown::render("docs/summary/index.Rmd", output_dir = "docs")
