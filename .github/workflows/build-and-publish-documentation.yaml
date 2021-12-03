@@ -1,5 +1,3 @@
-name: Build and publish documentation
-
 on:
   schedule:
     - cron:  '6 12 * * *'
