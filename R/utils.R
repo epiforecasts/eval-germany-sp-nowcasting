@@ -41,7 +41,9 @@ format_from_csv <- function(dt) {
                 "Reference: Age, Report: Day of week",
                 "Reference: Age and week, Report: Day of week",
                 "Reference: Age and week by age, Report: Day of week",
-                "Independent by age, Reference: Week, Report: Day of week")
+                "Independent by age, Reference: Week, Report: Day of week",
+                "Independent by age, Reference: Week and day of week, Report: Day of week" # nolint
+                )
     )
     ]
   return(dt[])

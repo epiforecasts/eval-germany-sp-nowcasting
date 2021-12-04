@@ -17,7 +17,7 @@ output:
 ---
 
 ```{r setup, echo = FALSE, cache = FALSE, include = FALSE}
-knitr::opts_chunk$set(echo = FALSE, message = FALSE, dpi = 330, warning = FALSE)
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, dpi = 300, warning = FALSE)
 library(knitr)
 library(here)
 library(data.table)
