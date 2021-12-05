@@ -1,7 +1,7 @@
 tar_target(
   independent_submission_nowcast,
   rbind(
-    independent_nowcast[nowcast_date == nowcast_dates],
+    independent_ref_dow_nowcast[nowcast_date == nowcast_dates],
     overall_only_nowcast[nowcast_date == nowcast_dates]
   ) |> 
    adjust_posteriors(
@@ -14,5 +14,6 @@ tar_target(
     rbindlist() |>
     format_for_submission(),
   map(nowcast_dates),
-  iteration = "list"
+  iteration = "list",
+  cue = tar_cue(mode = "never")
 )
