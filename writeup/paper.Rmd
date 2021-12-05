@@ -131,7 +131,7 @@ Expected notifications by time of occurrence ($t$) and reporting delay can now b
 
 **TODO: Detail specific model formulations**
 
-We explore two primary models and submit nowcasts from these models to the nowcasting hub. The first of these is fit independently to each data set by age and location. Hospitalisations are modelled using a random walk on the log scale. Reporting delays are then modelled parametrically using a lognormal distribution with the log mean and log standard deviation each modelled using a weekly random walk with a pooled standard deviation. Report date effects are modelling using a random effect for day of the week with public holidays assumed to be reported like Sundays. The second model is fit jointly to age groups but is otherwise structured in the same way as the unpooled model except that report day of the week effects and the observation overdispersion are assumed to be joint across age groups and age groups are assumed to have a random intercept for both the log mean and the log standard deviation of the reporting delay distribution. We also consider a series of pooled models which sequentially include the features of our most complex model. These are: age groups are fit jointly, day of the week reporting effects, a random intercept for each age group, and a random walk by positive test week shared across age groups.
+We explore two primary models and submit nowcasts from these models to the nowcasting hub. The first of these is fit independently to each data set by age and location. Hospitalisations are modelled using a random walk on the log scale. Reporting delays are then modelled parametrically using a lognormal distribution with the log mean and log standard deviation each modelled using a weekly random walk with a pooled standard deviation and a random effect for the day of the week (introduced on the 6th of December 2021) with public holidays assumed to be reported like Sundays. Report date effects are again modelled using a random effect for day of the week with public holidays assumed to be reported like Sundays. The second model is fit jointly to age groups but is otherwise structured in the same way as the unpooled model except that report day of the week effects and the observation overdispersion are assumed to be joint across age groups, age groups are assumed to have a random intercept for both the log mean and the log standard deviation of the reporting delay distribution, and there is no random effect for reference day of the week. We also consider a series of pooled models which sequentially include the features of our most complex model. These are: age groups are fit jointly, day of the week reporting effects, a random intercept for each age group, and a random walk by positive test week shared across age groups.
 
 Model | Formula
 Reference: Fixed, Report: Fixed | 
@@ -140,6 +140,7 @@ Reference: Age, Report: Day of week |
 Reference: Age and week, Report: Day of week |
 Reference: Age and week by age, Report: Day of week | 
 Independent by age, Reference: Week, Report: Day of week |
+Independent by age, Reference: Week and day of week, Report: Day of week |
 
 ## Implementation
 
