@@ -6,7 +6,8 @@ tar_target(combined_nowcasts, {
     week_nowcast,
     age_week_nowcast,
     independent_nowcast,
-    overall_only_nowcast
+    overall_only_nowcast,
+    independent_ref_dow_nowcast
   ))[,
      model := factor(
       model,
@@ -15,7 +16,8 @@ tar_target(combined_nowcasts, {
                  "Reference: Age, Report: Day of week",
                  "Reference: Age and week, Report: Day of week",
                  "Reference: Age and week by age, Report: Day of week",
-                 "Independent by age, Reference: Week, Report: Day of week")
+                 "Independent by age, Reference: Week, Report: Day of week",
+                 "Independent by age, Reference: Week and day of week, Report: Day of week")
      )
     ][, id := 1:.N]
 })

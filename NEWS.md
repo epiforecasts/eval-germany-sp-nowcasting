@@ -1,3 +1,10 @@
+# 2021-12-06
+
+- Added a new model that is the same as the baseline independent model but that also includes a day of the week adjustment for the date of positive test. From today this model is used as the hub submission model instead of the original independent model. This change is based on backtesting to the 1st of October which showed an approximate 10% increase in both absolute and relative performance for the 0 to -7 horizons across all groups excluding the 5-14 year olds where performance was slightly degraded. This change will be monitored over the next few weeks to make sure the performance improvement is stable. The only downside is a roughly 100% increase in model estimation times but this is still well within the available compute.
+- This change impacts both national age stratified nowcasts and state level nowcasts.
+- Updated documentation to reflect the change to the submission model.
+- Updated the `targets` tracking to never rebuild nowcast submissions if already present to prevent overwriting past nowcast submissions when models are changed.
+
 # 2021-12-3
 
 - Fix plotting in reports so that more than 7 models/methods can be shown.

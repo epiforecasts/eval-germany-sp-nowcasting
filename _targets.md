@@ -491,8 +491,35 @@ tar_target(
 #> Establish _targets.R and _targets_r/targets/independent_nowcast.R.
 ```
 
+  - Independent age group model with a weekly random walk and a day of
+    the week reference and reporting model.
+
+<!-- end list -->
+
+``` r
+tar_target(
+  independent_ref_dow_nowcast,
+  nowcast(
+    obs = hospitalisations_by_date_report[age_group == age_groups],
+    tar_loc = locations,
+    model = independent_ref_dow_epinowcast,
+    priors = priors,
+    max_delay = max_report_delay,
+    settings = epinowcast_settings
+  ),
+  cross(hospitalisations_by_date_report, locations, age_groups)
+)
+#> Establish _targets.R and _targets_r/targets/independent_ref_dow_nowcast.R.
+```
+
   - Model for locations without age groups. As for the previous model
-    this has a weekly random walk and a day of the week reporting model.
+    this has a weekly random walk and a day of the week reporting and
+    reference model. This was updated on the 6th of December 2021 from
+    the independent model without a day of the week effect for reference
+    date (to enable this note that we have overridden the default `cue`
+    settings here so that once a model has been fit it is never run
+    again for that combination of locations and dates regardless of
+    upstream changes).
 
 <!-- end list -->
 
@@ -502,12 +529,13 @@ tar_target(
   nowcast(
     obs = hospitalisations_by_date_report[age_group == "00+"],
     tar_loc = other_locations,
-    model = independent_epinowcast,
+    model = independent_ref_dow_epinowcast,
     priors = priors,
     max_delay = max_report_delay,
     settings = epinowcast_settings
   ),
-  cross(hospitalisations_by_date_report, other_locations)
+  cross(hospitalisations_by_date_report, other_locations),
+  cue = tar_cue(mode = "never")
 )
 #> Establish _targets.R and _targets_r/targets/overall_only_nowcast.R.
 ```
@@ -527,7 +555,8 @@ tar_target(combined_nowcasts, {
     week_nowcast,
     age_week_nowcast,
     independent_nowcast,
-    overall_only_nowcast
+    overall_only_nowcast,
+    independent_ref_dow_nowcast
   ))[,
      model := factor(
       model,
@@ -536,7 +565,8 @@ tar_target(combined_nowcasts, {
                  "Reference: Age, Report: Day of week",
                  "Reference: Age and week, Report: Day of week",
                  "Reference: Age and week by age, Report: Day of week",
-                 "Independent by age, Reference: Week, Report: Day of week")
+                 "Independent by age, Reference: Week, Report: Day of week",
+                 "Independent by age, Reference: Week and day of week, Report: Day of week")
      )
     ][, id := 1:.N]
 })
@@ -668,7 +698,9 @@ tar_file(
   - Define and format the independent nowcast for submission. As a
     temporary measure here we adjust quantiles that are more than 25% of
     the median when there is evidence of a fitting issue (based on
-    divergent transistions and R hat values).
+    divergent transistions and R hat values). On the 6th of December the
+    submission model was updated to include a reference day of the week
+    effect.
 
 <!-- end list -->
 
@@ -676,7 +708,7 @@ tar_file(
 tar_target(
   independent_submission_nowcast,
   rbind(
-    independent_nowcast[nowcast_date == nowcast_dates],
+    independent_ref_dow_nowcast[nowcast_date == nowcast_dates],
     overall_only_nowcast[nowcast_date == nowcast_dates]
   ) |> 
    adjust_posteriors(
@@ -689,7 +721,8 @@ tar_target(
     rbindlist() |>
     format_for_submission(),
   map(nowcast_dates),
-  iteration = "list"
+  iteration = "list",
+  cue = tar_cue(mode = "never")
 )
 #> Establish _targets.R and _targets_r/targets/independent_submission_nowcast.R.
 ```

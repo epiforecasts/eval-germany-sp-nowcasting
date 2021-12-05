@@ -26,8 +26,8 @@ plot_scores <- function(scores, ...) {
     labs(y = "Weighted interval score") +
     theme_bw() +
     theme(legend.position = "bottom") +
-    guides(fill = guide_legend(title = "Model", nrow = 3),
-           col = guide_legend(title = "Model", nrow = 3))
+    guides(fill = guide_legend(title = "Model", nrow = 4),
+           col = guide_legend(title = "Model", nrow = 4))
 }
 
 plot_relative_scores <- function(score, baseline) {

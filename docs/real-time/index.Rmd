@@ -17,7 +17,7 @@ output:
 ---
 
 ```{r setup, echo = FALSE, cache = FALSE, include = FALSE}
-knitr::opts_chunk$set(echo = FALSE, message = FALSE, dpi = 330, warning = FALSE)
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, dpi = 300, warning = FALSE)
 library(knitr)
 library(here)
 library(data.table)
@@ -62,7 +62,7 @@ latest_seven_day_hosp <- load_obs(here("data", "observations", "seven_day.csv"))
 
 ### National
 
-```{r latest-national-nowcast, fig.width = 24, fig.height = 16}
+```{r latest-national-nowcast, fig.width = 32, fig.height = 16}
 plot_nowcast(
   daily_nowcasts[location == "DE"][
                  nowcast_date == max(nowcast_date)][,
@@ -92,7 +92,7 @@ Nowcast estimates at the date of estimation for sequential nowcasts by age group
 
 ### National
 
-```{r horizon-national-nowcast, fig.width = 24, fig.height = 16}
+```{r horizon-national-nowcast, fig.width = 30, fig.height = 16}
 plot_nowcast(
   daily_nowcasts[location == "DE"][
                  horizon == 0][,
