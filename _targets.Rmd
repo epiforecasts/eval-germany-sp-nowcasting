@@ -498,7 +498,7 @@ tar_file(
 )
 ```
 
-* Define and format the independent nowcast for submission. As a temporary measure here we adjust quantiles that are more than 25% of the median when there is evidence of a fitting issue (based on divergent transistions and R hat values).
+* Define and format the independent nowcast for submission. As a temporary measure here we adjust quantiles that are more than 25% of the median when there is evidence of a fitting issue (based on divergent transistions and R hat values). On the 6th of December the submission model was updated to include a reference day of the week effect.
 
 ```{targets independent_submission_nowcast}
 tar_target(

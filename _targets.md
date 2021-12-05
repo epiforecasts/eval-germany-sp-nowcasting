@@ -516,7 +516,10 @@ tar_target(
     this has a weekly random walk and a day of the week reporting and
     reference model. This was updated on the 6th of December 2021 from
     the independent model without a day of the week effect for reference
-    date.
+    date (to enable this note that we have overridden the default `cue`
+    settings here so that once a model has been fit it is never run
+    again for that combination of locations and dates regardless of
+    upstream changes).
 
 <!-- end list -->
 
@@ -695,7 +698,9 @@ tar_file(
   - Define and format the independent nowcast for submission. As a
     temporary measure here we adjust quantiles that are more than 25% of
     the median when there is evidence of a fitting issue (based on
-    divergent transistions and R hat values).
+    divergent transistions and R hat values). On the 6th of December the
+    submission model was updated to include a reference day of the week
+    effect.
 
 <!-- end list -->
 
