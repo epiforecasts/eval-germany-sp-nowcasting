@@ -364,7 +364,7 @@ tar_target(
 )
 ```
 
-* Model for locations without age groups. As for the previous model this has a weekly random walk and a day of the week reporting and reference model. This was updated on the 6th of December 2021 from the independent model without a day of the week effect for reference date.
+* Model for locations without age groups. As for the previous model this has a weekly random walk and a day of the week reporting and reference model. This was updated on the 6th of December 2021 from the independent model without a day of the week effect for reference date (to enable this note that we have overridden the default `cue` settings here so that once a model has been fit it is never run again for that combination of locations and dates regardless of upstream changes).
 
 ```{targets overall_only_nowcast}
 tar_target(

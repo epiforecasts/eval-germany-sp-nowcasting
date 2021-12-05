@@ -492,7 +492,7 @@ tar_target(
 ```
 
   - Independent age group model with a weekly random walk and a day of
-    the week reporting model.
+    the week reference and reporting model.
 
 <!-- end list -->
 
@@ -513,7 +513,10 @@ tar_target(
 ```
 
   - Model for locations without age groups. As for the previous model
-    this has a weekly random walk and a day of the week reporting model.
+    this has a weekly random walk and a day of the week reporting and
+    reference model. This was updated on the 6th of December 2021 from
+    the independent model without a day of the week effect for reference
+    date.
 
 <!-- end list -->
 
@@ -523,12 +526,13 @@ tar_target(
   nowcast(
     obs = hospitalisations_by_date_report[age_group == "00+"],
     tar_loc = other_locations,
-    model = independent_epinowcast,
+    model = independent_ref_dow_epinowcast,
     priors = priors,
     max_delay = max_report_delay,
     settings = epinowcast_settings
   ),
-  cross(hospitalisations_by_date_report, other_locations)
+  cross(hospitalisations_by_date_report, other_locations),
+  cue = tar_cue(mode = "never")
 )
 #> Establish _targets.R and _targets_r/targets/overall_only_nowcast.R.
 ```
@@ -699,7 +703,7 @@ tar_file(
 tar_target(
   independent_submission_nowcast,
   rbind(
-    independent_nowcast[nowcast_date == nowcast_dates],
+    independent_ref_dow_nowcast[nowcast_date == nowcast_dates],
     overall_only_nowcast[nowcast_date == nowcast_dates]
   ) |> 
    adjust_posteriors(
@@ -712,7 +716,8 @@ tar_target(
     rbindlist() |>
     format_for_submission(),
   map(nowcast_dates),
-  iteration = "list"
+  iteration = "list",
+  cue = tar_cue(mode = "never")
 )
 #> Establish _targets.R and _targets_r/targets/independent_submission_nowcast.R.
 ```
