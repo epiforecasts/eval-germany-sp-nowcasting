@@ -8,7 +8,7 @@ CSV=data/COVID-19_hospitalizations_preprocessed.csv
 if [ ! -f $CSV ] 
   then
   echo No cached data found - updating estimates
-  #bin/update-targets-and-publish.sh
+  bash bin/update-targets-and-publish.sh
   rm $CSV
   else
   echo Cache found - pipeline running - no action taken
