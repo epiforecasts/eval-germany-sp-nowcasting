@@ -1,95 +1,96 @@
 model,nowcast_date,max_rhat,divergent_transitions,per_divergent_transitions,max_treedepth,no_at_max_treedepth,per_at_max_treedepth,run_time,id
-"Reference: Age and week by age, Report: Day of week",2021-10-01,1.02,250,0.125,8,1750,0.875,3973.7,345
-"Reference: Age and week by age, Report: Day of week",2021-10-07,2.23,1608,0.804,10,7,0.0035,2844,351
-"Reference: Age and week by age, Report: Day of week",2021-10-14,1.04,923,0.4615,10,222,0.111,5645.2,358
-"Reference: Age and week by age, Report: Day of week",2021-10-17,1.01,321,0.1605,8,1679,0.8395,3782,361
-"Reference: Age and week by age, Report: Day of week",2021-10-20,1.04,1519,0.7595,9,242,0.121,3033.6,364
-"Reference: Age and week by age, Report: Day of week",2021-10-21,2.32,1635,0.8175,10,5,0.0025,2371.8,365
-"Reference: Age and week by age, Report: Day of week",2021-10-28,1.02,253,0.1265,9,1,5e-04,3606.4,372
-"Reference: Age and week by age, Report: Day of week",2021-11-04,1.03,668,0.334,8,1336,0.668,2875.3,379
-"Reference: Age and week by age, Report: Day of week",2021-12-02,1.01,590,0.295,9,1408,0.704,4647.3,407
-"Reference: Age and week by age, Report: Day of week",2021-12-16,1.02,1080,0.54,9,702,0.351,5586.6,421
-"Reference: Age and week by age, Report: Day of week",2021-12-22,2.4,1102,0.551,9,190,0.095,3744.8,427
-"Reference: Age and week by age, Report: Day of week",2021-12-23,1.02,874,0.437,9,553,0.2765,5516.9,428
-"Reference: Age and week by age, Report: Day of week",2021-12-24,1.02,426,0.213,9,1197,0.5985,4219.7,429
-"Independent by age, Reference: Week, Report: Day of week",2021-10-11,1.01,243,0.1215,7,1559,0.7795,132.1,503
-"Independent by age, Reference: Week, Report: Day of week",2021-10-15,1.02,418,0.209,7,421,0.2105,129.3,530
-"Independent by age, Reference: Week, Report: Day of week",2021-10-16,1.02,347,0.1735,7,819,0.4095,126.9,537
-"Independent by age, Reference: Week, Report: Day of week",2021-10-23,2.24,987,0.4935,10,49,0.0245,177.5,586
-"Independent by age, Reference: Week, Report: Day of week",2021-11-14,1.01,253,0.1265,7,1258,0.629,127.9,740
-"Independent by age, Reference: Week, Report: Day of week",2021-11-19,2.25,1321,0.6605,10,24,0.012,139,775
-"Independent by age, Reference: Week, Report: Day of week",2021-10-01,1.01,291,0.1455,7,1010,0.505,246.1,1037
-"Independent by age, Reference: Week, Report: Day of week",2021-10-01,1.02,1034,0.517,7,522,0.261,206.5,1039
-"Independent by age, Reference: Week, Report: Day of week",2021-10-02,1.01,203,0.1015,7,581,0.2905,209,1053
-"Independent by age, Reference: Week, Report: Day of week",2021-10-02,1.01,287,0.1435,7,147,0.0735,165.8,1055
-"Independent by age, Reference: Week, Report: Day of week",2021-10-03,2.25,1187,0.5935,6,819,0.4095,117.8,1071
-"Independent by age, Reference: Week, Report: Day of week",2021-10-05,2.25,865,0.4325,10,174,0.087,211.7,1103
-"Independent by age, Reference: Week, Report: Day of week",2021-10-13,1.01,375,0.1875,8,43,0.0215,124.5,1239
-"Independent by age, Reference: Week, Report: Day of week",2021-10-14,1.02,302,0.151,9,294,0.147,323.9,1255
-"Independent by age, Reference: Week, Report: Day of week",2021-10-15,2.24,1286,0.643,10,10,0.005,211.7,1263
-"Independent by age, Reference: Week, Report: Day of week",2021-10-15,1.02,466,0.233,8,807,0.4035,180.4,1271
-"Independent by age, Reference: Week, Report: Day of week",2021-10-16,1.01,287,0.1435,7,123,0.0615,101.9,1279
-"Independent by age, Reference: Week, Report: Day of week",2021-10-16,1.01,230,0.115,7,1449,0.7245,137.3,1287
-"Independent by age, Reference: Week, Report: Day of week",2021-10-17,1.09,1748,0.874,10,151,0.0755,254.4,1303
-"Independent by age, Reference: Week, Report: Day of week",2021-10-18,1.04,1578,0.789,8,352,0.176,123.4,1319
-"Independent by age, Reference: Week, Report: Day of week",2021-10-19,2.22,1417,0.7085,9,19,0.0095,146,1335
-"Independent by age, Reference: Week, Report: Day of week",2021-10-20,1.01,590,0.295,7,1308,0.654,109,1351
-"Independent by age, Reference: Week, Report: Day of week",2021-10-21,1.01,319,0.1595,8,612,0.306,169.8,1367
-"Independent by age, Reference: Week, Report: Day of week",2021-10-22,1.01,385,0.1925,8,601,0.3005,173.9,1383
-"Independent by age, Reference: Week, Report: Day of week",2021-10-23,1.01,1104,0.552,8,358,0.179,154.1,1399
-"Independent by age, Reference: Week, Report: Day of week",2021-10-24,1.01,788,0.394,7,1071,0.5355,127,1415
-"Independent by age, Reference: Week, Report: Day of week",2021-10-25,1.01,608,0.304,8,273,0.1365,140.3,1431
-"Independent by age, Reference: Week, Report: Day of week",2021-11-12,1.01,259,0.1295,8,4,0.002,113.7,1712
-"Independent by age, Reference: Week, Report: Day of week",2021-11-13,1.01,230,0.115,7,1723,0.8615,131.4,1728
-"Independent by age, Reference: Week, Report: Day of week",2021-11-25,1.01,228,0.114,8,65,0.0325,330.6,1919
-"Independent by age, Reference: Week, Report: Day of week",2021-11-26,1.01,464,0.232,7,616,0.308,356.7,1935
-"Independent by age, Reference: Week, Report: Day of week",2021-11-27,1.01,583,0.2915,7,662,0.331,294.4,1951
-"Independent by age, Reference: Week, Report: Day of week",2021-11-27,1.03,339,0.1695,7,348,0.174,170.5,1957
-"Independent by age, Reference: Week and day of week, Report: Day of week",2021-12-08,1.01,306,0.153,7,1693,0.8465,497.6,2133
-"Independent by age, Reference: Week and day of week, Report: Day of week",2021-12-09,1.01,204,0.102,7,1699,0.8495,415.9,2149
-"Independent by age, Reference: Week and day of week, Report: Day of week",2021-12-10,1.01,213,0.1065,7,1787,0.8935,423.7,2165
-"Independent by age, Reference: Week and day of week, Report: Day of week",2021-12-11,1.01,381,0.1905,8,723,0.3615,577.6,2181
-"Independent by age, Reference: Week and day of week, Report: Day of week",2021-12-12,1.01,383,0.1915,7,1603,0.8015,440.6,2197
-"Independent by age, Reference: Week and day of week, Report: Day of week",2021-12-13,2.23,965,0.4825,10,226,0.113,1111.8,2207
-"Independent by age, Reference: Week and day of week, Report: Day of week",2021-12-13,1.03,1165,0.5825,8,42,0.021,378.7,2213
-"Independent by age, Reference: Week and day of week, Report: Day of week",2021-12-14,1.01,373,0.1865,7,1558,0.779,481.7,2223
-"Independent by age, Reference: Week and day of week, Report: Day of week",2021-12-14,1.01,274,0.137,7,1721,0.8605,482.1,2229
-"Independent by age, Reference: Week and day of week, Report: Day of week",2021-12-17,1.07,721,0.3605,7,547,0.2735,1248.3,2271
-"Independent by age, Reference: Week and day of week, Report: Day of week",2021-12-18,1.02,270,0.135,9,5,0.0025,637.3,2287
-"Independent by age, Reference: Week and day of week, Report: Day of week",2021-12-20,2.28,386,0.193,10,707,0.3535,2917.9,2319
-"Independent by age, Reference: Week and day of week, Report: Day of week",2021-12-24,1.01,376,0.188,8,1348,0.674,772.3,2378
-"Independent by age, Reference: Week and day of week, Report: Day of week",2021-12-25,2.23,1284,0.642,9,46,0.023,374,2397
-"Independent by age, Reference: Week and day of week, Report: Day of week",2021-10-09,1.03,292,0.146,6,1708,0.854,334.5,2466
-"Independent by age, Reference: Week and day of week, Report: Day of week",2021-10-10,1.01,298,0.149,7,1702,0.851,448.5,2473
-"Independent by age, Reference: Week and day of week, Report: Day of week",2021-10-11,1.01,397,0.1985,7,1513,0.7565,387.8,2480
-"Independent by age, Reference: Week and day of week, Report: Day of week",2021-10-11,1.04,443,0.2215,8,3,0.0015,335.3,2481
-"Independent by age, Reference: Week and day of week, Report: Day of week",2021-10-12,1.01,324,0.162,7,16,0.008,278.1,2487
-"Independent by age, Reference: Week and day of week, Report: Day of week",2021-10-12,1.01,274,0.137,7,1724,0.862,431.9,2488
-"Independent by age, Reference: Week and day of week, Report: Day of week",2021-10-13,1.03,321,0.1605,7,1676,0.838,367.9,2495
-"Independent by age, Reference: Week and day of week, Report: Day of week",2021-10-14,2.26,1099,0.5495,10,3,0.0015,303.3,2501
-"Independent by age, Reference: Week and day of week, Report: Day of week",2021-10-15,1.01,659,0.3295,7,1260,0.63,345.9,2508
-"Independent by age, Reference: Week and day of week, Report: Day of week",2021-10-16,1.02,789,0.3945,8,521,0.2605,472.2,2515
-"Independent by age, Reference: Week and day of week, Report: Day of week",2021-10-17,1.02,387,0.1935,9,71,0.0355,670.6,2522
-"Independent by age, Reference: Week and day of week, Report: Day of week",2021-10-23,1.01,233,0.1165,8,1,5e-04,435.5,2564
-"Independent by age, Reference: Week and day of week, Report: Day of week",2021-10-23,1.01,332,0.166,7,1613,0.8065,407.6,2565
-"Independent by age, Reference: Week and day of week, Report: Day of week",2021-10-24,1.01,294,0.147,8,1690,0.845,604.1,2572
-"Independent by age, Reference: Week and day of week, Report: Day of week",2021-10-25,1.01,565,0.2825,7,1308,0.654,385.9,2579
-"Independent by age, Reference: Week and day of week, Report: Day of week",2021-10-26,1.01,327,0.1635,7,1672,0.836,461.2,2586
-"Independent by age, Reference: Week and day of week, Report: Day of week",2021-10-27,1.02,241,0.1205,7,1754,0.877,450,2593
-"Independent by age, Reference: Week and day of week, Report: Day of week",2021-10-28,1.02,904,0.452,8,507,0.2535,539.7,2600
-"Independent by age, Reference: Week and day of week, Report: Day of week",2021-10-29,1.02,998,0.499,7,964,0.482,431.6,2607
-"Independent by age, Reference: Week and day of week, Report: Day of week",2021-10-30,1.01,236,0.118,7,1754,0.877,386.7,2614
-"Independent by age, Reference: Week and day of week, Report: Day of week",2021-10-31,1.01,201,0.1005,7,1552,0.776,428.6,2621
-"Independent by age, Reference: Week and day of week, Report: Day of week",2021-11-01,1.02,367,0.1835,7,1618,0.809,451.2,2628
-"Independent by age, Reference: Week and day of week, Report: Day of week",2021-11-05,2.23,1131,0.5655,8,30,0.015,320.7,2656
-"Independent by age, Reference: Week and day of week, Report: Day of week",2021-11-06,1.01,264,0.132,7,844,0.422,390.9,2663
-"Independent by age, Reference: Week and day of week, Report: Day of week",2021-11-08,1.01,236,0.118,7,1763,0.8815,416.1,2677
-"Independent by age, Reference: Week and day of week, Report: Day of week",2021-11-10,1.01,257,0.1285,7,1350,0.675,405.7,2691
-"Independent by age, Reference: Week and day of week, Report: Day of week",2021-11-11,2.26,1163,0.5815,7,837,0.4185,412.5,2698
-"Independent by age, Reference: Week and day of week, Report: Day of week",2021-11-14,1.01,390,0.195,7,1368,0.684,396.3,2718
-"Independent by age, Reference: Week and day of week, Report: Day of week",2021-11-14,1.01,264,0.132,7,1736,0.868,416,2719
-"Independent by age, Reference: Week and day of week, Report: Day of week",2021-11-15,1.01,558,0.279,7,1210,0.605,360.1,2726
-"Independent by age, Reference: Week and day of week, Report: Day of week",2021-11-16,2.27,1085,0.5425,10,181,0.0905,907.2,2733
-"Independent by age, Reference: Week and day of week, Report: Day of week",2021-11-17,1.02,432,0.216,7,1568,0.784,403.6,2740
-"Independent by age, Reference: Week and day of week, Report: Day of week",2021-11-18,1.01,216,0.108,7,1747,0.8735,433.4,2747
-"Independent by age, Reference: Week and day of week, Report: Day of week",2021-11-19,1.01,695,0.3475,9,451,0.2255,919.8,2753
+"Reference: Age and week by age, Report: Day of week",2021-10-01,1.02,250,0.125,8,1750,0.875,3973.7,349
+"Reference: Age and week by age, Report: Day of week",2021-10-07,2.23,1608,0.804,10,7,0.0035,2844,355
+"Reference: Age and week by age, Report: Day of week",2021-10-14,1.04,923,0.4615,10,222,0.111,5645.2,362
+"Reference: Age and week by age, Report: Day of week",2021-10-17,1.01,321,0.1605,8,1679,0.8395,3782,365
+"Reference: Age and week by age, Report: Day of week",2021-10-20,1.04,1519,0.7595,9,242,0.121,3033.6,368
+"Reference: Age and week by age, Report: Day of week",2021-10-21,2.32,1635,0.8175,10,5,0.0025,2371.8,369
+"Reference: Age and week by age, Report: Day of week",2021-10-28,1.02,253,0.1265,9,1,5e-04,3606.4,376
+"Reference: Age and week by age, Report: Day of week",2021-11-04,1.03,668,0.334,8,1336,0.668,2875.3,383
+"Reference: Age and week by age, Report: Day of week",2021-12-02,1.01,590,0.295,9,1408,0.704,4647.3,411
+"Reference: Age and week by age, Report: Day of week",2021-12-16,1.02,1080,0.54,9,702,0.351,5586.6,425
+"Reference: Age and week by age, Report: Day of week",2021-12-22,2.4,1102,0.551,9,190,0.095,3744.8,431
+"Reference: Age and week by age, Report: Day of week",2021-12-23,1.02,874,0.437,9,553,0.2765,5516.9,432
+"Reference: Age and week by age, Report: Day of week",2021-12-24,1.02,426,0.213,9,1197,0.5985,4219.7,433
+"Independent by age, Reference: Week, Report: Day of week",2021-10-11,1.01,243,0.1215,7,1559,0.7795,132.1,508
+"Independent by age, Reference: Week, Report: Day of week",2021-10-15,1.02,418,0.209,7,421,0.2105,129.3,535
+"Independent by age, Reference: Week, Report: Day of week",2021-10-16,1.02,347,0.1735,7,819,0.4095,126.9,542
+"Independent by age, Reference: Week, Report: Day of week",2021-10-23,2.24,987,0.4935,10,49,0.0245,177.5,591
+"Independent by age, Reference: Week, Report: Day of week",2021-11-14,1.01,253,0.1265,7,1258,0.629,127.9,745
+"Independent by age, Reference: Week, Report: Day of week",2021-11-19,2.25,1321,0.6605,10,24,0.012,139,780
+"Independent by age, Reference: Week, Report: Day of week",2021-10-01,1.01,291,0.1455,7,1010,0.505,246.1,1049
+"Independent by age, Reference: Week, Report: Day of week",2021-10-01,1.02,1034,0.517,7,522,0.261,206.5,1051
+"Independent by age, Reference: Week, Report: Day of week",2021-10-02,1.01,203,0.1015,7,581,0.2905,209,1065
+"Independent by age, Reference: Week, Report: Day of week",2021-10-02,1.01,287,0.1435,7,147,0.0735,165.8,1067
+"Independent by age, Reference: Week, Report: Day of week",2021-10-03,2.25,1187,0.5935,6,819,0.4095,117.8,1083
+"Independent by age, Reference: Week, Report: Day of week",2021-10-05,2.25,865,0.4325,10,174,0.087,211.7,1115
+"Independent by age, Reference: Week, Report: Day of week",2021-10-13,1.01,375,0.1875,8,43,0.0215,124.5,1251
+"Independent by age, Reference: Week, Report: Day of week",2021-10-14,1.02,302,0.151,9,294,0.147,323.9,1267
+"Independent by age, Reference: Week, Report: Day of week",2021-10-15,2.24,1286,0.643,10,10,0.005,211.7,1275
+"Independent by age, Reference: Week, Report: Day of week",2021-10-15,1.02,466,0.233,8,807,0.4035,180.4,1283
+"Independent by age, Reference: Week, Report: Day of week",2021-10-16,1.01,287,0.1435,7,123,0.0615,101.9,1291
+"Independent by age, Reference: Week, Report: Day of week",2021-10-16,1.01,230,0.115,7,1449,0.7245,137.3,1299
+"Independent by age, Reference: Week, Report: Day of week",2021-10-17,1.09,1748,0.874,10,151,0.0755,254.4,1315
+"Independent by age, Reference: Week, Report: Day of week",2021-10-18,1.04,1578,0.789,8,352,0.176,123.4,1331
+"Independent by age, Reference: Week, Report: Day of week",2021-10-19,2.22,1417,0.7085,9,19,0.0095,146,1347
+"Independent by age, Reference: Week, Report: Day of week",2021-10-20,1.01,590,0.295,7,1308,0.654,109,1363
+"Independent by age, Reference: Week, Report: Day of week",2021-10-21,1.01,319,0.1595,8,612,0.306,169.8,1379
+"Independent by age, Reference: Week, Report: Day of week",2021-10-22,1.01,385,0.1925,8,601,0.3005,173.9,1395
+"Independent by age, Reference: Week, Report: Day of week",2021-10-23,1.01,1104,0.552,8,358,0.179,154.1,1411
+"Independent by age, Reference: Week, Report: Day of week",2021-10-24,1.01,788,0.394,7,1071,0.5355,127,1427
+"Independent by age, Reference: Week, Report: Day of week",2021-10-25,1.01,608,0.304,8,273,0.1365,140.3,1443
+"Independent by age, Reference: Week, Report: Day of week",2021-11-12,1.01,259,0.1295,8,4,0.002,113.7,1724
+"Independent by age, Reference: Week, Report: Day of week",2021-11-13,1.01,230,0.115,7,1723,0.8615,131.4,1740
+"Independent by age, Reference: Week, Report: Day of week",2021-11-25,1.01,228,0.114,8,65,0.0325,330.6,1931
+"Independent by age, Reference: Week, Report: Day of week",2021-11-26,1.01,464,0.232,7,616,0.308,356.7,1947
+"Independent by age, Reference: Week, Report: Day of week",2021-11-27,1.01,583,0.2915,7,662,0.331,294.4,1963
+"Independent by age, Reference: Week, Report: Day of week",2021-11-27,1.03,339,0.1695,7,348,0.174,170.5,1969
+"Independent by age, Reference: Week and day of week, Report: Day of week",2021-12-08,1.01,306,0.153,7,1693,0.8465,497.6,2145
+"Independent by age, Reference: Week and day of week, Report: Day of week",2021-12-09,1.01,204,0.102,7,1699,0.8495,415.9,2161
+"Independent by age, Reference: Week and day of week, Report: Day of week",2021-12-10,1.01,213,0.1065,7,1787,0.8935,423.7,2177
+"Independent by age, Reference: Week and day of week, Report: Day of week",2021-12-11,1.01,381,0.1905,8,723,0.3615,577.6,2193
+"Independent by age, Reference: Week and day of week, Report: Day of week",2021-12-12,1.01,383,0.1915,7,1603,0.8015,440.6,2209
+"Independent by age, Reference: Week and day of week, Report: Day of week",2021-12-13,2.23,965,0.4825,10,226,0.113,1111.8,2219
+"Independent by age, Reference: Week and day of week, Report: Day of week",2021-12-13,1.03,1165,0.5825,8,42,0.021,378.7,2225
+"Independent by age, Reference: Week and day of week, Report: Day of week",2021-12-14,1.01,373,0.1865,7,1558,0.779,481.7,2235
+"Independent by age, Reference: Week and day of week, Report: Day of week",2021-12-14,1.01,274,0.137,7,1721,0.8605,482.1,2241
+"Independent by age, Reference: Week and day of week, Report: Day of week",2021-12-17,1.07,721,0.3605,7,547,0.2735,1248.3,2283
+"Independent by age, Reference: Week and day of week, Report: Day of week",2021-12-18,1.02,270,0.135,9,5,0.0025,637.3,2299
+"Independent by age, Reference: Week and day of week, Report: Day of week",2021-12-20,2.28,386,0.193,10,707,0.3535,2917.9,2331
+"Independent by age, Reference: Week and day of week, Report: Day of week",2021-12-24,1.01,376,0.188,8,1348,0.674,772.3,2390
+"Independent by age, Reference: Week and day of week, Report: Day of week",2021-12-25,2.23,1284,0.642,9,46,0.023,374,2409
+"Independent by age, Reference: Week and day of week, Report: Day of week",2021-12-26,1.01,492,0.246,7,749,0.3745,399.6,2425
+"Independent by age, Reference: Week and day of week, Report: Day of week",2021-10-09,1.03,292,0.146,6,1708,0.854,334.5,2494
+"Independent by age, Reference: Week and day of week, Report: Day of week",2021-10-10,1.01,298,0.149,7,1702,0.851,448.5,2501
+"Independent by age, Reference: Week and day of week, Report: Day of week",2021-10-11,1.01,397,0.1985,7,1513,0.7565,387.8,2508
+"Independent by age, Reference: Week and day of week, Report: Day of week",2021-10-11,1.04,443,0.2215,8,3,0.0015,335.3,2509
+"Independent by age, Reference: Week and day of week, Report: Day of week",2021-10-12,1.01,324,0.162,7,16,0.008,278.1,2515
+"Independent by age, Reference: Week and day of week, Report: Day of week",2021-10-12,1.01,274,0.137,7,1724,0.862,431.9,2516
+"Independent by age, Reference: Week and day of week, Report: Day of week",2021-10-13,1.03,321,0.1605,7,1676,0.838,367.9,2523
+"Independent by age, Reference: Week and day of week, Report: Day of week",2021-10-14,2.26,1099,0.5495,10,3,0.0015,303.3,2529
+"Independent by age, Reference: Week and day of week, Report: Day of week",2021-10-15,1.01,659,0.3295,7,1260,0.63,345.9,2536
+"Independent by age, Reference: Week and day of week, Report: Day of week",2021-10-16,1.02,789,0.3945,8,521,0.2605,472.2,2543
+"Independent by age, Reference: Week and day of week, Report: Day of week",2021-10-17,1.02,387,0.1935,9,71,0.0355,670.6,2550
+"Independent by age, Reference: Week and day of week, Report: Day of week",2021-10-23,1.01,233,0.1165,8,1,5e-04,435.5,2592
+"Independent by age, Reference: Week and day of week, Report: Day of week",2021-10-23,1.01,332,0.166,7,1613,0.8065,407.6,2593
+"Independent by age, Reference: Week and day of week, Report: Day of week",2021-10-24,1.01,294,0.147,8,1690,0.845,604.1,2600
+"Independent by age, Reference: Week and day of week, Report: Day of week",2021-10-25,1.01,565,0.2825,7,1308,0.654,385.9,2607
+"Independent by age, Reference: Week and day of week, Report: Day of week",2021-10-26,1.01,327,0.1635,7,1672,0.836,461.2,2614
+"Independent by age, Reference: Week and day of week, Report: Day of week",2021-10-27,1.02,241,0.1205,7,1754,0.877,450,2621
+"Independent by age, Reference: Week and day of week, Report: Day of week",2021-10-28,1.02,904,0.452,8,507,0.2535,539.7,2628
+"Independent by age, Reference: Week and day of week, Report: Day of week",2021-10-29,1.02,998,0.499,7,964,0.482,431.6,2635
+"Independent by age, Reference: Week and day of week, Report: Day of week",2021-10-30,1.01,236,0.118,7,1754,0.877,386.7,2642
+"Independent by age, Reference: Week and day of week, Report: Day of week",2021-10-31,1.01,201,0.1005,7,1552,0.776,428.6,2649
+"Independent by age, Reference: Week and day of week, Report: Day of week",2021-11-01,1.02,367,0.1835,7,1618,0.809,451.2,2656
+"Independent by age, Reference: Week and day of week, Report: Day of week",2021-11-05,2.23,1131,0.5655,8,30,0.015,320.7,2684
+"Independent by age, Reference: Week and day of week, Report: Day of week",2021-11-06,1.01,264,0.132,7,844,0.422,390.9,2691
+"Independent by age, Reference: Week and day of week, Report: Day of week",2021-11-08,1.01,236,0.118,7,1763,0.8815,416.1,2705
+"Independent by age, Reference: Week and day of week, Report: Day of week",2021-11-10,1.01,257,0.1285,7,1350,0.675,405.7,2719
+"Independent by age, Reference: Week and day of week, Report: Day of week",2021-11-11,2.26,1163,0.5815,7,837,0.4185,412.5,2726
+"Independent by age, Reference: Week and day of week, Report: Day of week",2021-11-14,1.01,390,0.195,7,1368,0.684,396.3,2746
+"Independent by age, Reference: Week and day of week, Report: Day of week",2021-11-14,1.01,264,0.132,7,1736,0.868,416,2747
+"Independent by age, Reference: Week and day of week, Report: Day of week",2021-11-15,1.01,558,0.279,7,1210,0.605,360.1,2754
+"Independent by age, Reference: Week and day of week, Report: Day of week",2021-11-16,2.27,1085,0.5425,10,181,0.0905,907.2,2761
+"Independent by age, Reference: Week and day of week, Report: Day of week",2021-11-17,1.02,432,0.216,7,1568,0.784,403.6,2768
+"Independent by age, Reference: Week and day of week, Report: Day of week",2021-11-18,1.01,216,0.108,7,1747,0.8735,433.4,2775
+"Independent by age, Reference: Week and day of week, Report: Day of week",2021-11-19,1.01,695,0.3475,9,451,0.2255,919.8,2781
