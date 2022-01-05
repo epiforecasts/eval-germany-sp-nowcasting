@@ -1,3 +1,7 @@
+# 2022-01-05
+
+- Fixed a bug which meant that the 10% quantile was not included in posterior predictions. In order to avoid refitting all models this quantile has been excluded from evaluation and the `targets` pipeline has been updated so that models are never refit.
+
 # 2021-12-06
 
 - Added a new model that is the same as the baseline independent model but that also includes a day of the week adjustment for the date of positive test. From today this model is used as the hub submission model instead of the original independent model. This change is based on backtesting to the 1st of October which showed an approximate 10% increase in both absolute and relative performance for the 0 to -7 horizons across all groups excluding the 5-14 year olds where performance was slightly degraded. This change will be monitored over the next few weeks to make sure the performance improvement is stable. The only downside is a roughly 100% increase in model estimation times but this is still well within the available compute.
