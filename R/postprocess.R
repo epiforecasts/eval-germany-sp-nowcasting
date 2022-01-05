@@ -51,7 +51,7 @@ unnest_nowcasts <- function(nowcasts, target) {
         function(df, m, d) {
           df[, model := m][, nowcast_date := d]
         })][,
-    rbindlist(get(target), use.names = TRUE)][
+    rbindlist(get(target), use.names = TRUE, fill = TRUE)][
     order(location, age_group, nowcast_date, reference_date, model)
     ]
 
