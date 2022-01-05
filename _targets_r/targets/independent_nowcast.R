@@ -8,5 +8,6 @@ tar_target(
     max_delay = max_report_delay,
     settings = epinowcast_settings
   ),
-  cross(hospitalisations_by_date_report, locations, age_groups)
+  cross(hospitalisations_by_date_report, locations, age_groups),
+  cue = tar_cue(mode = "never")
 )

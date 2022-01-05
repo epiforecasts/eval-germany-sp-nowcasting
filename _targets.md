@@ -382,7 +382,8 @@ tar_target(
     max_delay = max_report_delay,
     settings = epinowcast_settings
   ),
-  cross(hospitalisations_by_date_report, locations)
+  cross(hospitalisations_by_date_report, locations),
+  cue = tar_cue(mode = "never")
 )
 #> Establish _targets.R and _targets_r/targets/fixed_nowcast.R.
 ```
@@ -402,7 +403,8 @@ tar_target(
     max_delay = max_report_delay,
     settings = epinowcast_settings
   ),
-  cross(hospitalisations_by_date_report, locations)
+  cross(hospitalisations_by_date_report, locations),
+  cue = tar_cue(mode = "never")
 )
 #> Establish _targets.R and _targets_r/targets/dow_nowcast.R.
 ```
@@ -423,7 +425,8 @@ tar_target(
     max_delay = max_report_delay,
     settings = epinowcast_settings
   ),
-  cross(hospitalisations_by_date_report, locations)
+  cross(hospitalisations_by_date_report, locations),
+  cue = tar_cue(mode = "never")
 )
 #> Establish _targets.R and _targets_r/targets/age_nowcast.R.
 ```
@@ -444,7 +447,8 @@ tar_target(
     max_delay = max_report_delay,
     settings = epinowcast_settings
   ),
-  cross(hospitalisations_by_date_report, locations)
+  cross(hospitalisations_by_date_report, locations),
+  cue = tar_cue(mode = "never")
 )
 #> Establish _targets.R and _targets_r/targets/week_nowcast.R.
 ```
@@ -465,7 +469,8 @@ tar_target(
     max_delay = max_report_delay,
     settings = epinowcast_settings
   ),
-  cross(hospitalisations_by_date_report, locations)
+  cross(hospitalisations_by_date_report, locations),
+  cue = tar_cue(mode = "never")
 )
 #> Establish _targets.R and _targets_r/targets/age_week_nowcast.R.
 ```
@@ -486,7 +491,8 @@ tar_target(
     max_delay = max_report_delay,
     settings = epinowcast_settings
   ),
-  cross(hospitalisations_by_date_report, locations, age_groups)
+  cross(hospitalisations_by_date_report, locations, age_groups),
+  cue = tar_cue(mode = "never")
 )
 #> Establish _targets.R and _targets_r/targets/independent_nowcast.R.
 ```
@@ -507,7 +513,8 @@ tar_target(
     max_delay = max_report_delay,
     settings = epinowcast_settings
   ),
-  cross(hospitalisations_by_date_report, locations, age_groups)
+  cross(hospitalisations_by_date_report, locations, age_groups),
+  cue = tar_cue(mode = "never")
 )
 #> Establish _targets.R and _targets_r/targets/independent_ref_dow_nowcast.R.
 ```
