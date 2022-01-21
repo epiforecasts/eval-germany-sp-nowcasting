@@ -124,12 +124,13 @@ plot_nowcast(
 
 # Evaluation
 
-In this section we evaluate and compare the performance of each nowcasting method using proper scoring rules [@scoringutils] on both the natural and the log scale to observed data reported at least 28 days ago. This corresponds to evaluating absolute and relative error. Unlike our [real-time evaluation of our models](https://epiforecasts.io/eval-germany-sp-nowcasting/real-time/) here we evaluate performance using 7 day incidence (as this is the target of interest for the [German nowcasting hub](https://covid19nowcasthub.de)) across the complete 28 days of the nowcast and for all locations and age groups available. We explore overall scores as well as scores stratified by age group, by nowcast horizon, and by date of postive test, by report date, and by location. 
+In this section we evaluate and compare the performance of each nowcasting method using proper scoring rules [@scoringutils] on both the natural and the log scale to observed data reported at least 28 days ago. This corresponds to evaluating absolute and relative error. Unlike our [real-time evaluation of our models](https://epiforecasts.io/eval-germany-sp-nowcasting/real-time/) here we evaluate performance using 7 day incidence (as this is the target of interest for the [German nowcasting hub](https://covid19nowcasthub.de)) across the complete 28 days of the nowcast and for all locations and age groups available. We explore overall scores as well as scores stratified by age group, by nowcast horizon, and by date of postive test, by report date, and by location. We drop the SZ-hosp_nowcast from all stratified evaluation due to its poor overall performance compared to other approaches and because this masks other meaningful between model differences. 
 
 ## Overall nowcast model scores
 
 ```{r calc-overall-scores}
 scores <- score_nowcast(hub_nowcasts, complete_seven_day_hosp)
+hub_nowcasts <- hub_nowcasts[!model %in% "SZ-hosp_nowcast"]
 ```
 
 ```{r plot-overall-scores, fig.height = 4, fig.width = 8}

@@ -1,3 +1,7 @@
+# 2022-01-21
+
+- Drop the SZ-hosp_nowcast model from all stratified performance evaluation due to it masking other meaningful between model differences. 
+
 # 2022-01-05
 
 - Fixed a bug which meant that the 10% quantile was not included in posterior predictions. In order to avoid refitting all models this quantile has been excluded from evaluation and the `targets` pipeline has been updated so that models are never refit.
