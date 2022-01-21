@@ -1,6 +1,8 @@
 # 2022-01-21
 
-- Drop the SZ-hosp_nowcast model from all stratified performance evaluation due to it masking other meaningful between model differences. 
+- Dropped the first nowcast (from the 24th of November 2021) from the RKI-weekly_report model from all stratified evaluatioon as this was the only nowcast for which estimates were made for the day of nowcast and the subsequent two days from this model, performance was poor, and this masked other meaningful between model differences.
+
+- Dropped the SZ-hosp_nowcast model from all stratified performance evaluation due to it masking other meaningful between model differences. 
 
 # 2022-01-05
 

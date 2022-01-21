@@ -32,7 +32,7 @@ source(here("R", "get-hub-forecasts.R"))
 source(here("R", "evaluation.R"))
 ```
 
-**This is a preliminary real-time comparison between the semi-parametric nowcasting method evaluated in this project and the other methods submitted to the [German nowcasting hub](https://covid19nowcasthub.de). It is not the official prespecified evaluation the protocol for which can be found [here](https://osf.io/mru75/).**
+**This is a preliminary real-time comparison between the semi-parametric nowcasting method evaluated in this project and the other methods submitted to the [German nowcasting hub](https://covid19nowcasthub.de). It is not the official prespecified evaluation the protocol for which can be found [here](https://osf.io/mru75/). See our [news](https://github.com/epiforecasts/eval-germany-sp-nowcasting/blob/main/NEWS.md) for details of any changes to this evaluation.**
 
 # Introduction
 
@@ -124,13 +124,16 @@ plot_nowcast(
 
 # Evaluation
 
-In this section we evaluate and compare the performance of each nowcasting method using proper scoring rules [@scoringutils] on both the natural and the log scale to observed data reported at least 28 days ago. This corresponds to evaluating absolute and relative error. Unlike our [real-time evaluation of our models](https://epiforecasts.io/eval-germany-sp-nowcasting/real-time/) here we evaluate performance using 7 day incidence (as this is the target of interest for the [German nowcasting hub](https://covid19nowcasthub.de)) across the complete 28 days of the nowcast and for all locations and age groups available. We explore overall scores as well as scores stratified by age group, by nowcast horizon, and by date of postive test, by report date, and by location. We drop the SZ-hosp_nowcast from all stratified evaluation due to its poor overall performance compared to other approaches and because this masks other meaningful between model differences. 
+In this section we evaluate and compare the performance of each nowcasting method using proper scoring rules [@scoringutils] on both the natural and the log scale to observed data reported at least 28 days ago. This corresponds to evaluating absolute and relative error. Unlike our [real-time evaluation of our models](https://epiforecasts.io/eval-germany-sp-nowcasting/real-time/) here we evaluate performance using 7 day incidence (as this is the target of interest for the [German nowcasting hub](https://covid19nowcasthub.de)) across the complete 28 days of the nowcast and for all locations and age groups available. We explore overall scores as well as scores stratified by age group, by nowcast horizon, and by date of postive test, by report date, and by location. We drop the SZ-hosp_nowcast from all stratified evaluation due to its poor overall performance compared to other approaches and because this masks other meaningful between model differences. We also drop the first nowcast (from the 24th of November 2021) from the RKI-weekly_report model from all stratified evaluatioon as this was the only nowcast for which estimates were made for the day of nowcast and the subsequent two days from this model, performance was poor, and this masked other meaningful between model differences.
 
 ## Overall nowcast model scores
 
 ```{r calc-overall-scores}
 scores <- score_nowcast(hub_nowcasts, complete_seven_day_hosp)
 hub_nowcasts <- hub_nowcasts[!model %in% "SZ-hosp_nowcast"]
+hub_nowcasts <- hub_nowcasts[
+  !(model %in% "RKI-weekly_report" & nowcast_date == "2021-11-24")
+]
 ```
 
 ```{r plot-overall-scores, fig.height = 4, fig.width = 8}
