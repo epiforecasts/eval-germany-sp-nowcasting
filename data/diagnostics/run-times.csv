@@ -115,6 +115,9 @@ model,nowcast_date,run_time,run_time_mins,run_time_hrs
 "Reference: Fixed, Report: Fixed",2022-01-22,2058.9,34.315,0.571916666666667
 "Reference: Fixed, Report: Fixed",2022-01-23,2169.5,36.1583333333333,0.602638888888889
 "Reference: Fixed, Report: Fixed",2022-01-24,2143.7,35.7283333333333,0.595472222222222
+"Reference: Fixed, Report: Fixed",2022-01-25,1874.5,31.2416666666667,0.520694444444445
+"Reference: Fixed, Report: Fixed",2022-01-26,2145.3,35.755,0.595916666666667
+"Reference: Fixed, Report: Fixed",2022-01-27,2143.9,35.7316666666667,0.595527777777778
 "Reference: Fixed, Report: Day of week",2021-10-01,1711.5,28.525,0.475416666666667
 "Reference: Fixed, Report: Day of week",2021-10-02,1724.3,28.7383333333333,0.478972222222222
 "Reference: Fixed, Report: Day of week",2021-10-03,1715.6,28.5933333333333,0.476555555555556
@@ -231,6 +234,9 @@ model,nowcast_date,run_time,run_time_mins,run_time_hrs
 "Reference: Fixed, Report: Day of week",2022-01-22,2716.5,45.275,0.754583333333333
 "Reference: Fixed, Report: Day of week",2022-01-23,2896.3,48.2716666666667,0.804527777777778
 "Reference: Fixed, Report: Day of week",2022-01-24,2879.8,47.9966666666667,0.799944444444444
+"Reference: Fixed, Report: Day of week",2022-01-25,2571.3,42.855,0.71425
+"Reference: Fixed, Report: Day of week",2022-01-26,2704.8,45.08,0.751333333333333
+"Reference: Fixed, Report: Day of week",2022-01-27,2641.1,44.0183333333333,0.733638888888889
 "Reference: Age, Report: Day of week",2021-10-01,1990.2,33.17,0.552833333333333
 "Reference: Age, Report: Day of week",2021-10-02,1993.5,33.225,0.55375
 "Reference: Age, Report: Day of week",2021-10-03,1959.5,32.6583333333333,0.544305555555556
@@ -347,6 +353,9 @@ model,nowcast_date,run_time,run_time_mins,run_time_hrs
 "Reference: Age, Report: Day of week",2022-01-22,3154.1,52.5683333333333,0.876138888888889
 "Reference: Age, Report: Day of week",2022-01-23,3305.8,55.0966666666667,0.918277777777778
 "Reference: Age, Report: Day of week",2022-01-24,3261.9,54.365,0.906083333333333
+"Reference: Age, Report: Day of week",2022-01-25,2785.3,46.4216666666667,0.773694444444445
+"Reference: Age, Report: Day of week",2022-01-26,2953.5,49.225,0.820416666666667
+"Reference: Age, Report: Day of week",2022-01-27,2934,48.9,0.815
 "Reference: Age and week, Report: Day of week",2021-10-01,3940.2,65.67,1.0945
 "Reference: Age and week, Report: Day of week",2021-10-02,3946.2,65.77,1.09616666666667
 "Reference: Age and week, Report: Day of week",2021-10-03,3955.8,65.93,1.09883333333333
@@ -463,6 +472,9 @@ model,nowcast_date,run_time,run_time_mins,run_time_hrs
 "Reference: Age and week, Report: Day of week",2022-01-22,6201.2,103.353333333333,1.72255555555556
 "Reference: Age and week, Report: Day of week",2022-01-23,6698.1,111.635,1.86058333333333
 "Reference: Age and week, Report: Day of week",2022-01-24,7457.7,124.295,2.07158333333333
+"Reference: Age and week, Report: Day of week",2022-01-25,4364.1,72.735,1.21225
+"Reference: Age and week, Report: Day of week",2022-01-26,4611.2,76.8533333333333,1.28088888888889
+"Reference: Age and week, Report: Day of week",2022-01-27,5499,91.65,1.5275
 "Reference: Age and week by age, Report: Day of week",2021-10-01,3973.7,66.2283333333333,1.10380555555556
 "Reference: Age and week by age, Report: Day of week",2021-10-02,4140.1,69.0016666666667,1.15002777777778
 "Reference: Age and week by age, Report: Day of week",2021-10-03,4203.1,70.0516666666667,1.16752777777778
@@ -579,6 +591,9 @@ model,nowcast_date,run_time,run_time_mins,run_time_hrs
 "Reference: Age and week by age, Report: Day of week",2022-01-22,6742.3,112.371666666667,1.87286111111111
 "Reference: Age and week by age, Report: Day of week",2022-01-23,8396.2,139.936666666667,2.33227777777778
 "Reference: Age and week by age, Report: Day of week",2022-01-24,6358.5,105.975,1.76625
+"Reference: Age and week by age, Report: Day of week",2022-01-25,5805.1,96.7516666666667,1.61252777777778
+"Reference: Age and week by age, Report: Day of week",2022-01-26,9460.7,157.678333333333,2.62797222222222
+"Reference: Age and week by age, Report: Day of week",2022-01-27,5216.4,86.94,1.449
 "Independent by age, Reference: Week, Report: Day of week",2021-10-01,1487.1,24.785,0.413083333333333
 "Independent by age, Reference: Week, Report: Day of week",2021-10-02,1427.3,23.7883333333333,0.396472222222222
 "Independent by age, Reference: Week, Report: Day of week",2021-10-03,1372.1,22.8683333333333,0.381138888888889
@@ -695,6 +710,9 @@ model,nowcast_date,run_time,run_time_mins,run_time_hrs
 "Independent by age, Reference: Week, Report: Day of week",2022-01-22,3801.7,63.3616666666667,1.05602777777778
 "Independent by age, Reference: Week, Report: Day of week",2022-01-23,4055.1,67.585,1.12641666666667
 "Independent by age, Reference: Week, Report: Day of week",2022-01-24,4063.7,67.7283333333333,1.12880555555556
+"Independent by age, Reference: Week, Report: Day of week",2022-01-25,3690.9,61.515,1.02525
+"Independent by age, Reference: Week, Report: Day of week",2022-01-26,3369.9,56.165,0.936083333333333
+"Independent by age, Reference: Week, Report: Day of week",2022-01-27,3327.5,55.4583333333333,0.924305555555556
 "Independent by age, Reference: Week and day of week, Report: Day of week",2021-10-01,5207.7,86.795,1.44658333333333
 "Independent by age, Reference: Week and day of week, Report: Day of week",2021-10-02,5652.3,94.205,1.57008333333333
 "Independent by age, Reference: Week and day of week, Report: Day of week",2021-10-03,7146,119.1,1.985
@@ -811,3 +829,6 @@ model,nowcast_date,run_time,run_time_mins,run_time_hrs
 "Independent by age, Reference: Week and day of week, Report: Day of week",2022-01-22,9965.4,166.09,2.76816666666667
 "Independent by age, Reference: Week and day of week, Report: Day of week",2022-01-23,10587.3,176.455,2.94091666666667
 "Independent by age, Reference: Week and day of week, Report: Day of week",2022-01-24,12973.2,216.22,3.60366666666667
+"Independent by age, Reference: Week and day of week, Report: Day of week",2022-01-25,20821,347.016666666667,5.78361111111111
+"Independent by age, Reference: Week and day of week, Report: Day of week",2022-01-26,5144.1,85.735,1.42891666666667
+"Independent by age, Reference: Week and day of week, Report: Day of week",2022-01-27,7143.3,119.055,1.98425
