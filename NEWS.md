@@ -1,3 +1,7 @@
+# 2022-01-31
+
+- Widen the prior used for reporting delay distribution from 5 times to 10 times that estimated nationally using data as reported on the 1st of July 2021. 
+
 # 2022-01-21
 
 - Dropped the first nowcast (from the 24th of November 2021) from the RKI-weekly_report model from all stratified evaluatioon as this was the only nowcast for which estimates were made for the day of nowcast and the subsequent two days from this model, performance was poor, and this masked other meaningful between model differences.

@@ -346,7 +346,7 @@ tar_target(
   - Fit a model to national overall hospitalisations only and extract
     posterior estimates for the delay distribution and overdispersion to
     use as informed priors for other models by assuming a normal
-    distribution with their posterior standard deviations scaled by 5
+    distribution with their posterior standard deviations scaled by 10
     times.
 
 <!-- end list -->
@@ -355,7 +355,7 @@ tar_target(
 tar_target(priors, {
   do.call(prior_epinowcast, c(
     list(
-      prior_obs, max_delay = max_report_delay, scale = 5,
+      prior_obs, max_delay = max_report_delay, scale = 10,
       priors = uninformed_priors
     ),
     epinowcast_settings
