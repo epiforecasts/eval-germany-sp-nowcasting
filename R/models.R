@@ -42,6 +42,8 @@ dow_epinowcast <- function(obs, max_delay = 40, ...) {
     ...
   )
 
+  nowcast <- default_nowcast_on_error(nowcast, pobs, model, ...)
+
   out <- summarise_nowcast(
     nowcast,
     model = "Reference: Fixed, Report: Day of week"
@@ -68,6 +70,8 @@ age_epinowcast <- function(obs, max_delay = 40, ...) {
     report_effects = report_effects,
     ...
   )
+
+  nowcast <- default_nowcast_on_error(nowcast, pobs, model, ...)
 
   out <- summarise_nowcast(
     nowcast,
@@ -102,6 +106,8 @@ week_epinowcast <- function(obs, max_delay = 40, ...) {
     report_effects = report_effects,
     ...
   )
+
+  nowcast <- default_nowcast_on_error(nowcast, pobs, model, ...)
 
   out <- summarise_nowcast(
     nowcast,
@@ -173,6 +179,8 @@ age_week_epinowcast <- function(obs, max_delay = 40, ...) {
     ...
   )
 
+  nowcast <- default_nowcast_on_error(nowcast, pobs, model, ...)
+
   out <- summarise_nowcast(
     nowcast,
     model = "Reference: Age and week by age, Report: Day of week"
@@ -203,6 +211,8 @@ independent_epinowcast <- function(obs, max_delay = 40, ...) {
     report_effects = report_effects,
     ...
   )
+
+  nowcast <- default_nowcast_on_error(nowcast, pobs, model, ...)
 
   out <- summarise_nowcast(
     nowcast,
@@ -236,6 +246,8 @@ independent_ref_dow_epinowcast <- function(obs, max_delay = 40, ...) {
     report_effects = report_effects,
     ...
   )
+
+  nowcast <- default_nowcast_on_error(nowcast, pobs, model, ...)
 
   out <- summarise_nowcast(
     nowcast,

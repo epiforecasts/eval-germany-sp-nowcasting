@@ -67,11 +67,27 @@ summarise_nowcast <- function(nowcast, model,
       ,
       .(
         max_rhat, divergent_transitions, per_divergent_transitions,
-        max_treedepth, no_at_max_treedepth, per_at_max_treedepth, run_time
+        max_treedepth, no_at_max_treedepth, per_at_max_treedepth, run_time,
+        failure
       )
     ]
   )
   return(out[])
+}
+
+default_nowcast_on_error <- function(nowcast, pobs, model, ...) {
+
+  if (is.null(nowcast$fit)) {
+    nowcast <- epinowcast(
+      pobs,
+      model = model,
+      ...
+    )
+    nowcast[, failure := TRUE]
+  }else{
+    nowcast[, failure := FALSE]
+  }
+  return(nowcast[])
 }
 
 nowcast <- function(obs, tar_loc, model,
