@@ -1,6 +1,7 @@
 # 2022-01-31
 
 - Widen the prior used for reporting delay distribution from 5 times to 10 times that estimated nationally using data as reported on the 1st of July 2021. 
+- Corrected the lower bound quantile adjustment for models with fitting issues to correctly replace it with a lower bound and not the upper bound as previously.
 
 # 2022-01-21
 
