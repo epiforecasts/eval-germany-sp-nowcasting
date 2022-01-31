@@ -262,7 +262,7 @@ fancy_datatable(report_date_scores[scale == "log"][, scale := NULL])
 
 # Diagnostics
 
-This section summarises model fitting diagnostics. Whilst most model fits successfully a small subset have issues for as yet unidentified reasons. These issues can be split into issues with convergence and issues with exploring the posterior distribution (often leading to unreliable posterior samples). Resolving these issues is an area of [active research](https://github.com/epiforecasts/epinowcast/issues/22). Finally, model run-time is also summarised for national level nowcasts.
+This section summarises model fitting diagnostics. Whilst most model fits successfully a small subset have issues for as yet unidentified reasons. These issues can be split into issues with convergence and issues with exploring the posterior distribution (often leading to unreliable posterior samples). Resolving these issues is an area of [active research](https://github.com/epiforecasts/epinowcast/issues/22). In a smaller subset of cases model fitting may faily entirely. In this instance a nowcast using the default model from `epinowcast` (a fixed lognormal delay) is used and a flag is raised indicating this has happened. These instances are also summarised below. Finally, model run-time is also summarised for national level nowcasts.
 
 ## Convergence issues
 
@@ -276,6 +276,13 @@ fancy_datatable(rhat)
 ```{r dts}
 dts <- load_diagnostics(here("data/diagnostics/high-divergent-transitions.csv"))
 fancy_datatable(dts)
+```
+
+## Fitting failures
+
+```{r failures}
+failures <- load_diagnostics(here("data/diagnostics/fitting-failed.csv"))
+fancy_datatable(failures)
 ```
 
 ## Run time
