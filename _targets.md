@@ -564,7 +564,7 @@ tar_target(combined_nowcasts, {
     independent_nowcast,
     overall_only_nowcast,
     independent_ref_dow_nowcast
-  ))[,
+  ), use.names = TRUE, fill = TRUE)[,
      model := factor(
       model,
       levels = c("Reference: Fixed, Report: Fixed",
@@ -637,7 +637,8 @@ tar_file(
       filename = paste0(nowcast_dates, ".csv"),
       path = here("data/nowcasts/daily")
     ),
-  map(nowcast_dates)
+  map(nowcast_dates),
+  cue = tar_cue(mode = "never")
 )
 #> Establish _targets.R and _targets_r/targets/save_daily_nowcasts.R.
 ```
@@ -654,7 +655,8 @@ tar_file(
       filename = paste0(nowcast_dates, ".csv"),
       path = here("data/nowcasts/seven_day")
     ),
-  map(nowcast_dates)
+  map(nowcast_dates),
+  cue = tar_cue(mode = "never")
 )
 #> Establish _targets.R and _targets_r/targets/save_7day_nowcasts.R.
 ```
@@ -680,7 +682,8 @@ tar_target(
     rbindlist() |>
     format_for_submission(),
   map(nowcast_dates),
-  iteration = "list"
+  iteration = "list",
+  cue = tar_cue(mode = "never")
 )
 #> Establish _targets.R and _targets_r/targets/hierarchical_submission_nowcast.R.
 ```
@@ -820,6 +823,14 @@ list(
       save_csv(
         diagnostics[per_divergent_transitions > 0.1],
         filename = "high-divergent-transitions.csv",
+        path = here("data/diagnostics")
+      )
+  ),
+  tar_file(
+    save_failures,
+      save_csv(
+        diagnostics[failure == TRUE],
+        filename = "fitting-failed.csv",
         path = here("data/diagnostics")
       )
   )

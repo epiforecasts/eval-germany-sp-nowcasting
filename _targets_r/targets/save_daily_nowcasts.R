@@ -5,5 +5,6 @@ tar_file(
       filename = paste0(nowcast_dates, ".csv"),
       path = here("data/nowcasts/daily")
     ),
-  map(nowcast_dates)
+  map(nowcast_dates),
+  cue = tar_cue(mode = "never")
 )

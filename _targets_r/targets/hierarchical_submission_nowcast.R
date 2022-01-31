@@ -11,5 +11,6 @@ tar_target(
     rbindlist() |>
     format_for_submission(),
   map(nowcast_dates),
-  iteration = "list"
+  iteration = "list",
+  cue = tar_cue(mode = "never")
 )

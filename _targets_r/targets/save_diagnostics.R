@@ -22,5 +22,13 @@ list(
         filename = "high-divergent-transitions.csv",
         path = here("data/diagnostics")
       )
+  ),
+  tar_file(
+    save_failures,
+      save_csv(
+        diagnostics[failure == TRUE],
+        filename = "fitting-failed.csv",
+        path = here("data/diagnostics")
+      )
   )
 )

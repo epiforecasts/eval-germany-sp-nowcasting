@@ -8,7 +8,7 @@ tar_target(combined_nowcasts, {
     independent_nowcast,
     overall_only_nowcast,
     independent_ref_dow_nowcast
-  ))[,
+  ), use.names = TRUE, fill = TRUE)[,
      model := factor(
       model,
       levels = c("Reference: Fixed, Report: Fixed",
