@@ -39,7 +39,7 @@ prior_epinowcast <- function(obs, priors, max_delay = 40, scale = 5, ...) {
 
 summarise_nowcast <- function(nowcast, model,
                               probs = c(
-                                0.025, 0.05,0.1, 0.2, 0.25, 0.5, 0.75,
+                                0.025, 0.05, 0.1, 0.2, 0.25, 0.5, 0.75,
                                 0.8, 0.9, 0.95, 0.975
                               )) {
   daily <- summary(nowcast, type = "nowcast", probs = probs)
