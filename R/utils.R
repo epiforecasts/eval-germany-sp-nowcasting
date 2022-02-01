@@ -55,7 +55,7 @@ load_nowcasts <- function(path) {
     glob = "*.csv"
   ) |>
     purrr::map(data.table::fread) |>
-    data.table::rbindlist()
+    data.table::rbindlist(use.names = TRUE, fill = TRUE)
   nowcasts[, horizon := as.numeric(
     as.Date(reference_date) - as.Date(nowcast_date)
   )]
