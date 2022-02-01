@@ -18,6 +18,8 @@ fixed_epinowcast <- function(obs, max_delay = 40, ...) {
     ...
   )
 
+  nowcast <- default_nowcast_on_error(nowcast, pobs, model, ...)
+  
   out <- summarise_nowcast(nowcast, model = "Reference: Fixed, Report: Fixed")
   return(out[])
 }
