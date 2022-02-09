@@ -46,6 +46,9 @@ summarise_nowcast <- function(nowcast, model,
 
   samples <- summary(nowcast, type = "nowcast_samples")
 
+  samples[sample < confirm, sample := confirm]
+  samples[is.na(sample), sample := confirm]
+
   cols <- c("confirm", "sample")
   samples[, (cols) := lapply(.SD, data.table::frollsum, n = 7),
     .SDcols = cols, by = c(".draw", "age_group", "location")

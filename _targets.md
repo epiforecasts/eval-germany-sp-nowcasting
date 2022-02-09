@@ -47,13 +47,7 @@ library(data.table)
 library(epinowcast)
 library(ggplot2)
 library(purrr, quietly = TRUE)
-#> 
-#> Attaching package: 'purrr'
-#> The following object is masked from 'package:data.table':
-#> 
-#>     transpose
 library(here)
-#> here() starts at /eval-germany-sp-nowcasting
 library(future)
 library(future.callr)
 tar_unscript()
@@ -302,7 +296,7 @@ tar_target(epinowcast_settings, {
     chains = 2,
     parallel_chains = 2,
     threads_per_chain = 1,
-    adapt_delta = 0.95,
+    adapt_delta = 0.99,
     show_messages = FALSE,
     refresh = 0
   )
