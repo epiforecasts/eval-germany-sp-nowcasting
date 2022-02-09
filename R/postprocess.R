@@ -9,7 +9,7 @@ adjust_quantile <- function(quantile, median, max_ratio = 0.5) {
     )
   }else{
     quantile <- ifelse(
-      q_ratio <= max_ratio,
+      q_ratio <= (1 - max_ratio),
       max_ratio * median,
       quantile
     )

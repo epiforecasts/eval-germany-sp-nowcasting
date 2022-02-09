@@ -1,6 +1,7 @@
 # 2022-02-09
 
 - Due to recent instability in fitting the adapt delta setting has been updated from 0.95 to 0.99. This increases model fitting time but may also improve the quality of model fits.
+- Updated `adjust_quantile()` to limit quantiles for problematic model fits to be bounded at plus/minus 25% of the median value (rather than + 25% and -75% as was previously the case).
 
 # 2022-01-31
 
