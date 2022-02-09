@@ -1,3 +1,7 @@
+# 2022-02-09
+
+- Due to recent instability in fitting the adapt delta setting has been updated from 0.95 to 0.99. This increases model fitting time but may also improve the quality of model fits.
+
 # 2022-01-31
 
 - Widen the prior used for reporting delay distribution from 5 times to 10 times that estimated nationally using data as reported on the 1st of July 2021. 
