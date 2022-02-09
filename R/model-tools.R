@@ -75,9 +75,15 @@ summarise_nowcast <- function(nowcast, model,
   return(out[])
 }
 
-default_nowcast_on_error <- function(nowcast, pobs, model, ...) {
+default_nowcast_on_error <- function(nowcast, pobs, model,
+                                     rhat_bound = 3, ...) {
+  failure <- FALSE
 
-  if (is.null(nowcast$fit)) {
+  if (nowcast[max_rhat >= rhat_bound]) {
+    failure <- TRUE
+  }
+
+  if (failure) {
     nowcast <- epinowcast(
       pobs,
       model = model,
@@ -87,6 +93,7 @@ default_nowcast_on_error <- function(nowcast, pobs, model, ...) {
   }else{
     nowcast[, failure := FALSE]
   }
+
   return(nowcast[])
 }
 
