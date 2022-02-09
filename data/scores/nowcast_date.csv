@@ -45,7 +45,7 @@ nowcast_date,model,interval_score,sharpness,underprediction,overprediction,cover
 2021-10-07,"Reference: Fixed, Report: Day of week",6.93,2.4,0.889,3.61,-0.197,0.529,11.4,natural
 2021-10-07,"Reference: Age, Report: Day of week",5.92,2.28,2.61,0.922,-0.0671,0.198,10.9,natural
 2021-10-07,"Reference: Age and week, Report: Day of week",5.8,2.3,2.45,0.95,-0.0637,0.215,10.8,natural
-2021-10-07,"Reference: Age and week by age, Report: Day of week",20.9,2.57,17.8,0.207,-0.163,-0.283,26.3,natural
+2021-10-07,"Reference: Age and week by age, Report: Day of week",20.9,2.59,17.8,0.199,-0.155,-0.29,26.3,natural
 2021-10-07,"Independent by age, Reference: Week, Report: Day of week",5.11,2.55,0.812,1.67,0.00752,0.273,9.62,natural
 2021-10-07,"Independent by age, Reference: Week and day of week, Report: Day of week",4.28,2.62,0.413,1.22,0.0511,0.297,7.26,natural
 2021-10-08,"Reference: Fixed, Report: Fixed",8.71,3.85,0.13,4.72,-0.173,0.668,15.9,natural
@@ -75,7 +75,7 @@ nowcast_date,model,interval_score,sharpness,underprediction,overprediction,cover
 2021-10-11,"Reference: Age and week, Report: Day of week",8.56,2.96,4.8,0.698,-0.0514,-0.102,14.9,natural
 2021-10-11,"Reference: Age and week by age, Report: Day of week",17.4,2.89,13.8,0.44,-0.215,-0.456,27.4,natural
 2021-10-11,"Independent by age, Reference: Week, Report: Day of week",7.65,3.2,2.83,1.53,0.0222,0.0411,13.2,natural
-2021-10-11,"Independent by age, Reference: Week and day of week, Report: Day of week",4.96,2.85,1.39,0.619,0.0758,-0.0116,9.02,natural
+2021-10-11,"Independent by age, Reference: Week and day of week, Report: Day of week",4.97,2.86,1.39,0.619,0.0758,-0.0116,9.02,natural
 2021-10-12,"Reference: Fixed, Report: Fixed",7.99,3.08,3.42,1.39,-0.0791,-0.0714,14,natural
 2021-10-12,"Reference: Fixed, Report: Day of week",8.32,2.49,1.98,3.8,-0.121,0.246,14.4,natural
 2021-10-12,"Reference: Age, Report: Day of week",8.52,2.34,4.4,1.66,-0.104,-0.0339,14.9,natural
@@ -94,7 +94,7 @@ nowcast_date,model,interval_score,sharpness,underprediction,overprediction,cover
 2021-10-14,"Reference: Fixed, Report: Day of week",5.74,2.6,0.412,2.69,-0.101,0.431,11.2,natural
 2021-10-14,"Reference: Age, Report: Day of week",4.93,2.64,1.83,0.356,0.0489,-0.0152,8.79,natural
 2021-10-14,"Reference: Age and week, Report: Day of week",4.95,2.55,1.94,0.342,0.0333,-0.0607,9.05,natural
-2021-10-14,"Reference: Age and week by age, Report: Day of week",14.3,2.31,11.6,0.151,-0.148,-0.373,21.5,natural
+2021-10-14,"Reference: Age and week by age, Report: Day of week",14.4,2.4,11.6,0.147,-0.144,-0.374,21.5,natural
 2021-10-14,"Independent by age, Reference: Week, Report: Day of week",4.21,2.7,0.263,1.22,0.108,0.162,7.08,natural
 2021-10-14,"Independent by age, Reference: Week and day of week, Report: Day of week",3.88,2.75,0.271,0.835,0.105,0.0196,7.18,natural
 2021-10-15,"Reference: Fixed, Report: Fixed",9.34,4.45,0.115,4.76,-0.0921,0.597,17.8,natural
@@ -110,7 +110,7 @@ nowcast_date,model,interval_score,sharpness,underprediction,overprediction,cover
 2021-10-16,"Reference: Age and week, Report: Day of week",5.72,2.57,1.76,1.31,-0.0381,0.286,10.2,natural
 2021-10-16,"Reference: Age and week by age, Report: Day of week",10.4,2.72,7.24,0.205,-0.0625,-0.234,19.7,natural
 2021-10-16,"Independent by age, Reference: Week, Report: Day of week",4.41,2.74,0.623,0.992,0.0773,0.122,8.29,natural
-2021-10-16,"Independent by age, Reference: Week and day of week, Report: Day of week",4.02,2.8,0.54,0.633,0.0791,0.0286,6.91,natural
+2021-10-16,"Independent by age, Reference: Week and day of week, Report: Day of week",4.03,2.8,0.54,0.633,0.0791,0.0286,6.91,natural
 2021-10-17,"Reference: Fixed, Report: Fixed",6.61,3.32,2.27,0.905,-0.0126,0.134,12.6,natural
 2021-10-17,"Reference: Fixed, Report: Day of week",8.4,3.05,1.26,4.04,-0.124,0.42,16,natural
 2021-10-17,"Reference: Age, Report: Day of week",15.3,2.36,11.7,1.12,-0.24,-0.251,23.1,natural
@@ -136,14 +136,14 @@ nowcast_date,model,interval_score,sharpness,underprediction,overprediction,cover
 2021-10-20,"Reference: Fixed, Report: Day of week",9.75,3.1,3.27,3.23,-0.107,0.187,18.4,natural
 2021-10-20,"Reference: Age, Report: Day of week",11.4,2.94,7.59,0.678,-0.0985,-0.209,19.9,natural
 2021-10-20,"Reference: Age and week, Report: Day of week",12.4,3.04,8.72,0.484,-0.0971,-0.229,21.6,natural
-2021-10-20,"Reference: Age and week by age, Report: Day of week",28.7,2.12,26.3,0.0377,-0.364,-0.667,38.1,natural
+2021-10-20,"Reference: Age and week by age, Report: Day of week",28.7,2.16,26.3,0.0298,-0.357,-0.674,38.1,natural
 2021-10-20,"Independent by age, Reference: Week, Report: Day of week",9.25,3.19,4.55,1.31,-0.0548,-0.136,17.5,natural
 2021-10-20,"Independent by age, Reference: Week and day of week, Report: Day of week",6.3,3.31,2.47,0.392,0.0492,-0.169,11.9,natural
 2021-10-21,"Reference: Fixed, Report: Fixed",9.11,5.19,1.91,1.88,0.0122,0.132,15,natural
 2021-10-21,"Reference: Fixed, Report: Day of week",8.84,3.15,4.38,1.12,-0.0724,0.0732,17.3,natural
 2021-10-21,"Reference: Age, Report: Day of week",28.2,2.17,25.9,0.0218,-0.332,-0.735,40.5,natural
 2021-10-21,"Reference: Age and week, Report: Day of week",28.6,2.19,26.3,0.0198,-0.332,-0.735,41.6,natural
-2021-10-21,"Reference: Age and week by age, Report: Day of week",38.2,1.77,36.2,0.0218,-0.415,-0.753,46.4,natural
+2021-10-21,"Reference: Age and week by age, Report: Day of week",38.3,1.87,36.2,0.0218,-0.415,-0.753,46.4,natural
 2021-10-21,"Independent by age, Reference: Week, Report: Day of week",9.45,3.23,5.65,0.275,-0.0465,-0.317,18.2,natural
 2021-10-21,"Independent by age, Reference: Week and day of week, Report: Day of week",7.76,3.42,3.97,0.0853,-0.028,-0.428,15.8,natural
 2021-10-22,"Reference: Fixed, Report: Fixed",8.19,5.71,0.705,1.71,0.0808,0.161,11,natural
@@ -158,7 +158,7 @@ nowcast_date,model,interval_score,sharpness,underprediction,overprediction,cover
 2021-10-23,"Reference: Age, Report: Day of week",9.18,3.43,4.91,0.593,-0.0391,-0.17,18.3,natural
 2021-10-23,"Reference: Age and week, Report: Day of week",8.63,3.48,4.35,0.616,-0.00391,-0.147,16.8,natural
 2021-10-23,"Reference: Age and week by age, Report: Day of week",22,3.26,18.4,0.0714,-0.245,-0.618,36.2,natural
-2021-10-23,"Independent by age, Reference: Week, Report: Day of week",7.73,3.7,3.44,0.384,-0.0911,-0.278,16.1,natural
+2021-10-23,"Independent by age, Reference: Week, Report: Day of week",7.74,3.71,3.44,0.384,-0.0911,-0.278,16.1,natural
 2021-10-23,"Independent by age, Reference: Week and day of week, Report: Day of week",6.48,3.77,2.22,0.305,0.00078,-0.38,12.9,natural
 2021-10-24,"Reference: Fixed, Report: Fixed",12.4,4.54,7.07,0.294,-0.022,-0.302,26.5,natural
 2021-10-24,"Reference: Fixed, Report: Day of week",7.49,3.85,2.9,0.639,0.0714,-0.0446,12,natural
@@ -173,7 +173,7 @@ nowcast_date,model,interval_score,sharpness,underprediction,overprediction,cover
 2021-10-25,"Reference: Age and week, Report: Day of week",10.8,4.56,5.12,0.861,-0.0117,-0.12,19.1,natural
 2021-10-25,"Reference: Age and week by age, Report: Day of week",21.4,4.87,15.5,0.839,-0.208,-0.424,36.7,natural
 2021-10-25,"Independent by age, Reference: Week, Report: Day of week",10.1,4.5,4.76,0.639,-0.0839,-0.238,18.2,natural
-2021-10-25,"Independent by age, Reference: Week and day of week, Report: Day of week",7.73,4.09,3.12,0.279,-0.0548,-0.379,15.3,natural
+2021-10-25,"Independent by age, Reference: Week and day of week, Report: Day of week",7.72,4.1,3.12,0.257,-0.0548,-0.379,15.3,natural
 2021-10-26,"Reference: Fixed, Report: Fixed",15.7,4.8,10.1,0.48,-0.121,-0.456,29.1,natural
 2021-10-26,"Reference: Fixed, Report: Day of week",10,3.52,5.61,0.647,-0.0668,-0.235,19.5,natural
 2021-10-26,"Reference: Age, Report: Day of week",10.2,3.63,5.66,0.66,-0.0789,-0.283,19.6,natural
@@ -194,7 +194,7 @@ nowcast_date,model,interval_score,sharpness,underprediction,overprediction,cover
 2021-10-28,"Reference: Age and week, Report: Day of week",9.58,4.57,2.77,2.06,-0.0808,0.0607,18.8,natural
 2021-10-28,"Reference: Age and week by age, Report: Day of week",16.9,6.33,7.12,2.9,-0.0808,-0.00982,33.6,natural
 2021-10-28,"Independent by age, Reference: Week, Report: Day of week",8.72,5.14,1.52,1.92,0.0224,-0.0214,16,natural
-2021-10-28,"Independent by age, Reference: Week and day of week, Report: Day of week",8.58,5.48,1.34,1.7,0.0267,-0.0107,13.3,natural
+2021-10-28,"Independent by age, Reference: Week and day of week, Report: Day of week",8.59,5.48,1.34,1.7,0.0267,-0.0107,13.3,natural
 2021-10-29,"Reference: Fixed, Report: Fixed",12,7.66,1.12,3.16,-0.0296,0.223,15.8,natural
 2021-10-29,"Reference: Fixed, Report: Day of week",11.1,3.97,5.64,1.14,-0.114,-0.00357,22.5,natural
 2021-10-29,"Reference: Age, Report: Day of week",9.19,4.63,2.51,1.89,-0.0785,0.139,17.2,natural
@@ -241,7 +241,7 @@ nowcast_date,model,interval_score,sharpness,underprediction,overprediction,cover
 2021-11-04,"Reference: Fixed, Report: Day of week",18.2,4.39,12.9,0.538,-0.123,-0.215,34.4,natural
 2021-11-04,"Reference: Age, Report: Day of week",15.2,4.88,9.14,0.75,-0.0664,-0.0893,30.3,natural
 2021-11-04,"Reference: Age and week, Report: Day of week",14.4,4.99,8,0.906,-0.0616,-0.0402,28.8,natural
-2021-11-04,"Reference: Age and week by age, Report: Day of week",40.9,5.2,35.2,0.202,-0.12,-0.34,53.4,natural
+2021-11-04,"Reference: Age and week by age, Report: Day of week",41.3,5.6,35.2,0.171,-0.0963,-0.351,53.4,natural
 2021-11-04,"Independent by age, Reference: Week, Report: Day of week",11.5,5.82,4.16,1.15,0.0165,-0.195,23.6,natural
 2021-11-04,"Independent by age, Reference: Week and day of week, Report: Day of week",9.07,6.48,1.61,0.826,0.0773,-0.174,15.1,natural
 2021-11-05,"Reference: Fixed, Report: Fixed",13.9,8.35,3.11,2.18,-0.0114,0.0455,24.7,natural
@@ -250,7 +250,7 @@ nowcast_date,model,interval_score,sharpness,underprediction,overprediction,cover
 2021-11-05,"Reference: Age and week, Report: Day of week",14.5,5.24,7.93,0.853,-0.0376,-0.0223,28,natural
 2021-11-05,"Reference: Age and week by age, Report: Day of week",21.8,6.49,14.3,0.367,-0.0548,-0.174,41.2,natural
 2021-11-05,"Independent by age, Reference: Week, Report: Day of week",10.6,6.26,2.94,1.07,0.0418,-0.152,22.2,natural
-2021-11-05,"Independent by age, Reference: Week and day of week, Report: Day of week",9,6.68,1.58,0.619,0.0584,-0.236,14.7,natural
+2021-11-05,"Independent by age, Reference: Week and day of week, Report: Day of week",9.01,6.68,1.58,0.619,0.0584,-0.236,14.7,natural
 2021-11-06,"Reference: Fixed, Report: Fixed",13.9,8.71,2.67,2.37,9.65e-18,0.129,22.9,natural
 2021-11-06,"Reference: Fixed, Report: Day of week",15.4,4.89,9.4,0.712,-0.0572,-0.0687,29.8,natural
 2021-11-06,"Reference: Age, Report: Day of week",12.6,5.85,4.11,2.47,-0.0864,0.22,23.9,natural
@@ -320,21 +320,21 @@ nowcast_date,model,interval_score,sharpness,underprediction,overprediction,cover
 2021-11-15,"Reference: Age and week, Report: Day of week",28.8,8.45,11.2,8.91,-0.204,0.117,51.6,natural
 2021-11-15,"Reference: Age and week by age, Report: Day of week",32.8,10.3,10.7,11.5,-0.199,0.106,59.4,natural
 2021-11-15,"Independent by age, Reference: Week, Report: Day of week",28,9.74,9.93,8.12,-0.182,-0.18,50.6,natural
-2021-11-15,"Independent by age, Reference: Week and day of week, Report: Day of week",17.2,8.31,6.51,2.11,-0.114,-0.256,31.3,natural
+2021-11-15,"Independent by age, Reference: Week and day of week, Report: Day of week",17.2,8.34,6.51,2.11,-0.114,-0.256,31.3,natural
 2021-11-16,"Reference: Fixed, Report: Fixed",50.5,7.32,42.3,0.219,-0.328,-0.612,80.3,natural
 2021-11-16,"Reference: Fixed, Report: Day of week",29.3,5.93,21.8,1.09,-0.224,-0.381,48.6,natural
 2021-11-16,"Reference: Age, Report: Day of week",22.7,6.94,13.4,1.97,-0.159,-0.182,38.2,natural
 2021-11-16,"Reference: Age and week, Report: Day of week",22.4,7.03,13.2,1.91,-0.161,-0.196,37.9,natural
 2021-11-16,"Reference: Age and week by age, Report: Day of week",28.2,8.09,18.8,0.696,-0.139,-0.337,51,natural
 2021-11-16,"Independent by age, Reference: Week, Report: Day of week",19.4,7.76,9.99,1.27,-0.0798,-0.381,33.1,natural
-2021-11-16,"Independent by age, Reference: Week and day of week, Report: Day of week",16.7,7.01,8.85,0.389,-0.0864,-0.456,31.1,natural
+2021-11-16,"Independent by age, Reference: Week and day of week, Report: Day of week",16.7,7.02,8.85,0.389,-0.0864,-0.456,31.1,natural
 2021-11-17,"Reference: Fixed, Report: Fixed",33.9,9.66,23.2,0.474,-0.22,-0.414,60.4,natural
 2021-11-17,"Reference: Fixed, Report: Day of week",40.5,5.6,34,0.47,-0.327,-0.497,64.9,natural
 2021-11-17,"Reference: Age, Report: Day of week",38.6,5.85,31.8,0.454,-0.308,-0.496,64.3,natural
 2021-11-17,"Reference: Age and week, Report: Day of week",35.2,6.06,28.2,0.474,-0.278,-0.442,61.2,natural
 2021-11-17,"Reference: Age and week by age, Report: Day of week",47.6,7.04,39.7,0.329,-0.239,-0.526,76.1,natural
 2021-11-17,"Independent by age, Reference: Week, Report: Day of week",26.1,6.84,18.4,0.109,-0.191,-0.634,49.4,natural
-2021-11-17,"Independent by age, Reference: Week and day of week, Report: Day of week",20.2,6.9,12.7,0.0615,-0.152,-0.653,40.3,natural
+2021-11-17,"Independent by age, Reference: Week and day of week, Report: Day of week",20.3,6.92,12.7,0.0615,-0.152,-0.653,40.3,natural
 2021-11-18,"Reference: Fixed, Report: Fixed",29,10.4,17.6,0.317,-0.127,-0.375,52.1,natural
 2021-11-18,"Reference: Fixed, Report: Day of week",48.5,5.44,42.3,0.252,-0.335,-0.544,74,natural
 2021-11-18,"Reference: Age, Report: Day of week",56.7,5.2,50.9,0.204,-0.365,-0.562,82.2,natural
@@ -348,7 +348,7 @@ nowcast_date,model,interval_score,sharpness,underprediction,overprediction,cover
 2021-11-19,"Reference: Age and week, Report: Day of week",69.4,5,63.9,0.129,-0.415,-0.688,95,natural
 2021-11-19,"Reference: Age and week by age, Report: Day of week",77.8,5.95,71.2,0.111,-0.443,-0.76,107,natural
 2021-11-19,"Independent by age, Reference: Week, Report: Day of week",51.9,6.09,45.1,0.00198,-0.419,-0.843,79.7,natural
-2021-11-19,"Independent by age, Reference: Week and day of week, Report: Day of week",46.7,6.46,39.8,0.00198,-0.414,-0.838,71.2,natural
+2021-11-19,"Independent by age, Reference: Week and day of week, Report: Day of week",46.7,6.47,39.8,0.00198,-0.414,-0.838,71.2,natural
 2021-11-20,"Reference: Fixed, Report: Fixed",28.1,10.6,16.6,0.183,-0.12,-0.421,56.4,natural
 2021-11-20,"Reference: Fixed, Report: Day of week",56.2,5.42,50.2,0.151,-0.395,-0.649,82.2,natural
 2021-11-20,"Reference: Age, Report: Day of week",53.7,5.61,47.5,0.169,-0.381,-0.637,80.7,natural
@@ -437,7 +437,7 @@ nowcast_date,model,interval_score,sharpness,underprediction,overprediction,cover
 2021-12-02,"Reference: Fixed, Report: Day of week",55.4,5.96,48.6,0.269,-0.327,-0.513,81.6,natural
 2021-12-02,"Reference: Age, Report: Day of week",71.4,5.57,65.2,0.155,-0.419,-0.659,99.1,natural
 2021-12-02,"Reference: Age and week, Report: Day of week",71.9,5.78,65.6,0.145,-0.401,-0.659,100,natural
-2021-12-02,"Reference: Age and week by age, Report: Day of week",93.3,6.89,85.6,0.131,-0.44,-0.728,121,natural
+2021-12-02,"Reference: Age and week by age, Report: Day of week",93.6,7.18,85.6,0.111,-0.429,-0.735,121,natural
 2021-12-02,"Independent by age, Reference: Week, Report: Day of week",47.7,6.81,40.3,0.0853,-0.313,-0.703,78.9,natural
 2021-12-02,"Independent by age, Reference: Week and day of week, Report: Day of week",46,6.88,38.2,0.184,-0.332,-0.718,74.9,natural
 2021-12-03,"Reference: Fixed, Report: Fixed",27.3,11.9,14.3,0.59,-0.107,-0.228,49.2,natural
@@ -535,7 +535,7 @@ nowcast_date,model,interval_score,sharpness,underprediction,overprediction,cover
 2021-12-16,"Reference: Fixed, Report: Day of week",16,6.15,4.63,5.05,-0.201,0.27,28.2,natural
 2021-12-16,"Reference: Age, Report: Day of week",17.8,6.43,9.36,1.56,-0.0781,0.0134,32.8,natural
 2021-12-16,"Reference: Age and week, Report: Day of week",18.7,6.53,10,1.73,-0.0891,-0.0723,35.8,natural
-2021-12-16,"Reference: Age and week by age, Report: Day of week",56,6.37,44.6,4.52,-0.362,-0.225,79.4,natural
+2021-12-16,"Reference: Age and week by age, Report: Day of week",56.2,6.59,44.6,4.52,-0.362,-0.225,79.4,natural
 2021-12-16,"Independent by age, Reference: Week, Report: Day of week",17.6,8.27,0.201,9.14,-0.0182,0.416,29.5,natural
 2021-12-16,"Independent by age, Reference: Week and day of week, Report: Day of week",18.2,8.37,0.161,9.62,-0.0336,0.488,36.6,natural
 2021-12-17,"Reference: Fixed, Report: Fixed",20.5,11.2,0.955,8.26,-0.137,0.485,38.3,natural
@@ -577,21 +577,21 @@ nowcast_date,model,interval_score,sharpness,underprediction,overprediction,cover
 2021-12-22,"Reference: Fixed, Report: Day of week",23.3,5.41,1.62,16.2,-0.308,0.621,38.9,natural
 2021-12-22,"Reference: Age, Report: Day of week",16.3,5.18,4.73,6.11,-0.195,0.396,30,natural
 2021-12-22,"Reference: Age and week, Report: Day of week",16.5,5.27,3.76,7.27,-0.228,0.442,31,natural
-2021-12-22,"Reference: Age and week by age, Report: Day of week",29.5,5.37,22.4,1.47,-0.172,-0.0286,43.2,natural
+2021-12-22,"Reference: Age and week by age, Report: Day of week",29.5,5.41,22.4,1.4,-0.149,-0.0339,43.2,natural
 2021-12-22,"Independent by age, Reference: Week, Report: Day of week",18.6,5.95,1.63,10.9,-0.153,0.479,34.8,natural
 2021-12-22,"Independent by age, Reference: Week and day of week, Report: Day of week",16.1,6.11,0.407,9.53,-0.122,0.521,29.8,natural
 2021-12-23,"Reference: Fixed, Report: Fixed",29,10,0.0339,18.9,-0.288,0.772,55,natural
 2021-12-23,"Reference: Fixed, Report: Day of week",27.5,5.81,0.0839,21.6,-0.382,0.812,47,natural
 2021-12-23,"Reference: Age, Report: Day of week",16.7,5.51,0.4,10.7,-0.288,0.703,31.6,natural
 2021-12-23,"Reference: Age and week, Report: Day of week",18.2,5.7,0.241,12.3,-0.292,0.704,34,natural
-2021-12-23,"Reference: Age and week by age, Report: Day of week",30,5.42,19.4,4.74,-0.269,0.0634,47.6,natural
+2021-12-23,"Reference: Age and week by age, Report: Day of week",30.1,5.6,19.4,4.71,-0.249,0.0589,47.6,natural
 2021-12-23,"Independent by age, Reference: Week, Report: Day of week",24.7,6.21,0.025,18.5,-0.211,0.715,44.1,natural
 2021-12-23,"Independent by age, Reference: Week and day of week, Report: Day of week",27.1,6.63,0.0268,20.5,-0.191,0.726,49.2,natural
 2021-12-24,"Reference: Fixed, Report: Fixed",28.7,9.86,0.0946,18.8,-0.322,0.823,56.3,natural
 2021-12-24,"Reference: Fixed, Report: Day of week",21.3,5.22,0.546,15.5,-0.379,0.789,37.2,natural
 2021-12-24,"Reference: Age, Report: Day of week",12.8,5.52,4.41,2.61,-0.0769,0.16,23.4,natural
 2021-12-24,"Reference: Age and week, Report: Day of week",12,5.22,4.47,2.06,-0.0685,0.157,22.7,natural
-2021-12-24,"Reference: Age and week by age, Report: Day of week",42,3.82,37.6,0.341,-0.301,-0.446,55.4,natural
+2021-12-24,"Reference: Age and week by age, Report: Day of week",42.3,4.06,37.6,0.341,-0.301,-0.446,55.4,natural
 2021-12-24,"Independent by age, Reference: Week, Report: Day of week",12.1,5.6,0.377,6.07,-0.0776,0.565,22.3,natural
 2021-12-24,"Independent by age, Reference: Week and day of week, Report: Day of week",12.3,6.04,0.297,5.97,-0.0618,0.555,25.1,natural
 2021-12-25,"Reference: Fixed, Report: Fixed",12.5,7.22,1.31,3.88,-0.107,0.447,22,natural
@@ -633,7 +633,7 @@ nowcast_date,model,interval_score,sharpness,underprediction,overprediction,cover
 2021-12-30,"Reference: Fixed, Report: Day of week",15,4.74,0.516,9.71,-0.246,0.705,25.1,natural
 2021-12-30,"Reference: Age, Report: Day of week",22,3.55,17.9,0.256,-0.212,-0.465,37.8,natural
 2021-12-30,"Reference: Age and week, Report: Day of week",13.7,4.13,7.97,1.26,-0.0819,-0.0679,25.8,natural
-2021-12-30,"Reference: Age and week by age, Report: Day of week",36.6,3.44,32.6,0.232,-0.299,-0.491,48.7,natural
+2021-12-30,"Reference: Age and week by age, Report: Day of week",36.7,3.59,32.6,0.232,-0.299,-0.491,48.7,natural
 2021-12-30,"Independent by age, Reference: Week, Report: Day of week",9.1,4.42,2.6,1.85,0.000787,0.138,18.8,natural
 2021-12-30,"Independent by age, Reference: Week and day of week, Report: Day of week",7.76,4.52,1.52,1.58,0.0412,0.127,14.9,natural
 2021-12-31,"Reference: Fixed, Report: Fixed",15.9,8.16,0.295,7.39,-0.149,0.661,30.9,natural
@@ -669,8 +669,8 @@ nowcast_date,model,interval_score,sharpness,underprediction,overprediction,cover
 2022-01-04,"Reference: Age, Report: Day of week",20.6,4.08,14.8,1.48,-0.261,-0.213,34.3,natural
 2022-01-04,"Reference: Age and week, Report: Day of week",21.4,4.04,15.5,1.58,-0.274,-0.202,35.3,natural
 2022-01-04,"Reference: Age and week by age, Report: Day of week",30.6,4.06,25.6,0.708,-0.306,-0.431,46.2,natural
-2022-01-04,"Independent by age, Reference: Week, Report: Day of week",15.1,4.85,8.3,1.66,-0.203,-0.248,28.6,natural
-2022-01-04,"Independent by age, Reference: Week and day of week, Report: Day of week",14.1,4.41,8.64,0.742,-0.162,-0.304,26.7,natural
+2022-01-04,"Independent by age, Reference: Week, Report: Day of week",15.1,4.86,8.3,1.66,-0.203,-0.248,28.6,natural
+2022-01-04,"Independent by age, Reference: Week and day of week, Report: Day of week",14.2,4.43,8.64,0.742,-0.162,-0.304,26.7,natural
 2022-01-05,"Reference: Fixed, Report: Fixed",15.1,7.64,2.46,4.96,-0.166,0.258,27.3,natural
 2022-01-05,"Reference: Fixed, Report: Day of week",15.2,4.8,1.78,8.64,-0.255,0.451,27.6,natural
 2022-01-05,"Reference: Age, Report: Day of week",16.8,4.09,10.9,1.77,-0.232,-0.0652,30.4,natural
@@ -682,7 +682,7 @@ nowcast_date,model,interval_score,sharpness,underprediction,overprediction,cover
 2022-01-06,"Reference: Fixed, Report: Day of week",13.9,4.92,0.389,8.6,-0.244,0.557,24.3,natural
 2022-01-06,"Reference: Age, Report: Day of week",9.44,4.47,2.39,2.58,-0.135,0.195,17.3,natural
 2022-01-06,"Reference: Age and week, Report: Day of week",10.3,4.41,2.77,3.14,-0.151,0.204,19.3,natural
-2022-01-06,"Reference: Age and week by age, Report: Day of week",23.7,3.85,18.5,1.36,-0.313,-0.255,39,natural
+2022-01-06,"Reference: Age and week by age, Report: Day of week",23.8,3.97,18.5,1.35,-0.304,-0.259,39,natural
 2022-01-06,"Independent by age, Reference: Week, Report: Day of week",8.08,4.85,1.05,2.18,-0.0568,0.112,15,natural
 2022-01-06,"Independent by age, Reference: Week and day of week, Report: Day of week",7.12,4.91,0.694,1.51,-0.00649,0.0661,11.4,natural
 2022-01-07,"Reference: Fixed, Report: Fixed",15.4,8.03,0.352,7.05,-0.169,0.527,30.6,natural
@@ -724,7 +724,7 @@ nowcast_date,model,interval_score,sharpness,underprediction,overprediction,cover
 2022-01-12,"Reference: Fixed, Report: Day of week",8.38,3.44,0.41,4.52,-0.123,0.403,15.2,natural
 2022-01-12,"Reference: Age, Report: Day of week",17.3,2.5,14.8,0.0353,-0.34,-0.671,30,natural
 2022-01-12,"Reference: Age and week, Report: Day of week",26.8,2.01,24.8,0.0167,-0.461,-0.778,36.9,natural
-2022-01-12,"Reference: Age and week by age, Report: Day of week",28.7,2.05,26.6,0.0501,-0.465,-0.76,38.3,natural
+2022-01-12,"Reference: Age and week by age, Report: Day of week",28.7,2.06,26.6,0.0501,-0.465,-0.76,38.3,natural
 2022-01-12,"Independent by age, Reference: Week, Report: Day of week",8.2,3.47,4.01,0.711,-0.0918,-0.284,15.5,natural
 2022-01-12,"Independent by age, Reference: Week and day of week, Report: Day of week",7.83,3.43,3.6,0.792,-0.0863,-0.238,15,natural
 2022-01-13,"Reference: Fixed, Report: Fixed",8.33,4.41,0.0931,3.82,-0.0909,0.54,17,natural
@@ -740,7 +740,7 @@ nowcast_date,model,interval_score,sharpness,underprediction,overprediction,cover
 2022-01-14,"Reference: Age and week, Report: Day of week",5.26,2.28,0.405,2.57,-0.11,0.454,10.1,natural
 2022-01-14,"Reference: Age and week by age, Report: Day of week",5.54,2.21,3.05,0.281,-0.0403,-0.286,11.4,natural
 2022-01-14,"Independent by age, Reference: Week, Report: Day of week",4.27,2.43,0.546,1.3,0.0558,0.231,7.81,natural
-2022-01-14,"Independent by age, Reference: Week and day of week, Report: Day of week",3.89,2.35,0.584,0.96,0.0948,0.161,6.66,natural
+2022-01-14,"Independent by age, Reference: Week and day of week, Report: Day of week",3.89,2.35,0.584,0.95,0.105,0.157,6.66,natural
 2022-01-15,"Reference: Fixed, Report: Fixed",10.3,3.26,0.00325,7.03,-0.351,0.823,20.3,natural
 2022-01-15,"Reference: Fixed, Report: Day of week",7.39,2.06,0.013,5.32,-0.292,0.746,13.5,natural
 2022-01-15,"Reference: Age, Report: Day of week",6.7,2.09,0.00325,4.61,-0.269,0.761,12.6,natural
@@ -815,7 +815,7 @@ nowcast_date,model,interval_score,sharpness,underprediction,overprediction,cover
 2021-10-07,"Reference: Fixed, Report: Day of week",0.141,0.032,0.00699,0.102,-0.197,0.529,0.247,log
 2021-10-07,"Reference: Age, Report: Day of week",0.109,0.0342,0.0188,0.0553,-0.0671,0.198,0.202,log
 2021-10-07,"Reference: Age and week, Report: Day of week",0.106,0.035,0.0181,0.0522,-0.0637,0.215,0.202,log
-2021-10-07,"Reference: Age and week by age, Report: Day of week",0.196,0.0492,0.177,0.0087,-0.163,-0.283,0.259,log
+2021-10-07,"Reference: Age and week by age, Report: Day of week",0.2,0.0553,0.177,0.00723,-0.155,-0.29,0.259,log
 2021-10-07,"Independent by age, Reference: Week, Report: Day of week",0.0909,0.0358,0.0057,0.0488,0.00752,0.273,0.168,log
 2021-10-07,"Independent by age, Reference: Week and day of week, Report: Day of week",0.0843,0.0361,0.00333,0.0447,0.0511,0.297,0.154,log
 2021-10-08,"Reference: Fixed, Report: Fixed",0.145,0.0395,0.00105,0.104,-0.173,0.668,0.263,log
@@ -845,7 +845,7 @@ nowcast_date,model,interval_score,sharpness,underprediction,overprediction,cover
 2021-10-11,"Reference: Age and week, Report: Day of week",0.111,0.0486,0.0298,0.0317,-0.0514,-0.102,0.204,log
 2021-10-11,"Reference: Age and week by age, Report: Day of week",0.175,0.0551,0.102,0.0149,-0.215,-0.456,0.359,log
 2021-10-11,"Independent by age, Reference: Week, Report: Day of week",0.1,0.0539,0.0165,0.0289,0.0222,0.0411,0.165,log
-2021-10-11,"Independent by age, Reference: Week and day of week, Report: Day of week",0.0795,0.044,0.0127,0.0222,0.0758,-0.0116,0.141,log
+2021-10-11,"Independent by age, Reference: Week and day of week, Report: Day of week",0.0834,0.0478,0.0127,0.0222,0.0758,-0.0116,0.141,log
 2021-10-12,"Reference: Fixed, Report: Fixed",0.104,0.0403,0.0205,0.0427,-0.0791,-0.0714,0.193,log
 2021-10-12,"Reference: Fixed, Report: Day of week",0.124,0.0391,0.0112,0.0734,-0.121,0.246,0.208,log
 2021-10-12,"Reference: Age, Report: Day of week",0.114,0.0441,0.0247,0.0449,-0.104,-0.0339,0.187,log
@@ -864,23 +864,23 @@ nowcast_date,model,interval_score,sharpness,underprediction,overprediction,cover
 2021-10-14,"Reference: Fixed, Report: Day of week",0.101,0.0296,0.00311,0.0676,-0.101,0.431,0.185,log
 2021-10-14,"Reference: Age, Report: Day of week",0.0756,0.0318,0.0127,0.0303,0.0489,-0.0152,0.138,log
 2021-10-14,"Reference: Age and week, Report: Day of week",0.0752,0.0315,0.0135,0.0293,0.0333,-0.0607,0.139,log
-2021-10-14,"Reference: Age and week by age, Report: Day of week",0.122,0.0303,0.0759,0.0139,-0.148,-0.373,0.207,log
+2021-10-14,"Reference: Age and week by age, Report: Day of week",0.128,0.0368,0.0759,0.0132,-0.144,-0.374,0.207,log
 2021-10-14,"Independent by age, Reference: Week, Report: Day of week",0.0579,0.0307,0.00517,0.0215,0.108,0.162,0.111,log
-2021-10-14,"Independent by age, Reference: Week and day of week, Report: Day of week",0.0559,0.0285,0.0117,0.015,0.105,0.0196,0.116,log
+2021-10-14,"Independent by age, Reference: Week and day of week, Report: Day of week",0.0561,0.0287,0.0117,0.015,0.105,0.0196,0.116,log
 2021-10-15,"Reference: Fixed, Report: Fixed",0.102,0.0367,0.00103,0.0642,-0.0921,0.597,0.197,log
 2021-10-15,"Reference: Fixed, Report: Day of week",0.0822,0.0292,0.00489,0.0478,-0.0968,0.462,0.155,log
 2021-10-15,"Reference: Age, Report: Day of week",0.0662,0.0318,0.0104,0.0235,0.0441,0.231,0.117,log
 2021-10-15,"Reference: Age and week, Report: Day of week",0.067,0.0313,0.00995,0.0253,0.0359,0.251,0.123,log
 2021-10-15,"Reference: Age and week by age, Report: Day of week",0.0908,0.0305,0.0488,0.00962,-0.0792,-0.377,0.172,log
-2021-10-15,"Independent by age, Reference: Week, Report: Day of week",0.0529,0.0289,0.00685,0.0164,0.0848,0.201,0.0989,log
-2021-10-15,"Independent by age, Reference: Week and day of week, Report: Day of week",0.0487,0.0297,0.00662,0.0117,0.13,0.0598,0.0923,log
+2021-10-15,"Independent by age, Reference: Week, Report: Day of week",0.0534,0.0294,0.00685,0.0164,0.0848,0.201,0.0989,log
+2021-10-15,"Independent by age, Reference: Week and day of week, Report: Day of week",0.0493,0.0303,0.00662,0.0117,0.13,0.0598,0.0923,log
 2021-10-16,"Reference: Fixed, Report: Fixed",0.0903,0.0362,0.0028,0.051,-0.0802,0.539,0.171,log
 2021-10-16,"Reference: Fixed, Report: Day of week",0.075,0.0298,0.00829,0.0365,-0.0909,0.389,0.14,log
 2021-10-16,"Reference: Age, Report: Day of week",0.0725,0.0301,0.0127,0.0292,-0.0479,0.278,0.136,log
 2021-10-16,"Reference: Age and week, Report: Day of week",0.0724,0.0303,0.0125,0.0292,-0.0381,0.286,0.139,log
 2021-10-16,"Reference: Age and week by age, Report: Day of week",0.092,0.033,0.0443,0.0128,-0.0625,-0.234,0.177,log
 2021-10-16,"Independent by age, Reference: Week, Report: Day of week",0.0565,0.03,0.0125,0.0131,0.0773,0.122,0.11,log
-2021-10-16,"Independent by age, Reference: Week and day of week, Report: Day of week",0.0508,0.0295,0.0123,0.0081,0.0791,0.0286,0.0993,log
+2021-10-16,"Independent by age, Reference: Week and day of week, Report: Day of week",0.0528,0.0315,0.0123,0.0081,0.0791,0.0286,0.0993,log
 2021-10-17,"Reference: Fixed, Report: Fixed",0.085,0.0376,0.0156,0.031,-0.0126,0.134,0.16,log
 2021-10-17,"Reference: Fixed, Report: Day of week",0.0967,0.0329,0.00827,0.0553,-0.124,0.42,0.179,log
 2021-10-17,"Reference: Age, Report: Day of week",0.127,0.0318,0.0686,0.0252,-0.24,-0.251,0.213,log
@@ -906,14 +906,14 @@ nowcast_date,model,interval_score,sharpness,underprediction,overprediction,cover
 2021-10-20,"Reference: Fixed, Report: Day of week",0.105,0.0298,0.0185,0.0556,-0.107,0.187,0.187,log
 2021-10-20,"Reference: Age, Report: Day of week",0.1,0.0309,0.0393,0.0292,-0.0985,-0.209,0.186,log
 2021-10-20,"Reference: Age and week, Report: Day of week",0.106,0.0315,0.0454,0.0276,-0.0971,-0.229,0.191,log
-2021-10-20,"Reference: Age and week by age, Report: Day of week",0.216,0.0271,0.176,0.0105,-0.364,-0.667,0.303,log
+2021-10-20,"Reference: Age and week by age, Report: Day of week",0.217,0.0336,0.176,0.00502,-0.357,-0.674,0.303,log
 2021-10-20,"Independent by age, Reference: Week, Report: Day of week",0.0891,0.0315,0.0368,0.0192,-0.0548,-0.136,0.163,log
 2021-10-20,"Independent by age, Reference: Week and day of week, Report: Day of week",0.0749,0.0318,0.033,0.00879,0.0492,-0.169,0.132,log
 2021-10-21,"Reference: Fixed, Report: Fixed",0.085,0.0362,0.0127,0.0353,0.0122,0.132,0.156,log
 2021-10-21,"Reference: Fixed, Report: Day of week",0.0881,0.0299,0.0229,0.0342,-0.0724,0.0732,0.166,log
 2021-10-21,"Reference: Age, Report: Day of week",0.168,0.0279,0.135,0.00319,-0.332,-0.735,0.274,log
 2021-10-21,"Reference: Age and week, Report: Day of week",0.171,0.0282,0.138,0.00316,-0.332,-0.735,0.282,log
-2021-10-21,"Reference: Age and week by age, Report: Day of week",0.23,0.0244,0.201,0.00319,-0.415,-0.753,0.315,log
+2021-10-21,"Reference: Age and week by age, Report: Day of week",0.239,0.0333,0.201,0.00319,-0.415,-0.753,0.315,log
 2021-10-21,"Independent by age, Reference: Week, Report: Day of week",0.0835,0.0315,0.0449,0.00532,-0.0465,-0.317,0.161,log
 2021-10-21,"Independent by age, Reference: Week and day of week, Report: Day of week",0.078,0.0317,0.0407,0.00378,-0.028,-0.428,0.156,log
 2021-10-22,"Reference: Fixed, Report: Fixed",0.0692,0.0371,0.00479,0.0269,0.0808,0.161,0.122,log
@@ -928,7 +928,7 @@ nowcast_date,model,interval_score,sharpness,underprediction,overprediction,cover
 2021-10-23,"Reference: Age, Report: Day of week",0.0698,0.0295,0.0234,0.0156,-0.0391,-0.17,0.14,log
 2021-10-23,"Reference: Age and week, Report: Day of week",0.0676,0.0298,0.021,0.0158,-0.00391,-0.147,0.134,log
 2021-10-23,"Reference: Age and week by age, Report: Day of week",0.125,0.03,0.0838,0.00875,-0.245,-0.618,0.218,log
-2021-10-23,"Independent by age, Reference: Week, Report: Day of week",0.0872,0.0324,0.048,0.00512,-0.0911,-0.278,0.159,log
+2021-10-23,"Independent by age, Reference: Week, Report: Day of week",0.0897,0.0349,0.048,0.00512,-0.0911,-0.278,0.159,log
 2021-10-23,"Independent by age, Reference: Week and day of week, Report: Day of week",0.0666,0.0314,0.0313,0.00261,0.00078,-0.38,0.12,log
 2021-10-24,"Reference: Fixed, Report: Fixed",0.0832,0.0365,0.0312,0.0132,-0.022,-0.302,0.175,log
 2021-10-24,"Reference: Fixed, Report: Day of week",0.0612,0.0315,0.013,0.0162,0.0714,-0.0446,0.105,log
@@ -943,7 +943,7 @@ nowcast_date,model,interval_score,sharpness,underprediction,overprediction,cover
 2021-10-25,"Reference: Age and week, Report: Day of week",0.194,0.0385,0.0209,0.134,-0.0117,-0.12,0.275,log
 2021-10-25,"Reference: Age and week by age, Report: Day of week",0.232,0.0413,0.064,0.125,-0.208,-0.424,0.351,log
 2021-10-25,"Independent by age, Reference: Week, Report: Day of week",0.181,0.0386,0.0323,0.108,-0.0839,-0.238,0.277,log
-2021-10-25,"Independent by age, Reference: Week and day of week, Report: Day of week",0.178,0.0364,0.033,0.107,-0.0548,-0.379,0.257,log
+2021-10-25,"Independent by age, Reference: Week and day of week, Report: Day of week",0.172,0.0389,0.033,0.0977,-0.0548,-0.379,0.257,log
 2021-10-26,"Reference: Fixed, Report: Fixed",0.165,0.0357,0.0443,0.0837,-0.121,-0.456,0.272,log
 2021-10-26,"Reference: Fixed, Report: Day of week",0.171,0.0295,0.0249,0.115,-0.0668,-0.235,0.24,log
 2021-10-26,"Reference: Age, Report: Day of week",0.172,0.0298,0.0246,0.116,-0.0789,-0.283,0.24,log
@@ -964,14 +964,14 @@ nowcast_date,model,interval_score,sharpness,underprediction,overprediction,cover
 2021-10-28,"Reference: Age and week, Report: Day of week",0.148,0.0298,0.0187,0.0988,-0.0808,0.0607,0.238,log
 2021-10-28,"Reference: Age and week by age, Report: Day of week",0.199,0.038,0.0331,0.127,-0.0808,-0.00982,0.299,log
 2021-10-28,"Independent by age, Reference: Week, Report: Day of week",0.0935,0.04,0.0297,0.0226,0.0224,-0.0214,0.21,log
-2021-10-28,"Independent by age, Reference: Week and day of week, Report: Day of week",0.144,0.0317,0.0413,0.0699,0.0267,-0.0107,0.201,log
+2021-10-28,"Independent by age, Reference: Week and day of week, Report: Day of week",0.146,0.0345,0.0413,0.0699,0.0267,-0.0107,0.201,log
 2021-10-29,"Reference: Fixed, Report: Fixed",0.138,0.0378,0.00614,0.0938,-0.0296,0.223,0.248,log
 2021-10-29,"Reference: Fixed, Report: Day of week",0.13,0.0298,0.0211,0.0785,-0.114,-0.00357,0.245,log
 2021-10-29,"Reference: Age, Report: Day of week",0.132,0.0313,0.0108,0.0897,-0.0785,0.139,0.248,log
 2021-10-29,"Reference: Age and week, Report: Day of week",0.131,0.0316,0.00975,0.0892,-0.0686,0.175,0.24,log
 2021-10-29,"Reference: Age and week by age, Report: Day of week",0.145,0.0374,0.037,0.069,-0.0819,-0.19,0.287,log
 2021-10-29,"Independent by age, Reference: Week, Report: Day of week",0.0799,0.0394,0.0134,0.0263,0.0517,-0.0268,0.195,log
-2021-10-29,"Independent by age, Reference: Week and day of week, Report: Day of week",0.0604,0.0277,0.0183,0.0136,0.071,-0.0427,0.106,log
+2021-10-29,"Independent by age, Reference: Week and day of week, Report: Day of week",0.063,0.0303,0.0183,0.0136,0.071,-0.0427,0.106,log
 2021-10-30,"Reference: Fixed, Report: Fixed",0.123,0.038,0.00879,0.0751,-0.00552,0.147,0.225,log
 2021-10-30,"Reference: Fixed, Report: Day of week",0.121,0.0289,0.0262,0.0648,-0.0864,-0.0116,0.223,log
 2021-10-30,"Reference: Age, Report: Day of week",0.104,0.0361,0.0244,0.0424,-0.0304,-0.0714,0.221,log
@@ -1011,7 +1011,7 @@ nowcast_date,model,interval_score,sharpness,underprediction,overprediction,cover
 2021-11-04,"Reference: Fixed, Report: Day of week",0.0937,0.0262,0.0341,0.0323,-0.123,-0.215,0.173,log
 2021-11-04,"Reference: Age, Report: Day of week",0.0905,0.0272,0.0251,0.037,-0.0664,-0.0893,0.164,log
 2021-11-04,"Reference: Age and week, Report: Day of week",0.0894,0.0274,0.0223,0.0385,-0.0616,-0.0402,0.159,log
-2021-11-04,"Reference: Age and week by age, Report: Day of week",0.15,0.0316,0.0958,0.0215,-0.12,-0.34,0.227,log
+2021-11-04,"Reference: Age and week by age, Report: Day of week",0.15,0.0396,0.0958,0.013,-0.0963,-0.351,0.227,log
 2021-11-04,"Independent by age, Reference: Week, Report: Day of week",0.0626,0.0285,0.0175,0.0155,0.0165,-0.195,0.122,log
 2021-11-04,"Independent by age, Reference: Week and day of week, Report: Day of week",0.0546,0.029,0.0137,0.0109,0.0773,-0.174,0.108,log
 2021-11-05,"Reference: Fixed, Report: Fixed",0.0833,0.0344,0.0113,0.0367,-0.0114,0.0455,0.154,log
@@ -1020,7 +1020,7 @@ nowcast_date,model,interval_score,sharpness,underprediction,overprediction,cover
 2021-11-05,"Reference: Age and week, Report: Day of week",0.0829,0.0277,0.0228,0.0314,-0.0376,-0.0223,0.148,log
 2021-11-05,"Reference: Age and week by age, Report: Day of week",0.0936,0.0325,0.0379,0.0216,-0.0548,-0.174,0.176,log
 2021-11-05,"Independent by age, Reference: Week, Report: Day of week",0.0605,0.0292,0.0203,0.0098,0.0418,-0.152,0.119,log
-2021-11-05,"Independent by age, Reference: Week and day of week, Report: Day of week",0.0684,0.0302,0.0307,0.00642,0.0584,-0.236,0.112,log
+2021-11-05,"Independent by age, Reference: Week and day of week, Report: Day of week",0.0692,0.031,0.0307,0.00642,0.0584,-0.236,0.112,log
 2021-11-06,"Reference: Fixed, Report: Fixed",0.0772,0.0336,0.00933,0.0336,9.65e-18,0.129,0.141,log
 2021-11-06,"Reference: Fixed, Report: Day of week",0.0747,0.0254,0.025,0.0233,-0.0572,-0.0687,0.135,log
 2021-11-06,"Reference: Age, Report: Day of week",0.0777,0.0276,0.0125,0.0371,-0.0864,0.22,0.141,log
@@ -1090,21 +1090,21 @@ nowcast_date,model,interval_score,sharpness,underprediction,overprediction,cover
 2021-11-15,"Reference: Age and week, Report: Day of week",0.145,0.0315,0.0245,0.0881,-0.204,0.117,0.242,log
 2021-11-15,"Reference: Age and week by age, Report: Day of week",0.154,0.0352,0.0238,0.0943,-0.199,0.106,0.261,log
 2021-11-15,"Independent by age, Reference: Week, Report: Day of week",0.1,0.034,0.0311,0.0344,-0.182,-0.18,0.185,log
-2021-11-15,"Independent by age, Reference: Week and day of week, Report: Day of week",0.0807,0.033,0.0269,0.0199,-0.114,-0.256,0.149,log
+2021-11-15,"Independent by age, Reference: Week and day of week, Report: Day of week",0.0859,0.0381,0.0269,0.0199,-0.114,-0.256,0.149,log
 2021-11-16,"Reference: Fixed, Report: Fixed",0.14,0.0315,0.0929,0.0132,-0.328,-0.612,0.237,log
 2021-11-16,"Reference: Fixed, Report: Day of week",0.11,0.0261,0.0452,0.0379,-0.224,-0.381,0.178,log
 2021-11-16,"Reference: Age, Report: Day of week",0.105,0.0277,0.0289,0.0479,-0.159,-0.182,0.167,log
 2021-11-16,"Reference: Age and week, Report: Day of week",0.104,0.0279,0.0281,0.0469,-0.161,-0.196,0.164,log
 2021-11-16,"Reference: Age and week by age, Report: Day of week",0.117,0.0333,0.0496,0.0322,-0.139,-0.337,0.206,log
 2021-11-16,"Independent by age, Reference: Week, Report: Day of week",0.072,0.0305,0.0311,0.0088,-0.0798,-0.381,0.139,log
-2021-11-16,"Independent by age, Reference: Week and day of week, Report: Day of week",0.0713,0.0291,0.0346,0.00615,-0.0864,-0.456,0.136,log
+2021-11-16,"Independent by age, Reference: Week and day of week, Report: Day of week",0.0735,0.0313,0.0346,0.00615,-0.0864,-0.456,0.136,log
 2021-11-17,"Reference: Fixed, Report: Fixed",0.105,0.0312,0.0484,0.0242,-0.22,-0.414,0.185,log
 2021-11-17,"Reference: Fixed, Report: Day of week",0.119,0.0234,0.0655,0.0293,-0.327,-0.497,0.192,log
 2021-11-17,"Reference: Age, Report: Day of week",0.117,0.0241,0.0621,0.0292,-0.308,-0.496,0.194,log
 2021-11-17,"Reference: Age and week, Report: Day of week",0.111,0.0244,0.0557,0.0297,-0.278,-0.442,0.189,log
 2021-11-17,"Reference: Age and week by age, Report: Day of week",0.137,0.0296,0.0832,0.023,-0.239,-0.526,0.222,log
 2021-11-17,"Independent by age, Reference: Week, Report: Day of week",0.0748,0.0264,0.0408,0.00567,-0.191,-0.634,0.143,log
-2021-11-17,"Independent by age, Reference: Week and day of week, Report: Day of week",0.0727,0.0261,0.0393,0.00551,-0.152,-0.653,0.137,log
+2021-11-17,"Independent by age, Reference: Week and day of week, Report: Day of week",0.0761,0.0295,0.0393,0.00551,-0.152,-0.653,0.137,log
 2021-11-18,"Reference: Fixed, Report: Fixed",0.0886,0.0314,0.037,0.0189,-0.127,-0.375,0.153,log
 2021-11-18,"Reference: Fixed, Report: Day of week",0.122,0.0227,0.0794,0.0188,-0.335,-0.544,0.19,log
 2021-11-18,"Reference: Age, Report: Day of week",0.138,0.0226,0.0978,0.0165,-0.365,-0.562,0.209,log
@@ -1117,8 +1117,8 @@ nowcast_date,model,interval_score,sharpness,underprediction,overprediction,cover
 2021-11-19,"Reference: Age, Report: Day of week",0.154,0.0218,0.12,0.0112,-0.411,-0.685,0.225,log
 2021-11-19,"Reference: Age and week, Report: Day of week",0.158,0.0218,0.124,0.0111,-0.415,-0.688,0.229,log
 2021-11-19,"Reference: Age and week by age, Report: Day of week",0.179,0.0239,0.144,0.00916,-0.443,-0.76,0.263,log
-2021-11-19,"Independent by age, Reference: Week, Report: Day of week",0.132,0.0222,0.107,0.000172,-0.419,-0.843,0.205,log
-2021-11-19,"Independent by age, Reference: Week and day of week, Report: Day of week",0.124,0.0237,0.0986,0.000172,-0.414,-0.838,0.193,log
+2021-11-19,"Independent by age, Reference: Week, Report: Day of week",0.132,0.0224,0.107,0.000172,-0.419,-0.843,0.205,log
+2021-11-19,"Independent by age, Reference: Week and day of week, Report: Day of week",0.126,0.0251,0.0986,0.000172,-0.414,-0.838,0.193,log
 2021-11-20,"Reference: Fixed, Report: Fixed",0.0797,0.0317,0.0345,0.0122,-0.12,-0.421,0.146,log
 2021-11-20,"Reference: Fixed, Report: Day of week",0.131,0.0223,0.0953,0.0116,-0.395,-0.649,0.202,log
 2021-11-20,"Reference: Age, Report: Day of week",0.127,0.0229,0.0898,0.0126,-0.381,-0.637,0.199,log
@@ -1207,7 +1207,7 @@ nowcast_date,model,interval_score,sharpness,underprediction,overprediction,cover
 2021-12-02,"Reference: Fixed, Report: Day of week",0.126,0.0227,0.0837,0.0189,-0.327,-0.513,0.193,log
 2021-12-02,"Reference: Age, Report: Day of week",0.157,0.0231,0.119,0.0135,-0.419,-0.659,0.235,log
 2021-12-02,"Reference: Age and week, Report: Day of week",0.158,0.0238,0.12,0.0131,-0.401,-0.659,0.239,log
-2021-12-02,"Reference: Age and week by age, Report: Day of week",0.218,0.0281,0.176,0.0112,-0.44,-0.728,0.31,log
+2021-12-02,"Reference: Age and week by age, Report: Day of week",0.22,0.0334,0.176,0.00789,-0.429,-0.735,0.31,log
 2021-12-02,"Independent by age, Reference: Week, Report: Day of week",0.0993,0.0253,0.0689,0.00312,-0.313,-0.703,0.18,log
 2021-12-02,"Independent by age, Reference: Week and day of week, Report: Day of week",0.103,0.0252,0.0743,0.00118,-0.332,-0.718,0.18,log
 2021-12-03,"Reference: Fixed, Report: Fixed",0.0819,0.0319,0.0262,0.0227,-0.107,-0.228,0.15,log
@@ -1305,7 +1305,7 @@ nowcast_date,model,interval_score,sharpness,underprediction,overprediction,cover
 2021-12-16,"Reference: Fixed, Report: Day of week",0.0836,0.0234,0.0111,0.0488,-0.201,0.27,0.15,log
 2021-12-16,"Reference: Age, Report: Day of week",0.0729,0.0254,0.0234,0.0232,-0.0781,0.0134,0.133,log
 2021-12-16,"Reference: Age and week, Report: Day of week",0.0735,0.0261,0.0266,0.0199,-0.0891,-0.0723,0.136,log
-2021-12-16,"Reference: Age and week by age, Report: Day of week",0.156,0.027,0.107,0.0198,-0.362,-0.225,0.243,log
+2021-12-16,"Reference: Age and week by age, Report: Day of week",0.159,0.0303,0.107,0.0198,-0.362,-0.225,0.243,log
 2021-12-16,"Independent by age, Reference: Week, Report: Day of week",0.0608,0.0272,0.00501,0.0282,-0.0182,0.416,0.107,log
 2021-12-16,"Independent by age, Reference: Week and day of week, Report: Day of week",0.0551,0.0273,0.00555,0.0219,-0.0336,0.488,0.11,log
 2021-12-17,"Reference: Fixed, Report: Fixed",0.0986,0.0321,0.00399,0.0622,-0.137,0.485,0.184,log
@@ -1347,21 +1347,21 @@ nowcast_date,model,interval_score,sharpness,underprediction,overprediction,cover
 2021-12-22,"Reference: Fixed, Report: Day of week",0.143,0.0233,0.00477,0.115,-0.308,0.621,0.225,log
 2021-12-22,"Reference: Age, Report: Day of week",0.108,0.024,0.0123,0.0709,-0.195,0.396,0.182,log
 2021-12-22,"Reference: Age and week, Report: Day of week",0.113,0.0238,0.0099,0.079,-0.228,0.442,0.187,log
-2021-12-22,"Reference: Age and week by age, Report: Day of week",0.138,0.0273,0.0756,0.0345,-0.172,-0.0286,0.211,log
+2021-12-22,"Reference: Age and week by age, Report: Day of week",0.135,0.0301,0.0756,0.0284,-0.149,-0.0339,0.211,log
 2021-12-22,"Independent by age, Reference: Week, Report: Day of week",0.0861,0.026,0.00457,0.0552,-0.153,0.479,0.154,log
 2021-12-22,"Independent by age, Reference: Week and day of week, Report: Day of week",0.073,0.0263,0.00174,0.0447,-0.122,0.521,0.132,log
 2021-12-23,"Reference: Fixed, Report: Fixed",0.144,0.0318,0.00013,0.112,-0.288,0.772,0.249,log
 2021-12-23,"Reference: Fixed, Report: Day of week",0.145,0.0236,0.000304,0.121,-0.382,0.812,0.234,log
 2021-12-23,"Reference: Age, Report: Day of week",0.107,0.0238,0.00148,0.0818,-0.288,0.703,0.186,log
 2021-12-23,"Reference: Age and week, Report: Day of week",0.111,0.0242,0.000925,0.0853,-0.292,0.704,0.191,log
-2021-12-23,"Reference: Age and week by age, Report: Day of week",0.116,0.027,0.0528,0.035,-0.269,0.0634,0.192,log
+2021-12-23,"Reference: Age and week by age, Report: Day of week",0.118,0.0312,0.0528,0.0325,-0.249,0.0589,0.192,log
 2021-12-23,"Independent by age, Reference: Week, Report: Day of week",0.0898,0.0255,0.000153,0.0642,-0.211,0.715,0.159,log
 2021-12-23,"Independent by age, Reference: Week and day of week, Report: Day of week",0.0848,0.0259,2e-04,0.0587,-0.191,0.726,0.158,log
 2021-12-24,"Reference: Fixed, Report: Fixed",0.15,0.0321,0.00036,0.117,-0.322,0.823,0.262,log
 2021-12-24,"Reference: Fixed, Report: Day of week",0.128,0.0236,0.00199,0.103,-0.379,0.789,0.212,log
 2021-12-24,"Reference: Age, Report: Day of week",0.0712,0.028,0.0151,0.0274,-0.0769,0.16,0.132,log
 2021-12-24,"Reference: Age and week, Report: Day of week",0.0699,0.027,0.0154,0.0267,-0.0685,0.157,0.131,log
-2021-12-24,"Reference: Age and week by age, Report: Day of week",0.149,0.0228,0.112,0.0124,-0.301,-0.446,0.222,log
+2021-12-24,"Reference: Age and week by age, Report: Day of week",0.154,0.0281,0.112,0.0124,-0.301,-0.446,0.222,log
 2021-12-24,"Independent by age, Reference: Week, Report: Day of week",0.0672,0.0262,0.00146,0.0394,-0.0776,0.565,0.128,log
 2021-12-24,"Independent by age, Reference: Week and day of week, Report: Day of week",0.0641,0.0265,0.00164,0.0358,-0.0618,0.555,0.127,log
 2021-12-25,"Reference: Fixed, Report: Fixed",0.108,0.0331,0.00453,0.07,-0.107,0.447,0.193,log
@@ -1403,7 +1403,7 @@ nowcast_date,model,interval_score,sharpness,underprediction,overprediction,cover
 2021-12-30,"Reference: Fixed, Report: Day of week",0.115,0.0276,0.00216,0.0856,-0.246,0.705,0.198,log
 2021-12-30,"Reference: Age, Report: Day of week",0.102,0.0277,0.0657,0.00648,-0.212,-0.465,0.185,log
 2021-12-30,"Reference: Age and week, Report: Day of week",0.0792,0.0288,0.0245,0.025,-0.0819,-0.0679,0.148,log
-2021-12-30,"Reference: Age and week by age, Report: Day of week",0.164,0.0269,0.129,0.00619,-0.299,-0.491,0.238,log
+2021-12-30,"Reference: Age and week by age, Report: Day of week",0.169,0.0311,0.129,0.00619,-0.299,-0.491,0.238,log
 2021-12-30,"Independent by age, Reference: Week, Report: Day of week",0.0589,0.0295,0.00956,0.019,0.000787,0.138,0.116,log
 2021-12-30,"Independent by age, Reference: Week and day of week, Report: Day of week",0.0524,0.0292,0.00772,0.0148,0.0412,0.127,0.107,log
 2021-12-31,"Reference: Fixed, Report: Fixed",0.109,0.0348,0.00106,0.0736,-0.149,0.661,0.203,log
@@ -1439,8 +1439,8 @@ nowcast_date,model,interval_score,sharpness,underprediction,overprediction,cover
 2022-01-04,"Reference: Age, Report: Day of week",0.116,0.0315,0.0445,0.0386,-0.261,-0.213,0.205,log
 2022-01-04,"Reference: Age and week, Report: Day of week",0.118,0.0312,0.0469,0.039,-0.274,-0.202,0.207,log
 2022-01-04,"Reference: Age and week by age, Report: Day of week",0.155,0.0333,0.0936,0.0262,-0.306,-0.431,0.251,log
-2022-01-04,"Independent by age, Reference: Week, Report: Day of week",0.101,0.0342,0.0374,0.0283,-0.203,-0.248,0.181,log
-2022-01-04,"Independent by age, Reference: Week and day of week, Report: Day of week",0.0957,0.0335,0.0385,0.0223,-0.162,-0.304,0.168,log
+2022-01-04,"Independent by age, Reference: Week, Report: Day of week",0.103,0.0362,0.0374,0.0283,-0.203,-0.248,0.181,log
+2022-01-04,"Independent by age, Reference: Week and day of week, Report: Day of week",0.0983,0.0362,0.0385,0.0223,-0.162,-0.304,0.168,log
 2022-01-05,"Reference: Fixed, Report: Fixed",0.108,0.0375,0.00955,0.0611,-0.166,0.258,0.204,log
 2022-01-05,"Reference: Fixed, Report: Day of week",0.132,0.0301,0.00657,0.0956,-0.255,0.451,0.225,log
 2022-01-05,"Reference: Age, Report: Day of week",0.103,0.0306,0.0345,0.0381,-0.232,-0.0652,0.188,log
@@ -1452,7 +1452,7 @@ nowcast_date,model,interval_score,sharpness,underprediction,overprediction,cover
 2022-01-06,"Reference: Fixed, Report: Day of week",0.117,0.0301,0.00188,0.0851,-0.244,0.557,0.189,log
 2022-01-06,"Reference: Age, Report: Day of week",0.0875,0.0311,0.0109,0.0456,-0.135,0.195,0.149,log
 2022-01-06,"Reference: Age and week, Report: Day of week",0.092,0.0308,0.0119,0.0492,-0.151,0.204,0.155,log
-2022-01-06,"Reference: Age and week by age, Report: Day of week",0.127,0.0282,0.0687,0.0306,-0.313,-0.255,0.214,log
+2022-01-06,"Reference: Age and week by age, Report: Day of week",0.133,0.0354,0.0687,0.0285,-0.304,-0.259,0.214,log
 2022-01-06,"Independent by age, Reference: Week, Report: Day of week",0.0776,0.0337,0.0144,0.0295,-0.0568,0.112,0.138,log
 2022-01-06,"Independent by age, Reference: Week and day of week, Report: Day of week",0.0707,0.0337,0.0131,0.0239,-0.00649,0.0661,0.124,log
 2022-01-07,"Reference: Fixed, Report: Fixed",0.103,0.0399,0.00159,0.0614,-0.169,0.527,0.188,log
@@ -1494,7 +1494,7 @@ nowcast_date,model,interval_score,sharpness,underprediction,overprediction,cover
 2022-01-12,"Reference: Fixed, Report: Day of week",0.0747,0.0237,0.00329,0.0477,-0.123,0.403,0.133,log
 2022-01-12,"Reference: Age, Report: Day of week",0.108,0.0219,0.084,0.00212,-0.34,-0.671,0.197,log
 2022-01-12,"Reference: Age and week, Report: Day of week",0.174,0.0187,0.155,0.000821,-0.461,-0.778,0.252,log
-2022-01-12,"Reference: Age and week by age, Report: Day of week",0.211,0.0189,0.191,0.00167,-0.465,-0.76,0.286,log
+2022-01-12,"Reference: Age and week by age, Report: Day of week",0.212,0.0195,0.191,0.00167,-0.465,-0.76,0.286,log
 2022-01-12,"Independent by age, Reference: Week, Report: Day of week",0.0722,0.0256,0.0394,0.00717,-0.0918,-0.284,0.138,log
 2022-01-12,"Independent by age, Reference: Week and day of week, Report: Day of week",0.0717,0.0253,0.0404,0.00606,-0.0863,-0.238,0.139,log
 2022-01-13,"Reference: Fixed, Report: Fixed",0.0723,0.0266,0.00272,0.043,-0.0909,0.54,0.142,log
@@ -1510,7 +1510,7 @@ nowcast_date,model,interval_score,sharpness,underprediction,overprediction,cover
 2022-01-14,"Reference: Age and week, Report: Day of week",0.0547,0.0188,0.00457,0.0313,-0.11,0.454,0.104,log
 2022-01-14,"Reference: Age and week by age, Report: Day of week",0.0456,0.0184,0.0192,0.00799,-0.0403,-0.286,0.0892,log
 2022-01-14,"Independent by age, Reference: Week, Report: Day of week",0.0385,0.0199,0.00553,0.013,0.0558,0.231,0.0645,log
-2022-01-14,"Independent by age, Reference: Week and day of week, Report: Day of week",0.0351,0.0198,0.00608,0.0092,0.0948,0.161,0.0579,log
+2022-01-14,"Independent by age, Reference: Week and day of week, Report: Day of week",0.0351,0.0208,0.00608,0.00821,0.105,0.157,0.0579,log
 2022-01-15,"Reference: Fixed, Report: Fixed",0.0898,0.0224,0.000138,0.0673,-0.351,0.823,0.167,log
 2022-01-15,"Reference: Fixed, Report: Day of week",0.0696,0.0176,0.000183,0.0518,-0.292,0.746,0.124,log
 2022-01-15,"Reference: Age, Report: Day of week",0.0684,0.0175,0.000138,0.0508,-0.269,0.761,0.121,log
