@@ -42,12 +42,12 @@ summarise_nowcast <- function(nowcast, model,
                                 0.025, 0.05, 0.1, 0.2, 0.25, 0.5, 0.75,
                                 0.8, 0.9, 0.95, 0.975
                               )) {
-  daily <- summary(nowcast, type = "nowcast", probs = probs)
-
   samples <- summary(nowcast, type = "nowcast_samples")
 
   samples[sample < confirm, sample := confirm]
   samples[is.na(sample), sample := confirm]
+
+  daily <- enw_summarise_samples(samples, probs)
 
   cols <- c("confirm", "sample")
   samples[, (cols) := lapply(.SD, data.table::frollsum, n = 7),
@@ -79,7 +79,7 @@ summarise_nowcast <- function(nowcast, model,
 }
 
 default_nowcast_on_error <- function(nowcast, pobs, model,
-                                     rhat_bound = 3, ...) {
+                                     rhat_bound = 1.5, ...) {
 
   if (nowcast$max_rhat[[1]] >= rhat_bound) {
     failure <- TRUE

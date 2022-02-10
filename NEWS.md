@@ -1,3 +1,8 @@
+# 2022-02-10
+
+- Reduce fitting failure threshold to an Rhat of 1.5 or higher.
+- Process both daily and 7 day nowcasts with the same bounding on samples being greater than confirmed cases.
+
 # 2022-02-09
 
 - Due to recent instability in fitting the adapt delta setting has been updated from 0.95 to 0.99. This increases model fitting time but may also improve the quality of model fits.
