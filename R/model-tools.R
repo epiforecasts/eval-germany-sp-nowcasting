@@ -80,10 +80,11 @@ summarise_nowcast <- function(nowcast, model,
 
 default_nowcast_on_error <- function(nowcast, pobs, model,
                                      rhat_bound = 3, ...) {
-  failure <- FALSE
 
-  if (nowcast[max_rhat >= rhat_bound]) {
+  if (nowcast$max_rhat[[1]] >= rhat_bound) {
     failure <- TRUE
+  }else{
+    FALSE
   }
 
   if (failure) {
