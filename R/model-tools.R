@@ -84,7 +84,7 @@ default_nowcast_on_error <- function(nowcast, pobs, model,
   if (nowcast$max_rhat[[1]] >= rhat_bound) {
     failure <- TRUE
   }else{
-    FALSE
+    failure <- FALSE
   }
 
   if (failure) {
