@@ -47,7 +47,13 @@ library(data.table)
 library(epinowcast)
 library(ggplot2)
 library(purrr, quietly = TRUE)
+#> 
+#> Attaching package: 'purrr'
+#> The following object is masked from 'package:data.table':
+#> 
+#>     transpose
 library(here)
+#> here() starts at /eval-germany-sp-nowcasting
 library(future)
 library(future.callr)
 tar_unscript()
