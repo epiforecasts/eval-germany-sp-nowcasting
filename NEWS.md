@@ -1,6 +1,8 @@
 # 2022-02-11
 
 - Reduce adapt delta to 0.95 from 0.99 as no longer required due to the use of a secondary model (introduced on the `2022-02-09`) for problematic fits.
+- Added an `allow_empty` arguement to `save_csv` to prevent the saving of emtpy targets (due to upstream errors in most cases). This prevents `csv` targets from being wrongfully blocked from updating when these issues are resolved.
+
 
 # 2022-02-10
 
