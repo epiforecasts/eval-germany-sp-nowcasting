@@ -302,7 +302,7 @@ tar_target(epinowcast_settings, {
     chains = 2,
     parallel_chains = 2,
     threads_per_chain = 1,
-    adapt_delta = 0.99,
+    adapt_delta = 0.95,
     show_messages = FALSE,
     refresh = 0
   )
@@ -636,7 +636,8 @@ tar_file(
   summarised_nowcast[nowcast_date == nowcast_dates] |>
     save_csv(
       filename = paste0(nowcast_dates, ".csv"),
-      path = here("data/nowcasts/daily")
+      path = here("data/nowcasts/daily"),
+      allow_empty = FALSE
     ),
   map(nowcast_dates),
   cue = tar_cue(mode = "never")
@@ -654,7 +655,8 @@ tar_file(
   summarised_7day_nowcast[nowcast_date == nowcast_dates] |>
     save_csv(
       filename = paste0(nowcast_dates, ".csv"),
-      path = here("data/nowcasts/seven_day")
+      path = here("data/nowcasts/seven_day"),
+      allow_empty = FALSE
     ),
   map(nowcast_dates),
   cue = tar_cue(mode = "never")
