@@ -1,3 +1,7 @@
+# 2022-02-11
+
+- Reduce adapt delta to 0.95 from 0.99 as no longer required due to the use of a secondary model (introduced on the `2022-02-09`) for problematic fits.
+
 # 2022-02-10
 
 - Reduce fitting failure threshold to an Rhat of 1.5 or higher.
