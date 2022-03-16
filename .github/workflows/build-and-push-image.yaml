@@ -8,6 +8,10 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
@@ -17,11 +21,6 @@ jobs:
 
     steps:
 
-      - name: Cancel previous builds if present
-        uses: n1hility/cancel-previous-runs@v2
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-        
       - name: Checkout repository
         uses: actions/checkout@v2
 
