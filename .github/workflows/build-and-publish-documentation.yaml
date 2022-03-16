@@ -44,7 +44,7 @@ jobs:
         run: |
           rmarkdown::render("docs/real-time-method-comparison/index.Rmd")
         shell: Rscript {0}
- 
+
       - name: Render paper
         run: |
           rmarkdown::render("writeup/paper.Rmd", output_dir = "docs")
@@ -55,34 +55,10 @@ jobs:
           rmarkdown::render("writeup/si.Rmd", output_dir = "docs")
         shell: Rscript {0}
 
-      - name: Upload documentation
-        uses: actions/upload-artifact@v2
+      - name: Deploy to GitHub pages 🚀
+        uses: JamesIves/github-pages-deploy-action@4.1.4
         with:
-          name: documentation
-          retention-days: 5
-          path: docs
-
-  publish-documentation:
-    if: github.ref == 'refs/heads/main' && github.repository == 'epiforecasts/eval-germany-sp-nowcasting'
-    needs: render-documentation
-    runs-on: macOS-latest
-    env:
-      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-    steps:
-    - uses: actions/checkout@v2
-    - name: Make a clean gh-pages branch
-      run: |
-        git checkout --orphan gh-pages
-        git rm -rf .
-    - uses: actions/download-artifact@v2
-      with:
-        name: documentation
-        path: .
-    - name: Commit and push documentation
-      run: |
-        git config user.email "action@github.com"
-        git config user.name "GitHub Action - Published documentation"
-        git add --all
-        git commit -m "Published documentation"
-        git push -f origin gh-pages:gh-pages
-        echo "reports published to GitHub"
+          branch: gh-pages
+          folder: docs
+          single-commit: true
+          clean: true
