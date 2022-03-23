@@ -55,6 +55,13 @@ jobs:
           rmarkdown::render("writeup/si.Rmd", output_dir = "docs")
         shell: Rscript {0}
 
+      - name: Upload documentation
+        uses: actions/upload-artifact@v2
+        with:
+          name: documentation
+          retention-days: 5
+          path: docs
+
       - name: Deploy to GitHub pages 🚀
         if: github.ref == 'refs/heads/main'
         uses: JamesIves/github-pages-deploy-action@4.1.4
