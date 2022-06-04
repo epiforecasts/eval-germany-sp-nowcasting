@@ -10,7 +10,7 @@ model,nowcast_date,max_rhat,divergent_transitions,per_divergent_transitions,max_
 "Reference: Age and week by age, Report: Day of week",2022-05-21,1.01,0,0,8,1999,0.9995,1111.9,TRUE,1221
 "Reference: Age and week by age, Report: Day of week",2022-05-27,1.01,0,0,8,1987,0.9935,1063,TRUE,1227
 "Reference: Age and week by age, Report: Day of week",2022-06-03,1.01,0,0,8,1999,0.9995,746.2,TRUE,1234
-"Reference: Age and week by age, Report: Day of week",2022-06-04,1.01,0,0,8,1721,0.8605,794.1,TRUE,1235
+"Reference: Age and week by age, Report: Day of week",2022-06-04,1.01,0,0,8,1721,0.8605,1054.7,TRUE,1235
 "Independent by age, Reference: Week, Report: Day of week",2022-05-27,1.01,4,0.002,7,1085,0.5425,69.3,TRUE,2903
 "Independent by age, Reference: Week and day of week, Report: Day of week",2022-02-11,1,0,0,8,1588,0.794,287.9,TRUE,5099
 "Independent by age, Reference: Week and day of week, Report: Day of week",2022-02-11,1.01,0,0,7,1991,0.9955,161.2,TRUE,5105
