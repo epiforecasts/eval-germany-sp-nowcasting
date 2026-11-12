@@ -1,6 +1,8 @@
 
 # Evaluating Semi-Parametric Nowcasts of COVID-19 Hospital Admissions in Germany
 
+> **Archived.** No longer maintained; last updated July 2022.
+
 This repository contains the documentation, results, and code of a
 project evaluating the use of a semi-parametric nowcasting approach for
 COVID-19 hospitalisations in Germany. See the documentation for further
